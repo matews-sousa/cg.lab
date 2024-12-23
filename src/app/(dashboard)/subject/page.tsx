@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Link from "next/link";
 import React from "react";
 
 export default function SubjectPage() {
@@ -23,7 +24,9 @@ export default function SubjectPage() {
         </CardContent>
       </Card>
       <div>
-        <Button>Conheça os Pontos</Button>
+        <Link href="assignment">
+          <Button>Conheça os Pontos</Button>
+        </Link>
       </div>
     </div>
   );

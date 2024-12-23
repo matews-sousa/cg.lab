@@ -13,7 +13,7 @@ export default function Scene2D() {
 
   return (
     <Mafs
-      pan={true}
+      pan={false}
       height={windowSize.height}
       viewBox={{
         x: [-10, 10],
