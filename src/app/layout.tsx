@@ -4,6 +4,7 @@ import "./globals.css";
 import "mafs/core.css";
 import "mafs/font.css";
 import "katex/dist/katex.min.css";
+import Navbar from "@/components/navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Navbar />
+        <main className="max-w-screen-xl mx-auto py-8 px-4">{children}</main>
       </body>
     </html>
   );
