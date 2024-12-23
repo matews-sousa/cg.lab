@@ -1,5 +1,6 @@
 "use client";
 
+import useWindowSize from "@/hooks/useWindowSize";
 import { Coordinates, LaTeX, Mafs, Transform, useMovablePoint } from "mafs";
 import React from "react";
 
@@ -8,12 +9,12 @@ export default function Scene2D() {
     constrain: ([x, y]) => [Math.round(x), Math.round(y)],
   });
 
-  const screenHeight = window.innerHeight;
+  const windowSize = useWindowSize();
 
   return (
     <Mafs
       pan={true}
-      height={screenHeight}
+      height={windowSize.height}
       viewBox={{
         x: [-10, 10],
       }}
