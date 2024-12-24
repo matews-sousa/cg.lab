@@ -1,6 +1,6 @@
 export type TPoint = {
   id: string;
-  initialPosition: [number, number];
+  position: [number, number];
   movable: boolean;
   constraints?: {
     roundCoordinates?: boolean;
@@ -10,6 +10,7 @@ export type TPoint = {
 };
 
 export type TVector = {
+  id: string;
   tail: [number, number];
   tip: [number, number];
   tailMovable?: boolean;

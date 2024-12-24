@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { TVector } from "@/types/Scene2DConfig";
 import { LaTeX, MovablePoint, Transform, vec, Vector } from "mafs";
+import { useScene2DStore } from "@/store/scene2DStore";
 
 export default function VectorWithControls({ vector }: { vector: TVector }) {
-  const [tail, setTail] = useState(vector.tail);
-  const [tip, setTip] = useState(vector.tip);
-  const [middle, setMiddle] = useState(vec.midpoint(vector.tip, vector.tail));
+  const { setVectorTail, setVectorTip } = useScene2DStore();
+
+  const [middle, setMiddle] = useState(vec.midpoint(vector.tail, vector.tip));
   const [translate, setTranslate] = useState([0, 0] as [number, number]);
 
   useEffect(() => {
-    setMiddle(vec.midpoint(tail, tip));
-
-    const direction = vec.sub(tip, tail);
+    setMiddle(vec.midpoint(vector.tail, vector.tip));
+    const direction = vec.sub(vector.tip, vector.tail);
     const unitVector = vec.normalize(direction);
     const orthogonal = [-unitVector[1], unitVector[0]] as [number, number];
 
     const offset = 0.5;
     const translateVec = vec.scale(orthogonal, offset);
     setTranslate(translateVec);
-  }, [tail, tip]);
+  }, [vector.tail, vector.tip]);
 
   return (
     <>
-      <Vector tail={tail} tip={tip} color={vector.color} />
+      <Vector tail={vector.tail} tip={vector.tip} color={vector.color} />
 
       {vector.label && (
         <Transform translate={translate}>
@@ -32,21 +32,21 @@ export default function VectorWithControls({ vector }: { vector: TVector }) {
 
       {vector.tailMovable && (
         <MovablePoint
-          point={tail}
+          point={vector.tail}
           constrain={([x, y]: [number, number]) =>
             [Math.round(x), Math.round(y)] as [number, number]
           }
           onMove={newPosition => {
-            setTail(newPosition);
+            setVectorTail(vector.id, newPosition);
           }}
         />
       )}
 
       {vector.tipMovable && (
         <MovablePoint
-          point={tip}
+          point={vector.tip}
           onMove={newPosition => {
-            setTip(newPosition);
+            setVectorTip(vector.id, newPosition);
           }}
           constrain={([x, y]: [number, number]) =>
             [Math.round(x), Math.round(y)] as [number, number]
@@ -74,8 +74,8 @@ export default function VectorWithControls({ vector }: { vector: TVector }) {
               newPosition[1] + (vector.tip[1] - vector.tail[1]) / 2,
             ] as [number, number];
 
-            setTail(newTail);
-            setTip(newTip);
+            setVectorTail(vector.id, newTail);
+            setVectorTip(vector.id, newTip);
           }}
         />
       )}
