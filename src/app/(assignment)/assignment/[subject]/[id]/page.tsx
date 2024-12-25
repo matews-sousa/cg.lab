@@ -1,12 +1,15 @@
 "use client";
 
+import FillCoordinateInput from "@/components/fill-coordinate-input";
 import GenericScene2D from "@/components/generic-scene-2d";
 import { Button } from "@/components/ui/button";
 import { subjects } from "@/constants/assignments";
 import {
   Assignment,
+  AssignmentType,
   pointsAssignments,
 } from "@/constants/assignments/points2d/points2d";
+import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
 import { useScene2DStore } from "@/store/scene2DStore";
 import { ArrowRight } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -20,6 +23,7 @@ export default function Page({
 }) {
   const { subject, id } = use(params);
   const [assignment, setAssignment] = useState<Assignment | null>(null);
+  const { inputs } = useFillInTheBlankStore();
   const [assignmentState, setAssignmentState] = useState<
     "notAnswered" | "correct" | "incorrect"
   >("notAnswered");
@@ -46,6 +50,11 @@ export default function Page({
     if (!assignment) return;
     const isCorrect = assignment.validate();
     setAssignmentState(isCorrect ? "correct" : "incorrect");
+  };
+
+  const handleTryAgain = () => {
+    setAssignmentState("notAnswered");
+    assignment?.setup();
   };
 
   const handleNext = () => {
@@ -83,13 +92,7 @@ export default function Page({
                 Resposta incorreta. Tente novamente.
               </p>
               <div className="flex items-center justify-center gap-4 mt-4">
-                <Button
-                  onClick={() => {
-                    setAssignmentState("notAnswered");
-                  }}
-                >
-                  Tentar novamente
-                </Button>
+                <Button onClick={handleTryAgain}>Tentar novamente</Button>
               </div>
             </>
           )}
@@ -97,6 +100,17 @@ export default function Page({
           {assignmentState === "notAnswered" && (
             <>
               <p className="text-base md:text-xl">{assignment?.instructions}</p>
+
+              {assignment?.type ===
+                AssignmentType.FILL_IN_THE_BLANK_COORDINATES &&
+                inputs.map((input, index) => (
+                  <FillCoordinateInput
+                    key={index}
+                    coordinateDimention={input.dimention}
+                    pointRef={input.pointRef}
+                  />
+                ))}
+
               <div className="flex items-center justify-center gap-4 mt-4">
                 <Button onClick={handleConfirm}>Confirmar</Button>
               </div>

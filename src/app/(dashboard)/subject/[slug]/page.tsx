@@ -28,7 +28,7 @@ export default function SubjectPage({
           <CardDescription>{subject?.description}</CardDescription>
         </CardHeader>
         <CardContent>
-          <p>3/15 exercícios</p>
+          <p>0/{subject?.assignments.length} exercícios</p>
         </CardContent>
       </Card>
       <div className="grid grid-cols-2 col-span-2 gap-4">
