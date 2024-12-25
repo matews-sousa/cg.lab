@@ -1,0 +1,109 @@
+"use client";
+
+import GenericScene2D from "@/components/generic-scene-2d";
+import { Button } from "@/components/ui/button";
+import { subjects } from "@/constants/assignments";
+import {
+  Assignment,
+  pointsAssignments,
+} from "@/constants/assignments/points2d/points2d";
+import { useScene2DStore } from "@/store/scene2DStore";
+import { ArrowRight } from "lucide-react";
+import { redirect } from "next/navigation";
+
+import React, { useEffect, useLayoutEffect, use, useState } from "react";
+
+export default function Page({
+  params,
+}: {
+  params: Promise<{ subject: string; id: string }>;
+}) {
+  const { subject, id } = use(params);
+  const [assignment, setAssignment] = useState<Assignment | null>(null);
+  const [assignmentState, setAssignmentState] = useState<
+    "notAnswered" | "correct" | "incorrect"
+  >("notAnswered");
+  const { config } = useScene2DStore();
+
+  useLayoutEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
+  useEffect(() => {
+    const assi = subjects
+      .find(s => s.slug === subject)
+      ?.assignments.find(a => a.id === id);
+    if (assi) {
+      setAssignment(assi);
+      assi.setup();
+    }
+  }, [id, subject]);
+
+  const handleConfirm = () => {
+    if (!assignment) return;
+    const isCorrect = assignment.validate();
+    setAssignmentState(isCorrect ? "correct" : "incorrect");
+  };
+
+  const handleNext = () => {
+    if (!assignment) return;
+    const currentOrder = assignment?.order;
+    const nextAssignment = pointsAssignments.find(
+      a => a.order === currentOrder + 1
+    );
+    if (nextAssignment) {
+      redirect(`/assignment/${subject}/${nextAssignment.id}`);
+    } else {
+      redirect(`/subject/${subject}`);
+    }
+  };
+
+  return (
+    <>
+      <GenericScene2D config={config} />
+
+      <div className="absolute bottom-4 bg-gray-200 p-4 rounded-3xl -translate-x-1/2 left-1/2 w-3/4 md:w-1/3 border-b-4 border-b-gray-400">
+        <div className="text-center">
+          {assignmentState === "correct" && (
+            <>
+              <p className="text-base md:text-xl">Parabéns! Você acertou.</p>
+              <div className="flex items-center justify-center gap-4 mt-4">
+                <Button onClick={handleNext}>
+                  Próximo <ArrowRight />
+                </Button>
+              </div>
+            </>
+          )}
+          {assignmentState === "incorrect" && (
+            <>
+              <p className="text-base md:text-xl">
+                Resposta incorreta. Tente novamente.
+              </p>
+              <div className="flex items-center justify-center gap-4 mt-4">
+                <Button
+                  onClick={() => {
+                    setAssignmentState("notAnswered");
+                  }}
+                >
+                  Tentar novamente
+                </Button>
+              </div>
+            </>
+          )}
+
+          {assignmentState === "notAnswered" && (
+            <>
+              <p className="text-base md:text-xl">{assignment?.instructions}</p>
+              <div className="flex items-center justify-center gap-4 mt-4">
+                <Button onClick={handleConfirm}>Confirmar</Button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}

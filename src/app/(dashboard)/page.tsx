@@ -76,7 +76,7 @@ export default function Home() {
             <Progress value={33} />
           </CardContent>
           <CardFooter>
-            <Link href="/subject">
+            <Link href="/subject/points2d">
               <Button>Iniciar</Button>
             </Link>
           </CardFooter>
