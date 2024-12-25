@@ -4,13 +4,9 @@ import FillCoordinateInput from "@/components/fill-coordinate-input";
 import GenericScene2D from "@/components/generic-scene-2d";
 import { Button } from "@/components/ui/button";
 import { subjects } from "@/constants/assignments";
-import {
-  Assignment,
-  AssignmentType,
-  pointsAssignments,
-} from "@/constants/assignments/points2d/points2d";
 import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
 import { useScene2DStore } from "@/store/scene2DStore";
+import { Assignment, AssignmentType } from "@/types/Assignment";
 import { ArrowRight } from "lucide-react";
 import { redirect } from "next/navigation";
 
@@ -27,7 +23,7 @@ export default function Page({
   const [assignmentState, setAssignmentState] = useState<
     "notAnswered" | "correct" | "incorrect"
   >("notAnswered");
-  const { config } = useScene2DStore();
+  const { config, reset } = useScene2DStore();
 
   useLayoutEffect(() => {
     document.body.style.overflow = "hidden";
@@ -37,6 +33,7 @@ export default function Page({
   }, []);
 
   useEffect(() => {
+    reset();
     const assi = subjects
       .find(s => s.slug === subject)
       ?.assignments.find(a => a.id === id);
@@ -60,9 +57,9 @@ export default function Page({
   const handleNext = () => {
     if (!assignment) return;
     const currentOrder = assignment?.order;
-    const nextAssignment = pointsAssignments.find(
-      a => a.order === currentOrder + 1
-    );
+    const nextAssignment = subjects
+      .find(s => s.slug === subject)
+      ?.assignments.find(a => a.order === currentOrder + 1);
     if (nextAssignment) {
       redirect(`/assignment/${subject}/${nextAssignment.id}`);
     } else {

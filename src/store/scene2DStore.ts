@@ -17,19 +17,22 @@ type Scene2DStore = {
   setVectorTip: (id: string, tip: [number, number]) => void;
   getPoint: (id: string) => TPoint | undefined;
   getVector: (id: string) => TVector | undefined;
+  reset: () => void;
+};
+
+const initialState: Scene2DConfig = {
+  pan: false,
+  viewBox: {
+    x: [-10, 10],
+    y: [-7, 7],
+  },
+  grid: {
+    subdivisions: 2,
+  },
 };
 
 export const useScene2DStore = create<Scene2DStore>((set, get) => ({
-  config: {
-    pan: false,
-    viewBox: {
-      x: [-10, 10],
-      y: [-7, 7],
-    },
-    grid: {
-      subdivisions: 2,
-    },
-  },
+  config: initialState,
   setConfig: config => set({ config }),
   setPoints: points => set(state => ({ config: { ...state.config, points } })),
   setVectors: vectors =>
@@ -74,4 +77,5 @@ export const useScene2DStore = create<Scene2DStore>((set, get) => ({
     })),
   getPoint: id => get().config.points?.find(point => point.id === id),
   getVector: id => get().config.vectors?.find(vector => vector.id === id),
+  reset: () => set({ config: initialState }),
 }));

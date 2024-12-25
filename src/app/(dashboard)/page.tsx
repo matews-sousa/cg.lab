@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { subjects } from "@/constants/assignments";
 import { Flame } from "lucide-react";
 import Link from "next/link";
 
@@ -65,52 +66,22 @@ export default function Home() {
         </Card>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 col-span-2 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Pontos 2D</CardTitle>
-            <CardDescription>
-              Aprenda os conceitos básicos de pontos 2D
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Progress value={33} />
-          </CardContent>
-          <CardFooter>
-            <Link href="/subject/points2d">
-              <Button>Iniciar</Button>
-            </Link>
-          </CardFooter>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Vetores 2D</CardTitle>
-            <CardDescription>
-              Aprenda os conceitos básicos de vetores 2D
-            </CardDescription>
-          </CardHeader>
-          <CardContent></CardContent>
-          <CardFooter></CardFooter>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Matrizes</CardTitle>
-            <CardDescription>
-              Aprenda os conceitos básicos de matrizes
-            </CardDescription>
-          </CardHeader>
-          <CardContent></CardContent>
-          <CardFooter></CardFooter>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Pontos 2D</CardTitle>
-            <CardDescription>
-              Aprenda os conceitos básicos de pontos 2D
-            </CardDescription>
-          </CardHeader>
-          <CardContent></CardContent>
-          <CardFooter></CardFooter>
-        </Card>
+        {subjects.map(subject => (
+          <Card key={subject.slug} className="self-start">
+            <CardHeader>
+              <CardTitle>{subject.title}</CardTitle>
+              <CardDescription>{subject.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Progress value={33} />
+            </CardContent>
+            <CardFooter>
+              <Link href={`/subject/${subject.slug}`}>
+                <Button>Iniciar</Button>
+              </Link>
+            </CardFooter>
+          </Card>
+        ))}
       </div>
     </div>
   );
