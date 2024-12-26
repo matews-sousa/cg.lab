@@ -5,7 +5,7 @@ import { vec } from "mafs";
 export const vectorSumAssignment: Assignment = {
   id: "vector-sum",
   title: "Soma de vetores",
-  instructions: "Mova os vetores a e b para que a soma deles seja o vetor c",
+  instructions: "Ajuste os vetores a e b para que a soma deles seja o vetor c",
   order: 3,
   type: AssignmentType.INTERACTIVE,
   setup: () => {
