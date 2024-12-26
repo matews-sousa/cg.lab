@@ -31,7 +31,7 @@ export default function SubjectPage({
           <p>0/{subject?.assignments.length} exercícios</p>
         </CardContent>
       </Card>
-      <div className="grid grid-cols-2 col-span-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 col-span-2 gap-4">
         {subject?.assignments.map(assignment => (
           <Card key={assignment.id}>
             <CardHeader>
