@@ -2,6 +2,7 @@ import { alignPointsInXAxisAssignment } from "./alignPointsInXAxis";
 import { distanceBetweenPointsAssignment } from "./distanceBetweenPoints";
 import { movePointAssignment } from "./movePoint";
 import { perpendicularAssignment } from "./perpendicular";
+import { pointPosition } from "./pointPosition";
 import { whichPositionAssignment } from "./whichPosition";
 
 export const pointsAssignments = [
@@ -10,4 +11,5 @@ export const pointsAssignments = [
   alignPointsInXAxisAssignment,
   whichPositionAssignment,
   distanceBetweenPointsAssignment,
+  pointPosition,
 ];

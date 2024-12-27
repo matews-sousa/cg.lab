@@ -1,9 +1,11 @@
 "use client";
 
 import FillCoordinateInput from "@/components/fill-coordinate-input";
+import FillFormulaWithOptions from "@/components/fill-in-the-blank-with-options";
 import GenericScene2D from "@/components/generic-scene-2d";
 import { Button } from "@/components/ui/button";
 import { subjects } from "@/constants/assignments";
+import { useFillInTheBlankWithOptionsStore } from "@/store/fillInTheBlankWithOptionsStore";
 import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
 import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
@@ -20,6 +22,8 @@ export default function Page({
   const { subject, id } = use(params);
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const { inputs } = useFillInTheBlankStore();
+  const { reset: resetFillInTheBlankWithOptions } =
+    useFillInTheBlankWithOptionsStore();
   const [assignmentState, setAssignmentState] = useState<
     "notAnswered" | "correct" | "incorrect"
   >("notAnswered");
@@ -34,6 +38,7 @@ export default function Page({
 
   useEffect(() => {
     reset();
+    resetFillInTheBlankWithOptions();
     const assi = subjects
       .find(s => s.slug === subject)
       ?.assignments.find(a => a.id === id);
@@ -41,7 +46,7 @@ export default function Page({
       setAssignment(assi);
       assi.setup();
     }
-  }, [id, subject]);
+  }, [id, subject, reset, resetFillInTheBlankWithOptions]);
 
   const handleConfirm = () => {
     if (!assignment) return;
@@ -107,6 +112,11 @@ export default function Page({
                     pointRef={input.pointRef}
                   />
                 ))}
+
+              {assignment?.type ===
+                AssignmentType.FILL_IN_THE_BLANK_WITH_OPTIONS && (
+                <FillFormulaWithOptions />
+              )}
 
               <div className="flex items-center justify-center gap-4 mt-4">
                 <Button onClick={handleConfirm}>Confirmar</Button>
