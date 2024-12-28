@@ -18,42 +18,6 @@ const translationMatrix = [
   ],
 ];
 
-const scaleMatrix = [
-  [
-    { value: "", editable: true },
-    { value: 0, editable: false },
-    { value: 0, editable: false },
-  ],
-  [
-    { value: 0, editable: false },
-    { value: "", editable: true },
-    { value: 0, editable: false },
-  ],
-  [
-    { value: 0, editable: false },
-    { value: 0, editable: false },
-    { value: "", editable: true },
-  ],
-];
-
-const rotationMatrix = [
-  [
-    { value: "cos(θ)", editable: true },
-    { value: "-sin(θ)", editable: true },
-    { value: 0, editable: false },
-  ],
-  [
-    { value: "sin(θ)", editable: true },
-    { value: "cos(θ)", editable: true },
-    { value: 0, editable: false },
-  ],
-  [
-    { value: 0, editable: false },
-    { value: 0, editable: false },
-    { value: 1, editable: false },
-  ],
-];
-
 export default function FillInMatrixInput() {
   return (
     <div className="">
