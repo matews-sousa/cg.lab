@@ -2,8 +2,13 @@ import { TPoint } from "@/types/Scene2DConfig";
 import { LaTeX, MovablePoint, Point, Transform } from "mafs";
 import { useScene2DStore } from "@/store/scene2DStore";
 
-export default function CustomPoint({ point }: { point: TPoint }) {
-  const { movePoint } = useScene2DStore();
+interface Props {
+  point: TPoint;
+  polygonId?: string;
+}
+
+export default function CustomPoint({ point, polygonId }: Props) {
+  const { movePoint, movePolygonPoint } = useScene2DStore();
 
   const constraints = point.constraints?.roundCoordinates
     ? ([x, y]: [number, number]) =>
@@ -11,7 +16,11 @@ export default function CustomPoint({ point }: { point: TPoint }) {
     : undefined;
 
   const handlePointMove = (newPosition: [number, number]) => {
-    movePoint(point.id, newPosition);
+    if (polygonId) {
+      movePolygonPoint(polygonId, point.id, newPosition);
+    } else {
+      movePoint(point.id, newPosition);
+    }
   };
 
   if (!point.movable) {

@@ -1,4 +1,9 @@
-import { Scene2DConfig, TPoint, TVector } from "@/types/Scene2DConfig";
+import {
+  Scene2DConfig,
+  TPoint,
+  TPolygon,
+  TVector,
+} from "@/types/Scene2DConfig";
 import { create } from "zustand";
 
 type Scene2DStore = {
@@ -6,8 +11,14 @@ type Scene2DStore = {
   setConfig: (config: Scene2DConfig) => void;
   setPoints: (points: Scene2DConfig["points"]) => void;
   setVectors: (vectors: Scene2DConfig["vectors"]) => void;
+  setPolygons: (polygons: Scene2DConfig["polygons"]) => void;
   setAnnotations: (annotations: Scene2DConfig["annotations"]) => void;
   movePoint: (id: string, position: [number, number]) => void;
+  movePolygonPoint: (
+    polygonId: string,
+    pointId: string,
+    position: [number, number]
+  ) => void;
   moveVector: (
     id: string,
     tail: [number, number],
@@ -17,6 +28,7 @@ type Scene2DStore = {
   setVectorTip: (id: string, tip: [number, number]) => void;
   getPoint: (id: string) => TPoint | undefined;
   getVector: (id: string) => TVector | undefined;
+  getPolygon: (id: string) => TPolygon | undefined;
   reset: () => void;
 };
 
@@ -37,6 +49,8 @@ export const useScene2DStore = create<Scene2DStore>((set, get) => ({
   setPoints: points => set(state => ({ config: { ...state.config, points } })),
   setVectors: vectors =>
     set(state => ({ config: { ...state.config, vectors } })),
+  setPolygons: polygons =>
+    set(state => ({ config: { ...state.config, polygons } })),
   setAnnotations: annotations =>
     set(state => ({ config: { ...state.config, annotations } })),
   movePoint: (id, position) =>
@@ -48,6 +62,23 @@ export const useScene2DStore = create<Scene2DStore>((set, get) => ({
         ),
       },
     })),
+  movePolygonPoint: (polygonId, pointId, position) => {
+    set(state => ({
+      config: {
+        ...state.config,
+        polygons: state.config.polygons?.map(polygon =>
+          polygon.id === polygonId
+            ? {
+                ...polygon,
+                points: polygon.points.map(point =>
+                  point.id === pointId ? { ...point, position } : point
+                ),
+              }
+            : polygon
+        ),
+      },
+    }));
+  },
   moveVector: (id, tail, tip) =>
     set(state => ({
       config: {
@@ -77,5 +108,6 @@ export const useScene2DStore = create<Scene2DStore>((set, get) => ({
     })),
   getPoint: id => get().config.points?.find(point => point.id === id),
   getVector: id => get().config.vectors?.find(vector => vector.id === id),
+  getPolygon: id => get().config.polygons?.find(polygon => polygon.id === id),
   reset: () => set({ config: initialState }),
 }));

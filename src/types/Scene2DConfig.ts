@@ -20,6 +20,14 @@ export type TVector = {
   label?: string;
 };
 
+export type TPolygon = {
+  id: string;
+  points: TPoint[];
+  color?: string;
+  strokeStyle?: "solid" | "dashed";
+  movable?: boolean;
+};
+
 export type Annotation = {
   type: "LaTeX";
   position: "relative" | "absolute";
@@ -39,5 +47,6 @@ export type Scene2DConfig = {
   };
   points?: TPoint[];
   vectors?: TVector[];
+  polygons?: TPolygon[];
   annotations?: Annotation[];
 };
