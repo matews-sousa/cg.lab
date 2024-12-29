@@ -13,6 +13,8 @@ import { ArrowRight } from "lucide-react";
 import { redirect } from "next/navigation";
 
 import React, { useEffect, useLayoutEffect, use, useState } from "react";
+import FillInMatrixInput from "@/components/fill-in-matrix-input";
+import { useFillBlankMatrixInputStore } from "@/store/fillInBlankMatrixInputStore";
 
 export default function Page({
   params,
@@ -24,10 +26,12 @@ export default function Page({
   const { inputs } = useFillInTheBlankStore();
   const { reset: resetFillInTheBlankWithOptions } =
     useFillInTheBlankWithOptionsStore();
+  const { matrices, reset: resetFillBlankMatrixInput } =
+    useFillBlankMatrixInputStore();
   const [assignmentState, setAssignmentState] = useState<
     "notAnswered" | "correct" | "incorrect"
   >("notAnswered");
-  const { config, reset } = useScene2DStore();
+  const { config, reset: resetScene2D } = useScene2DStore();
 
   useLayoutEffect(() => {
     document.body.style.overflow = "hidden";
@@ -37,8 +41,9 @@ export default function Page({
   }, []);
 
   useEffect(() => {
-    reset();
+    resetScene2D();
     resetFillInTheBlankWithOptions();
+    resetFillBlankMatrixInput();
     const assi = subjects
       .find(s => s.slug === subject)
       ?.assignments.find(a => a.id === id);
@@ -46,7 +51,13 @@ export default function Page({
       setAssignment(assi);
       assi.setup();
     }
-  }, [id, subject, reset, resetFillInTheBlankWithOptions]);
+  }, [
+    id,
+    subject,
+    resetScene2D,
+    resetFillInTheBlankWithOptions,
+    resetFillBlankMatrixInput,
+  ]);
 
   const handleConfirm = () => {
     if (!assignment) return;
@@ -55,6 +66,9 @@ export default function Page({
   };
 
   const handleTryAgain = () => {
+    resetScene2D();
+    resetFillInTheBlankWithOptions();
+    resetFillBlankMatrixInput();
     setAssignmentState("notAnswered");
     assignment?.setup();
   };
@@ -76,7 +90,7 @@ export default function Page({
     <>
       <GenericScene2D config={config} />
 
-      <div className="absolute bottom-4 bg-gray-200 p-4 rounded-3xl -translate-x-1/2 left-1/2 w-3/4 md:w-1/3 border-b-4 border-b-gray-400">
+      <div className="absolute bottom-4 bg-gray-200 p-4 rounded-3xl left-2 w-3/4 md:w-1/3 border-b-4 border-b-gray-400">
         <div className="text-center">
           {assignmentState === "correct" && (
             <>
@@ -117,6 +131,11 @@ export default function Page({
                 AssignmentType.FILL_IN_THE_BLANK_WITH_OPTIONS && (
                 <FillFormulaWithOptions />
               )}
+
+              {assignment?.type === AssignmentType.FILL_IN_THE_BLANK_MATRIX &&
+                matrices.map(matrix => (
+                  <FillInMatrixInput key={matrix.id} matrix={matrix} />
+                ))}
 
               <div className="flex items-center justify-center gap-4 mt-4">
                 <Button onClick={handleConfirm}>Confirmar</Button>

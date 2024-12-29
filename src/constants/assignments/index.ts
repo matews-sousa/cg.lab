@@ -1,3 +1,4 @@
+import { matricesAssignments } from "./matrices";
 import { pointsAssignments } from "./points2d";
 import { vectorAssignments } from "./vectors2d";
 
@@ -13,6 +14,12 @@ const subjects = [
     description: "Aprenda os conceitos básicos de vetores num plano 2D.",
     slug: "vectors2d",
     assignments: vectorAssignments,
+  },
+  {
+    title: "Matrizes",
+    description: "Aprenda os conceitos básicos de matrizes.",
+    slug: "matrices",
+    assignments: matricesAssignments,
   },
 ];
 
