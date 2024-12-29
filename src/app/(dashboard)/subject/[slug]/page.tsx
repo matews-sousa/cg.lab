@@ -9,6 +9,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { subjects } from "@/constants/assignments";
+import { AssignmentType } from "@/types/Assignment";
+import {
+  BadgeCheck,
+  BringToFront,
+  Grab,
+  LayoutGrid,
+  Puzzle,
+  Space,
+  Variable,
+} from "lucide-react";
 import Link from "next/link";
 import React, { use } from "react";
 
@@ -19,6 +29,15 @@ export default function SubjectPage({
 }) {
   const { slug } = use(params);
   const subject = subjects.find(s => s.slug === slug);
+
+  const assignmentTypeToIcon: Record<AssignmentType, React.ReactElement> = {
+    INTERACTIVE: <Grab />,
+    FILL_IN_THE_BLANK_COORDINATES: <Puzzle />,
+    FILL_IN_THE_BLANK_MATRIX: <LayoutGrid />,
+    FILL_IN_THE_BLANK_WITH_OPTIONS: <Space />,
+    PARAMETERIZED: <Variable />,
+    REORDER: <BringToFront />,
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 md:gap-16">
@@ -33,13 +52,23 @@ export default function SubjectPage({
       </Card>
       <div className="grid grid-cols-1 md:grid-cols-2 col-span-2 gap-4">
         {subject?.assignments.map(assignment => (
-          <Card key={assignment.id}>
+          <Card key={assignment.id} className="flex flex-col justify-between">
             <CardHeader>
-              <CardTitle>{assignment.title}</CardTitle>
+              <CardTitle className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  {assignmentTypeToIcon[assignment.type]}
+                  {assignment.title}
+                </div>
+                <div className="flex items-center gap-1 p-1 bg-green-200 border border-green-300 rounded-md shadow-sm">
+                  <BadgeCheck size={14} />
+                  <p className="text-xs">Completo</p>
+                </div>
+              </CardTitle>
+              <CardDescription>{assignment.instructions}</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href={`/assignment/${subject.slug}/${assignment.id}`}>
-                <Button>Resolver</Button>
+                <Button className="w-full">Resolver</Button>
               </Link>
             </CardContent>
           </Card>
