@@ -68,6 +68,7 @@ export default function FillInMatrixInput({ matrix }: Props) {
                 <input
                   key={colIndex}
                   type="text"
+                  autoComplete="off"
                   className="w-12 h-12 text-center bg-transparent border-b border-gray-500 focus:outline-none"
                   value={cell.value}
                   onChange={e =>

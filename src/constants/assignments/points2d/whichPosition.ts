@@ -27,7 +27,7 @@ export const whichPositionAssignment: Assignment = {
       {
         dimention: "2D",
         pointRef: "A",
-        coordinatesValue: { x: -0, y: 0 },
+        coordinatesValue: { x: "", y: "" },
       },
     ]);
   },

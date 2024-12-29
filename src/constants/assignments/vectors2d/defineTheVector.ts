@@ -39,7 +39,7 @@ export const defineTheVectorAssignment: Assignment = {
     useFillInTheBlankStore.getState().setInputs([
       {
         dimention: "2D",
-        coordinatesValue: { x: 0, y: 0, z: 0 },
+        coordinatesValue: { x: "", y: "", z: "" },
         pointRef: "v",
       },
     ]);

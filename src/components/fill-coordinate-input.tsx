@@ -45,6 +45,7 @@ export default function FillCoordinateInput({
         <input
           className="w-8 border-b border-b-black bg-transparent text-center text-xl"
           autoFocus
+          autoComplete="off"
           type="text"
           value={coordsInput?.coordinatesValue?.x}
           name="x"
@@ -54,6 +55,7 @@ export default function FillCoordinateInput({
         <input
           className="w-8 border-b border-b-black bg-transparent text-center text-xl"
           type="text"
+          autoComplete="off"
           value={coordsInput?.coordinatesValue?.y}
           name="y"
           onChange={handleChange}
@@ -64,6 +66,7 @@ export default function FillCoordinateInput({
             <input
               className="w-8 border-b border-b-black bg-transparent text-center text-xl"
               type="text"
+              autoComplete="off"
               value={coordsInput?.coordinatesValue?.z}
               name="z"
               onChange={handleChange}
