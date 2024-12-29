@@ -1,6 +1,7 @@
 export type TPoint = {
   id: string;
   position: [number, number];
+  translation?: [number, number];
   movable: boolean;
   constraints?: {
     roundCoordinates?: boolean;
@@ -26,6 +27,7 @@ export type TPolygon = {
   color?: string;
   strokeStyle?: "solid" | "dashed";
   movable?: boolean;
+  scale?: [number, number];
 };
 
 export type Annotation = {

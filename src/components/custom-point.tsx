@@ -26,11 +26,37 @@ export default function CustomPoint({ point, polygonId }: Props) {
   if (!point.movable) {
     return (
       <>
-        <Point
+        <Transform translate={point.translation}>
+          <Point
+            key={point.id}
+            x={point.position[0]}
+            y={point.position[1]}
+            color={point.color}
+          />
+          {point.label && (
+            <Transform translate={[0, -0.7]}>
+              <LaTeX
+                at={point.position}
+                tex={point.label
+                  ?.replace("${x}", point.position[0].toString())
+                  .replace("${y}", point.position[1].toString())}
+              />
+            </Transform>
+          )}
+        </Transform>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Transform translate={point.translation}>
+        <MovablePoint
           key={point.id}
-          x={point.position[0]}
-          y={point.position[1]}
+          point={point.position}
           color={point.color}
+          constrain={constraints}
+          onMove={newPosition => handlePointMove(newPosition)}
         />
         {point.label && (
           <Transform translate={[0, -0.7]}>
@@ -42,29 +68,7 @@ export default function CustomPoint({ point, polygonId }: Props) {
             />
           </Transform>
         )}
-      </>
-    );
-  }
-
-  return (
-    <>
-      <MovablePoint
-        key={point.id}
-        point={point.position}
-        color={point.color}
-        constrain={constraints}
-        onMove={newPosition => handlePointMove(newPosition)}
-      />
-      {point.label && (
-        <Transform translate={[0, -0.7]}>
-          <LaTeX
-            at={point.position}
-            tex={point.label
-              ?.replace("${x}", point.position[0].toString())
-              .replace("${y}", point.position[1].toString())}
-          />
-        </Transform>
-      )}
+      </Transform>
     </>
   );
 }

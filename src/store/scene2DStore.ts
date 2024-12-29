@@ -10,8 +10,10 @@ type Scene2DStore = {
   config: Scene2DConfig;
   setConfig: (config: Scene2DConfig) => void;
   setPoints: (points: Scene2DConfig["points"]) => void;
+  setPointTranslation: (id: string, translation: [number, number]) => void;
   setVectors: (vectors: Scene2DConfig["vectors"]) => void;
   setPolygons: (polygons: Scene2DConfig["polygons"]) => void;
+  setPolygonScale: (id: string, scale: [number, number]) => void;
   setAnnotations: (annotations: Scene2DConfig["annotations"]) => void;
   movePoint: (id: string, position: [number, number]) => void;
   movePolygonPoint: (
@@ -47,10 +49,28 @@ export const useScene2DStore = create<Scene2DStore>((set, get) => ({
   config: initialState,
   setConfig: config => set({ config }),
   setPoints: points => set(state => ({ config: { ...state.config, points } })),
+  setPointTranslation: (id, translation) =>
+    set(state => ({
+      config: {
+        ...state.config,
+        points: state.config.points?.map(point =>
+          point.id === id ? { ...point, translation } : point
+        ),
+      },
+    })),
   setVectors: vectors =>
     set(state => ({ config: { ...state.config, vectors } })),
   setPolygons: polygons =>
     set(state => ({ config: { ...state.config, polygons } })),
+  setPolygonScale: (id, scale) =>
+    set(state => ({
+      config: {
+        ...state.config,
+        polygons: state.config.polygons?.map(polygon =>
+          polygon.id === id ? { ...polygon, scale } : polygon
+        ),
+      },
+    })),
   setAnnotations: annotations =>
     set(state => ({ config: { ...state.config, annotations } })),
   movePoint: (id, position) =>

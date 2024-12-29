@@ -40,15 +40,17 @@ export default function CustomPolygon({ polygon }: Props) {
     <>
       {/* Transformations */}
       <Transform translate={t.point}>
-        <Polygon
-          key={polygon.id}
-          points={polygon.points.map(point => point.position)}
-          color={polygon.color}
-          strokeStyle={polygon.strokeStyle}
-        />
-        {polygon.points.map(point => (
-          <CustomPoint key={point.id} point={point} polygonId={polygon.id} />
-        ))}
+        <Transform scale={polygon.scale}>
+          <Polygon
+            key={polygon.id}
+            points={polygon.points.map(point => point.position)}
+            color={polygon.color}
+            strokeStyle={polygon.strokeStyle}
+          />
+          {polygon.points.map(point => (
+            <CustomPoint key={point.id} point={point} polygonId={polygon.id} />
+          ))}
+        </Transform>
         {/* Render vertices as draggable points */}
       </Transform>
       {/* Render controls */}

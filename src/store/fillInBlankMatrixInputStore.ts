@@ -20,6 +20,7 @@ export interface Matrix {
   dimention: "2D" | "3D";
   matrixValue: MatrixValue[][];
   pointRefId?: string;
+  polygonRefId?: string;
 }
 
 interface FillBlankMatrixInputStore {
@@ -30,7 +31,7 @@ interface FillBlankMatrixInputStore {
     id: string,
     row: number,
     col: number,
-    value: number
+    value: number | string
   ) => void;
   getMatrixById: (id: string) => Matrix | undefined;
   reset: () => void;
@@ -55,7 +56,7 @@ export const useFillBlankMatrixInputStore = create<FillBlankMatrixInputStore>(
       id: string,
       row: number,
       col: number,
-      value: number
+      value: number | string
     ) => {
       set(state => {
         const matrix = state.matrices.find(matrix => matrix.id === id);
