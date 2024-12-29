@@ -5,7 +5,11 @@ type Dimention = "2D" | "3D";
 type CoordinateInput = {
   dimention: Dimention;
   pointRef: string;
-  coordinatesValue: { x: number; y: number; z?: number };
+  coordinatesValue: {
+    x: number | string;
+    y: number | string;
+    z?: number | string;
+  };
 };
 
 interface FillInTheBlankStore {
@@ -13,7 +17,7 @@ interface FillInTheBlankStore {
   setInputs: (inputs: CoordinateInput[]) => void;
   setInputValue: (
     pointRef: string,
-    value: { x: number; y: number; z?: number }
+    value: { x: number | string; y: number | string; z?: number | string }
   ) => void;
   getInputByPointRef: (pointRef: string) => CoordinateInput | undefined;
   reset: () => void;
