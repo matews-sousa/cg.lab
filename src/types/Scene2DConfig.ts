@@ -28,6 +28,7 @@ export type TPolygon = {
   strokeStyle?: "solid" | "dashed";
   movable?: boolean;
   scale?: [number, number];
+  rotation?: number;
 };
 
 export type Annotation = {

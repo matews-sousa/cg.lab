@@ -36,20 +36,32 @@ export default function CustomPolygon({ polygon }: Props) {
     );
   }
 
+  const degreeToRadian = (degree: number | undefined) => {
+    if (degree === undefined) return 0;
+    return (degree * Math.PI) / 180;
+  };
+
   return (
     <>
       {/* Transformations */}
       <Transform translate={t.point}>
-        <Transform scale={polygon.scale}>
-          <Polygon
-            key={polygon.id}
-            points={polygon.points.map(point => point.position)}
-            color={polygon.color}
-            strokeStyle={polygon.strokeStyle}
-          />
-          {polygon.points.map(point => (
-            <CustomPoint key={point.id} point={point} polygonId={polygon.id} />
-          ))}
+        <Transform rotate={degreeToRadian(polygon.rotation)}>
+          <Transform scale={polygon.scale}>
+            {/* Render polygon */}
+            <Polygon
+              key={polygon.id}
+              points={polygon.points.map(point => point.position)}
+              color={polygon.color}
+              strokeStyle={polygon.strokeStyle}
+            />
+            {polygon.points.map(point => (
+              <CustomPoint
+                key={point.id}
+                point={point}
+                polygonId={polygon.id}
+              />
+            ))}
+          </Transform>
         </Transform>
         {/* Render vertices as draggable points */}
       </Transform>

@@ -9,7 +9,7 @@ export enum MatrixType {
   ROTATION_Z = "rotation_z",
 }
 
-interface MatrixValue {
+export interface MatrixValue {
   value: number | string;
   editable: boolean;
 }
