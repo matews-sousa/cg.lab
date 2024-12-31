@@ -4,7 +4,7 @@ import FillCoordinateInput from "@/components/fill-coordinate-input";
 import FillFormulaWithOptions from "@/components/fill-in-the-blank-with-options";
 import GenericScene2D from "@/components/generic-scene-2d";
 import { Button } from "@/components/ui/button";
-import { subjects } from "@/constants/assignments";
+import { Subject, subjects } from "@/constants/assignments";
 import { useFillInTheBlankWithOptionsStore } from "@/store/fillInTheBlankWithOptionsStore";
 import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
 import { useScene2DStore } from "@/store/scene2DStore";
@@ -15,6 +15,8 @@ import { redirect } from "next/navigation";
 import React, { useEffect, useLayoutEffect, use, useState } from "react";
 import FillInMatrixInput from "@/components/fill-in-matrix-input";
 import { useFillBlankMatrixInputStore } from "@/store/fillInBlankMatrixInputStore";
+import Scene3D from "@/components/scene-3d";
+import { useScene3DStore } from "@/store/scene3DStore";
 
 export default function Page({
   params,
@@ -22,6 +24,7 @@ export default function Page({
   params: Promise<{ subject: string; id: string }>;
 }) {
   const { subject, id } = use(params);
+  const [subjectData, setSubjectData] = useState<Subject | null>(null);
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const { inputs } = useFillInTheBlankStore();
   const { reset: resetFillInTheBlankWithOptions } =
@@ -32,6 +35,7 @@ export default function Page({
     "notAnswered" | "correct" | "incorrect"
   >("notAnswered");
   const { config, reset: resetScene2D } = useScene2DStore();
+  const { reset: resetScene3D } = useScene3DStore();
 
   useLayoutEffect(() => {
     document.body.style.overflow = "hidden";
@@ -42,12 +46,15 @@ export default function Page({
 
   useEffect(() => {
     resetScene2D();
+    resetScene3D();
     resetFillInTheBlankWithOptions();
     resetFillBlankMatrixInput();
-    const assi = subjects
-      .find(s => s.slug === subject)
-      ?.assignments.find(a => a.id === id);
+
+    const subj = subjects.find(s => s.slug === subject);
+    if (!subj) return;
+    const assi = subj?.assignments.find(a => a.id === id);
     if (assi) {
+      setSubjectData(subj);
       setAssignment(assi);
       assi.setup();
     }
@@ -55,6 +62,7 @@ export default function Page({
     id,
     subject,
     resetScene2D,
+    resetScene3D,
     resetFillInTheBlankWithOptions,
     resetFillBlankMatrixInput,
   ]);
@@ -88,7 +96,11 @@ export default function Page({
 
   return (
     <>
-      <GenericScene2D config={config} />
+      {subjectData?.type === "2D" ? (
+        <GenericScene2D config={config} />
+      ) : (
+        <Scene3D />
+      )}
 
       <div className="absolute bottom-4 bg-gray-200 p-4 rounded-3xl left-2 w-3/4 md:w-1/3 border-b-4 border-b-gray-400">
         <div className="text-center">

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { subjects } from "@/constants/assignments";
-import { Flame } from "lucide-react";
+import { Box, Flame, Square } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
@@ -69,7 +69,10 @@ export default function Home() {
         {subjects.map(subject => (
           <Card key={subject.slug} className="self-start">
             <CardHeader>
-              <CardTitle>{subject.title}</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                {subject.type === "2D" ? <Square /> : <Box />}
+                {subject.title}
+              </CardTitle>
               <CardDescription>{subject.description}</CardDescription>
             </CardHeader>
             <CardContent>

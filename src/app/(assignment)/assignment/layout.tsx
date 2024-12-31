@@ -16,7 +16,7 @@ export default function AssingmentLayout({
     <>
       <Link href={`/subject/${slug}`}>
         <Button
-          className="absolute top-4 left-4 rounded-full w-14 h-14"
+          className="absolute top-4 left-4 rounded-full w-14 h-14 z-50"
           variant="destructive"
         >
           <ArrowLeft className="w-12 h-12" />

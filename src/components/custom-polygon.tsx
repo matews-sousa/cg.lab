@@ -1,6 +1,7 @@
 import { Polygon, Transform, useMovablePoint } from "mafs";
 import CustomPoint from "./custom-point";
 import { TPolygon } from "@/types/Scene2DConfig";
+import { degreesToRadians } from "@/lib/utils";
 
 interface Props {
   polygon: TPolygon;
@@ -36,16 +37,11 @@ export default function CustomPolygon({ polygon }: Props) {
     );
   }
 
-  const degreeToRadian = (degree: number | undefined) => {
-    if (degree === undefined) return 0;
-    return (degree * Math.PI) / 180;
-  };
-
   return (
     <>
       {/* Transformations */}
       <Transform translate={t.point}>
-        <Transform rotate={degreeToRadian(polygon.rotation)}>
+        <Transform rotate={degreesToRadians(polygon.rotation ?? 0)}>
           <Transform scale={polygon.scale}>
             {/* Render polygon */}
             <Polygon
