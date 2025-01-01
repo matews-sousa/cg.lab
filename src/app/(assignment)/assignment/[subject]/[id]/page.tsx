@@ -75,6 +75,7 @@ export default function Page({
 
   const handleTryAgain = () => {
     resetScene2D();
+    resetScene3D();
     resetFillInTheBlankWithOptions();
     resetFillBlankMatrixInput();
     setAssignmentState("notAnswered");

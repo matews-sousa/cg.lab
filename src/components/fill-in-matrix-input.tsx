@@ -6,6 +6,8 @@ import {
   useFillBlankMatrixInputStore,
 } from "@/store/fillInBlankMatrixInputStore";
 import { useScene2DStore } from "@/store/scene2DStore";
+import { useScene3DStore } from "@/store/scene3DStore";
+import { Vector3 } from "three";
 
 interface Props {
   matrix: Matrix;
@@ -20,14 +22,23 @@ export default function FillInMatrixInput({ matrix }: Props) {
     setPolygonScale,
     setPolygonRotation,
   } = useScene2DStore();
+  const { getCube, updateCube } = useScene3DStore();
 
   const handleInputChange = (
     row: number,
     col: number,
     value: number | string
   ) => {
-    // Allow empty input or just a single dash ("-")
-    if (value === "" || value === "-") {
+    // Do not allow empty strings or invalid numbers
+    if (
+      value === "" ||
+      value === "-" ||
+      value === "." ||
+      value === "-." ||
+      value === "-0." ||
+      value === "-0" ||
+      value === "0."
+    ) {
       changeMatrixValue(matrix.id, row, col, value);
       return;
     }
@@ -81,6 +92,77 @@ export default function FillInMatrixInput({ matrix }: Props) {
         setPolygonRotation(matrix.polygonRefId, rotation[0]);
       }
     }
+
+    if (matrix.objectRefId) {
+      // Apply transformation to object
+      const cube = getCube(matrix.objectRefId);
+      if (cube && matrix.type === MatrixType.TRANSLATION) {
+        const translation = new Vector3(
+          Number(matrix.matrixValue[0][3].value),
+          Number(matrix.matrixValue[1][3].value),
+          Number(matrix.matrixValue[2][3].value)
+        );
+        if (translation.toArray().some(isNaN)) return; // Do nothing if any value is NaN
+        updateCube(cube.id, { ...cube, position: translation });
+      }
+      if (cube && matrix.type === MatrixType.SCALING) {
+        const scale = new Vector3(
+          Number(matrix.matrixValue[0][0].value),
+          Number(matrix.matrixValue[1][1].value),
+          Number(matrix.matrixValue[2][2].value)
+        );
+        if (scale.toArray().some(isNaN)) return; // Do nothing if any value is NaN
+        updateCube(cube.id, { ...cube, scale });
+      }
+      if (cube && matrix.type === MatrixType.ROTATION_X) {
+        const value22 = Number(matrix.matrixValue[1][1].value);
+        const value23 = Number(matrix.matrixValue[1][2].value);
+        const value32 = Number(matrix.matrixValue[2][1].value);
+        const value33 = Number(matrix.matrixValue[2][2].value);
+        const rotation = new Vector3(
+          Number(matrix.matrixValue[1][1].value),
+          0,
+          0
+        );
+        const valuesAreValid = [value22, value23, value32, value33].every(
+          value => !isNaN(value) && value === value22
+        ); // Check if all values are the same and not NaN
+        if (!valuesAreValid) return; // Do nothing if any value is NaN
+        updateCube(cube.id, { ...cube, rotation });
+      }
+      if (cube && matrix.type === MatrixType.ROTATION_Y) {
+        const value00 = Number(matrix.matrixValue[0][0].value);
+        const value02 = Number(matrix.matrixValue[0][2].value);
+        const value20 = Number(matrix.matrixValue[2][0].value);
+        const value22 = Number(matrix.matrixValue[2][2].value);
+        const rotation = new Vector3(
+          0,
+          Number(matrix.matrixValue[0][2].value),
+          0
+        );
+        const valuesAreValid = [value00, value02, value20, value22].every(
+          value => !isNaN(value) && value === value22
+        ); // Check if all values are the same and not NaN
+        if (!valuesAreValid) return; // Do nothing if any value is NaN
+        updateCube(cube.id, { ...cube, rotation });
+      }
+      if (cube && matrix.type === MatrixType.ROTATION_Z) {
+        const value11 = Number(matrix.matrixValue[0][0].value);
+        const value12 = Number(matrix.matrixValue[0][1].value);
+        const value21 = Number(matrix.matrixValue[1][0].value);
+        const value22 = Number(matrix.matrixValue[1][1].value);
+        const rotation = new Vector3(
+          0,
+          0,
+          Number(matrix.matrixValue[1][0].value)
+        );
+        const valuesAreValid = [value11, value12, value21, value22].every(
+          value => !isNaN(value) && value === value11
+        ); // Check if all values are the same and not NaN
+        if (!valuesAreValid) return; // Do nothing if any value is NaN
+        updateCube(cube.id, { ...cube, rotation });
+      }
+    }
   }, [
     matrix,
     setPolygonScale,
@@ -88,6 +170,8 @@ export default function FillInMatrixInput({ matrix }: Props) {
     getPolygon,
     setPointTranslation,
     setPolygonRotation,
+    getCube,
+    updateCube,
   ]);
 
   const trigMapping: Partial<Record<MatrixType, Record<string, string>>> = {

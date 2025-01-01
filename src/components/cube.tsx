@@ -1,25 +1,16 @@
 import { degreesToRadians } from "@/lib/utils";
+import { TCube } from "@/store/scene3DStore";
+import { Text } from "@react-three/drei";
 import React, { useEffect, useRef } from "react";
-import { Euler, Matrix4, Mesh, Vector3 } from "three";
+import { Euler, Matrix4, Mesh } from "three";
 
 interface Props {
-  id: string;
-  position?: Vector3;
-  size?: Vector3;
-  rotation?: Vector3;
-  scale?: Vector3;
-  color?: string;
+  cube: TCube;
 }
 
-export default function Cube({
-  id,
-  position = new Vector3(0, 0, 0),
-  size = new Vector3(1, 1, 1),
-  rotation = new Vector3(0, 0, 0),
-  scale = new Vector3(1, 1, 1),
-  color = "gray",
-}: Props) {
+export default function Cube({ cube }: Props) {
   const cubeRef = useRef<Mesh>(null);
+  const { id, position, rotation, scale, size, color } = cube;
 
   useEffect(() => {
     if (!cubeRef.current) return;
@@ -53,6 +44,9 @@ export default function Cube({
       <axesHelper args={[2]} />
       <boxGeometry args={[size.x, size.y, size.z]} />
       <meshStandardMaterial color={color} />
+      <Text color="white" fontSize={0.5} position={[0, size.y + 0.1, 0.3]}>
+        {cube.label}
+      </Text>
     </mesh>
   );
 }

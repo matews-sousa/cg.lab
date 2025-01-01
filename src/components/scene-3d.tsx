@@ -42,15 +42,7 @@ function Scene() {
 
       {/* Example Mesh */}
       {cubes.map(cube => (
-        <Cube
-          key={cube.id}
-          id={cube.id}
-          position={cube.position}
-          size={cube.size}
-          rotation={cube.rotation}
-          scale={cube.scale}
-          color={cube.color}
-        />
+        <Cube key={cube.id} cube={cube} />
       ))}
 
       {/* Lighting */}

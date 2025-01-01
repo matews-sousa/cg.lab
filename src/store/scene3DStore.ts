@@ -3,6 +3,7 @@ import { create } from "zustand";
 
 export type TCube = {
   id: string;
+  label?: string;
   position: Vector3;
   size: Vector3;
   color: string;

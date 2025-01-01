@@ -6,12 +6,12 @@ import { TCube, useScene3DStore } from "@/store/scene3DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
 import { Vector3 } from "three";
 
-export const translationMatrix3dAssignment: Assignment = {
-  id: "translation-matrix-3d",
-  title: "Matriz de Translação 3D",
+export const scaleMatrix3dAssignment: Assignment = {
+  id: "scale-matrix-3d",
+  title: "Matriz de Escala 3D",
   instructions:
-    "Altere a matriz de translação no cubo A para que fique igual ao cubo B.",
-  order: 1,
+    "Altere a matriz de escala no cubo A para que fique com o dobro do tamanho.",
+  order: 2,
   type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
   setup() {
     const { addCube } = useScene3DStore.getState();
@@ -19,47 +19,37 @@ export const translationMatrix3dAssignment: Assignment = {
     const cube: TCube = {
       id: "cube-1",
       label: "A",
-      position: new Vector3(0, 0, 0),
+      position: new Vector3(0, 0.5, 0),
       size: new Vector3(1, 1, 1),
       scale: new Vector3(1, 1, 1),
       rotation: new Vector3(0, 0, 0),
       color: "red",
     };
     addCube(cube);
-    const objectiveCube: TCube = {
-      id: "cube-2",
-      label: "B",
-      position: new Vector3(2, 0.5, 2),
-      size: new Vector3(1, 1, 1),
-      scale: new Vector3(1, 1, 1),
-      rotation: new Vector3(0, 0, 0),
-      color: "green",
-    };
-    addCube(objectiveCube);
 
     addMatrix({
-      id: "translation-matrix-3d",
+      id: "scaling-matrix-3d",
       dimention: "3D",
-      type: MatrixType.TRANSLATION,
+      type: MatrixType.SCALING,
       objectRefId: cube.id,
       matrixValue: [
         [
-          { value: 1, editable: false },
+          { value: 1, editable: true },
           { value: 0, editable: false },
           { value: 0, editable: false },
-          { value: 0, editable: true },
+          { value: 0, editable: false },
         ],
         [
           { value: 0, editable: false },
-          { value: 1, editable: false },
+          { value: 1, editable: true },
           { value: 0, editable: false },
-          { value: 0, editable: true },
+          { value: 0, editable: false },
         ],
         [
           { value: 0, editable: false },
           { value: 0, editable: false },
-          { value: 1, editable: false },
-          { value: 0, editable: true },
+          { value: 1, editable: true },
+          { value: 0, editable: false },
         ],
         [
           { value: 0, editable: false },
@@ -72,13 +62,16 @@ export const translationMatrix3dAssignment: Assignment = {
   },
   validate() {
     const { matrices } = useFillBlankMatrixInputStore.getState();
-    const matrix = matrices.find(m => m.id === "translation-matrix-3d");
+    const matrix = matrices.find(m => m.id === "scaling-matrix-3d");
     if (!matrix) return false;
-    const translation = new Vector3(
-      Number(matrix.matrixValue[0][3].value),
-      Number(matrix.matrixValue[1][3].value),
-      Number(matrix.matrixValue[2][3].value)
+    const cube = useScene3DStore.getState().cubes.find(c => c.id === "cube-1");
+    if (!cube) return false;
+    const scale = new Vector3(
+      Number(matrix.matrixValue[0][0].value),
+      Number(matrix.matrixValue[1][1].value),
+      Number(matrix.matrixValue[2][2].value)
     );
-    return translation.equals(new Vector3(2, 0.5, 2));
+    if (scale.toArray().some(isNaN)) return false;
+    return cube.scale.equals(new Vector3(2, 2, 2));
   },
 };
