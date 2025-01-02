@@ -1,3 +1,4 @@
+import { completeRotationMatrix3dYAssignment } from "./completeRotationMatrix3dY";
 import { rotationMatrixX3dAssignment } from "./rotationMatrixX";
 import { rotationMatrixY3dAssignment } from "./rotationMatrixY";
 import { rotationMatrixZ3dAssignment } from "./rotationMatrixZ";
@@ -10,4 +11,5 @@ export const matrices3dAssignments = [
   rotationMatrixX3dAssignment,
   rotationMatrixY3dAssignment,
   rotationMatrixZ3dAssignment,
+  completeRotationMatrix3dYAssignment,
 ];

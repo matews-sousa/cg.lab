@@ -17,6 +17,8 @@ import FillInMatrixInput from "@/components/fill-in-matrix-input";
 import { useFillBlankMatrixInputStore } from "@/store/fillInBlankMatrixInputStore";
 import Scene3D from "@/components/scene-3d";
 import { useScene3DStore } from "@/store/scene3DStore";
+import FillInMatrixWithOptions from "@/components/fill-in-matrix-with-options";
+import { useFillInMatrixWithOptionsStore } from "@/store/fillInMatrixWithOptions";
 
 export default function Page({
   params,
@@ -31,6 +33,8 @@ export default function Page({
     useFillInTheBlankWithOptionsStore();
   const { matrices, reset: resetFillBlankMatrixInput } =
     useFillBlankMatrixInputStore();
+  const { reset: resetFillInMatrixWithOptions } =
+    useFillInMatrixWithOptionsStore();
   const [assignmentState, setAssignmentState] = useState<
     "notAnswered" | "correct" | "incorrect"
   >("notAnswered");
@@ -49,6 +53,7 @@ export default function Page({
     resetScene3D();
     resetFillInTheBlankWithOptions();
     resetFillBlankMatrixInput();
+    resetFillInMatrixWithOptions();
 
     const subj = subjects.find(s => s.slug === subject);
     if (!subj) return;
@@ -65,6 +70,7 @@ export default function Page({
     resetScene3D,
     resetFillInTheBlankWithOptions,
     resetFillBlankMatrixInput,
+    resetFillInMatrixWithOptions,
   ]);
 
   const handleConfirm = () => {
@@ -78,6 +84,7 @@ export default function Page({
     resetScene3D();
     resetFillInTheBlankWithOptions();
     resetFillBlankMatrixInput();
+    resetFillInMatrixWithOptions();
     setAssignmentState("notAnswered");
     assignment?.setup();
   };
@@ -149,6 +156,11 @@ export default function Page({
                 matrices.map(matrix => (
                   <FillInMatrixInput key={matrix.id} matrix={matrix} />
                 ))}
+
+              {assignment?.type ===
+                AssignmentType.FILL_IN_THE_BLANK_MATRIX_WITH_OPTIONS && (
+                <FillInMatrixWithOptions />
+              )}
 
               <div className="flex items-center justify-center gap-4 mt-4">
                 <Button onClick={handleConfirm}>Confirmar</Button>

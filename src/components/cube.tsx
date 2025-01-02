@@ -10,7 +10,17 @@ interface Props {
 
 export default function Cube({ cube }: Props) {
   const cubeRef = useRef<Mesh>(null);
-  const { id, position, rotation, scale, size, color } = cube;
+  const {
+    id,
+    position,
+    rotation,
+    scale,
+    size,
+    color,
+    customXRotationMatrix,
+    customYRotationMatrix,
+    customZRotationMatrix,
+  } = cube;
 
   useEffect(() => {
     if (!cubeRef.current) return;
@@ -20,6 +30,7 @@ export default function Cube({ cube }: Props) {
       position.y,
       position.z
     );
+
     const rotationMatrix = new Matrix4().makeRotationFromEuler(
       new Euler(
         degreesToRadians(rotation.x),
@@ -31,13 +42,30 @@ export default function Cube({ cube }: Props) {
 
     const modelMatrix = new Matrix4().identity();
     modelMatrix.multiply(translationMatrix);
-    modelMatrix.multiply(rotationMatrix);
+
+    if (customXRotationMatrix) {
+      modelMatrix.multiply(customXRotationMatrix);
+    } else if (customYRotationMatrix) {
+      modelMatrix.multiply(customYRotationMatrix);
+    } else if (customZRotationMatrix) {
+      modelMatrix.multiply(customZRotationMatrix);
+    } else {
+      modelMatrix.multiply(rotationMatrix);
+    }
+
     modelMatrix.multiply(scaleMatrix);
 
     // Apply the resulting matrix to the mesh
     cubeRef.current.matrixAutoUpdate = false; // Disable Three.js auto-updates
     cubeRef.current.matrix.copy(modelMatrix); // Apply the custom model matrix
-  }, [position, rotation, scale]);
+  }, [
+    position,
+    rotation,
+    scale,
+    customXRotationMatrix,
+    customYRotationMatrix,
+    customZRotationMatrix,
+  ]);
 
   return (
     <mesh ref={cubeRef} userData={{ id }}>
