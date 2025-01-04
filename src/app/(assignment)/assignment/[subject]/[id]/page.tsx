@@ -19,6 +19,7 @@ import Scene3D from "@/components/scene-3d";
 import { useScene3DStore } from "@/store/scene3DStore";
 import FillInMatrixWithOptions from "@/components/fill-in-matrix-with-options";
 import { useFillInMatrixWithOptionsStore } from "@/store/fillInMatrixWithOptions";
+import ObjectivePanel from "@/components/objective-panel";
 
 export default function Page({
   params,
@@ -110,7 +111,9 @@ export default function Page({
         <Scene3D />
       )}
 
-      <div className="absolute bottom-4 bg-gray-200 p-4 rounded-3xl left-2 w-3/4 md:w-1/3 border-b-4 border-b-gray-400">
+      <ObjectivePanel />
+
+      <div className="absolute bottom-4 bg-gray-200 p-4 rounded-md left-2 w-3/4 md:w-[40%] border-b-4 border-b-gray-400">
         <div className="text-center">
           {assignmentState === "correct" && (
             <>

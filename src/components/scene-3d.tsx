@@ -6,6 +6,7 @@ import {
   GizmoHelper,
   GizmoViewport,
   OrbitControls,
+  Text,
 } from "@react-three/drei";
 import Cube from "./cube";
 import { useScene3DStore } from "@/store/scene3DStore";
@@ -34,7 +35,16 @@ function Scene() {
         rotation={[0, 0, Math.PI / 2]}
       />
 
-      {/* Axes */}
+      <Text position={[8.5, 0, 0]} color="white" fontSize={1}>
+        X+
+      </Text>
+      <Text position={[0, 8.5, 0]} color="white" fontSize={1}>
+        Y+
+      </Text>
+      <Text position={[0, 0, 8.5]} color="white" fontSize={1}>
+        Z+
+      </Text>
+
       <axesHelper args={[8]} />
 
       <PerspectiveCamera makeDefault position={[10, 10, 10]} />

@@ -24,6 +24,16 @@ export const completeRotationMatrix3dYAssignment: Assignment = {
       color: "red",
     });
 
+    useScene3DStore.getState().addObjectiveCube({
+      id: "cube",
+      label: "Cubo",
+      position: new Vector3(0, 0, 0),
+      scale: new Vector3(1, 1, 1),
+      rotation: new Vector3(0, 45, 0),
+      size: new Vector3(1, 1, 1),
+      color: "red",
+    });
+
     const { setMatrix, setOptions } =
       useFillInMatrixWithOptionsStore.getState();
     setMatrix({

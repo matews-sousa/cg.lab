@@ -208,9 +208,9 @@ export default function FillInMatrixInput({ matrix }: Props) {
 
     return (
       <div
-        className={`flex items-center justify-center ${
-          trigValue ? "w-20" : "w-12"
-        } h-12`}
+        className={`flex text-xs items-center justify-center ${
+          trigValue ? "w-16" : "w-10"
+        } h-10`}
         key={colIndex}
       >
         {trigValue && `${trigValue}(`}
@@ -218,7 +218,9 @@ export default function FillInMatrixInput({ matrix }: Props) {
           key={colIndex}
           type="text"
           autoComplete="off"
-          className="w-8 h-8 text-center bg-transparent border-b border-gray-500 focus:outline-none"
+          className={`${
+            trigValue ? "w-[30%]" : "w-full"
+          } text-xs text-center bg-transparent border-b border-gray-500 focus:outline-none`}
           value={cell.value}
           onChange={e => handleInputChange(rowIndex, colIndex, e.target.value)}
         />
@@ -243,7 +245,7 @@ export default function FillInMatrixInput({ matrix }: Props) {
               ) : (
                 <div
                   key={colIndex}
-                  className="w-12 h-12 text-center bg-transparent flex items-center justify-center"
+                  className="w-10 h-10 text-xs text-center bg-transparent flex items-center justify-center"
                 >
                   {cell.value}
                 </div>

@@ -165,7 +165,7 @@ export default function FillInMatrixWithOptions() {
           </div>
         ))}
       </div>
-      <div className="flex items-center justify-center gap-2 mt-4 flex-wrap">
+      <div className="flex items-center justify-center gap-2 mt-4 flex-wrap w-1/3">
         {options.map(option => (
           <Button
             key={option.id}

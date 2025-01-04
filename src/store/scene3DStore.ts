@@ -16,7 +16,9 @@ export type TCube = {
 
 interface Scene3DStore {
   cubes: TCube[];
+  objectiveCubes: TCube[];
   addCube: (cube: TCube) => void;
+  addObjectiveCube: (cube: TCube) => void;
   getCube: (id: string) => TCube | undefined;
   updateCube: (id: string, cube: TCube) => void;
   setCubeCustomYRotationMatrix: (id: string, matrix: Matrix4 | null) => void;
@@ -27,6 +29,7 @@ interface Scene3DStore {
 
 const initialState = {
   cubes: [],
+  objectiveCubes: [],
 };
 
 export const useScene3DStore = create<Scene3DStore>((set, get) => ({
@@ -35,6 +38,12 @@ export const useScene3DStore = create<Scene3DStore>((set, get) => ({
     set(state => ({
       ...state,
       cubes: [...state.cubes, cube],
+    }));
+  },
+  addObjectiveCube: cube => {
+    set(state => ({
+      ...state,
+      objectiveCubes: [...state.objectiveCubes, cube],
     }));
   },
   getCube: id => {

@@ -14,7 +14,7 @@ export const translationMatrix3dAssignment: Assignment = {
   order: 1,
   type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
   setup() {
-    const { addCube } = useScene3DStore.getState();
+    const { addCube, addObjectiveCube } = useScene3DStore.getState();
     const { addMatrix } = useFillBlankMatrixInputStore.getState();
     const cube: TCube = {
       id: "cube-1",
@@ -33,9 +33,9 @@ export const translationMatrix3dAssignment: Assignment = {
       size: new Vector3(1, 1, 1),
       scale: new Vector3(1, 1, 1),
       rotation: new Vector3(0, 0, 0),
-      color: "green",
+      color: "yellow",
     };
-    addCube(objectiveCube);
+    addObjectiveCube(objectiveCube);
 
     addMatrix({
       id: "translation-matrix-3d",
