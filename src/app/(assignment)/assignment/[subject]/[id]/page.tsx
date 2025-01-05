@@ -20,6 +20,9 @@ import { useScene3DStore } from "@/store/scene3DStore";
 import FillInMatrixWithOptions from "@/components/fill-in-matrix-with-options";
 import { useFillInMatrixWithOptionsStore } from "@/store/fillInMatrixWithOptions";
 import ObjectivePanel from "@/components/objective-panel";
+import Lottie from "lottie-react";
+import successAnimationData from "@/assets/success-anim.json";
+import failAnimationData from "@/assets/fail-anim.json";
 
 export default function Page({
   params,
@@ -117,7 +120,14 @@ export default function Page({
         <div className="text-center">
           {assignmentState === "correct" && (
             <>
-              <p className="text-base md:text-xl">Parabéns! Você acertou.</p>
+              <div className="flex items-center justify-center gap-2">
+                <Lottie
+                  animationData={successAnimationData}
+                  loop={false}
+                  className="w-12 h-12"
+                />
+                <p className="text-base md:text-xl">Parabéns! Você acertou.</p>
+              </div>
               <div className="flex items-center justify-center gap-4 mt-4">
                 <Button onClick={handleNext}>
                   Próximo <ArrowRight />
@@ -127,9 +137,16 @@ export default function Page({
           )}
           {assignmentState === "incorrect" && (
             <>
-              <p className="text-base md:text-xl">
-                Resposta incorreta. Tente novamente.
-              </p>
+              <div className="flex items-center justify-center gap-2">
+                <Lottie
+                  animationData={failAnimationData}
+                  loop={false}
+                  className="w-12 h-12"
+                />
+                <p className="text-base md:text-xl">
+                  Resposta incorreta. Tente novamente.
+                </p>
+              </div>
               <div className="flex items-center justify-center gap-4 mt-4">
                 <Button onClick={handleTryAgain}>Tentar novamente</Button>
               </div>
@@ -147,6 +164,7 @@ export default function Page({
                     key={index}
                     coordinateDimention={input.dimention}
                     pointRef={input.pointRef}
+                    label={input.label}
                   />
                 ))}
 

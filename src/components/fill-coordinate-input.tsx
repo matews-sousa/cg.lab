@@ -4,11 +4,13 @@ import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
 interface FillCoordinateInputProps {
   coordinateDimention: "2D" | "3D";
   pointRef: string;
+  label?: string;
 }
 
 export default function FillCoordinateInput({
   coordinateDimention,
   pointRef,
+  label,
 }: FillCoordinateInputProps) {
   const { setInputValue, getInputByPointRef } = useFillInTheBlankStore();
   const coordsInput = getInputByPointRef(pointRef);
@@ -39,7 +41,7 @@ export default function FillCoordinateInput({
 
   return (
     <div className="flex items-center justify-center">
-      <span className="text-2xl">{pointRef}</span>
+      <span className="text-2xl">{label}</span>
       <div className="flex items-center justify-center text-4xl">
         <span>{"("}</span>
         <input

@@ -27,6 +27,7 @@ export const pointDisplacementAssignment: Assignment = {
         dimention: "2D",
         coordinatesValue: { x: "", y: "" },
         pointRef: "A",
+        label: "v",
       },
     ]);
   },

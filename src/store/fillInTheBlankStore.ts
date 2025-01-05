@@ -5,6 +5,7 @@ type Dimention = "2D" | "3D";
 type CoordinateInput = {
   dimention: Dimention;
   pointRef: string;
+  label?: string;
   coordinatesValue: {
     x: number | string;
     y: number | string;
