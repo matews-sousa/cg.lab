@@ -7,7 +7,7 @@ export default function Navbar() {
     <nav className="shadow-md border-b">
       <div className="max-w-screen-xl mx-auto flex justify-between items-center p-4">
         <Link href="/" className="text-2xl font-bold">
-          GfxLab
+          CG.lab
         </Link>
         <Button>Entrar</Button>
       </div>

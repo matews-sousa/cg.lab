@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GfxLab",
+  title: "CG.lab",
   description: "Laboratório de Computação Gráfica",
 };
 
