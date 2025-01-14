@@ -41,6 +41,7 @@ export const defineTheVectorAssignment: Assignment = {
         dimention: "2D",
         coordinatesValue: { x: "", y: "", z: "" },
         pointRef: "v",
+        label: "v",
       },
     ]);
   },

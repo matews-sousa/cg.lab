@@ -27,9 +27,15 @@ export default function FillInMatrixInput({ matrix }: Props) {
   const handleInputChange = (
     row: number,
     col: number,
-    value: number | string
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    // Do not allow empty strings or invalid numbers
+    const value = e.target.value;
+    // Add decimal point if the user types a number followed by a dot
+    if (!isNaN(Number(value)) && value[value.length - 1] === ".") {
+      changeMatrixValue(matrix.id, row, col, value);
+      return;
+    }
+
     if (
       value === "" ||
       value === "-" ||
@@ -222,7 +228,7 @@ export default function FillInMatrixInput({ matrix }: Props) {
             trigValue ? "w-[30%]" : "w-full"
           } text-xs text-center bg-transparent border-b border-gray-500 focus:outline-none`}
           value={cell.value}
-          onChange={e => handleInputChange(rowIndex, colIndex, e.target.value)}
+          onChange={e => handleInputChange(rowIndex, colIndex, e)}
         />
         {trigValue && ")"}
       </div>

@@ -23,12 +23,19 @@ export const pointPosition: Assignment = {
       useFillInTheBlankWithOptionsStore.getState();
 
     setSentence("A posição do ponto A é {coordinatesA}");
-    setOptions([
+
+    const options = [
       { id: "1", value: "(-3,5)", correct: true },
       { id: "2", value: "(3,5)", correct: false },
       { id: "4", value: "(3,-5)", correct: false },
       { id: "3", value: "(-3,-5)", correct: false },
-    ]);
+    ];
+    const optionsShuffled = options
+      .map(value => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+
+    setOptions(optionsShuffled);
   },
   validate: () => {
     const { selectedValues } = useFillInTheBlankWithOptionsStore.getState();

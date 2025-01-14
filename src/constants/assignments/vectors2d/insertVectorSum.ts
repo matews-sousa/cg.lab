@@ -30,6 +30,7 @@ export const insertVectorSumAssignment: Assignment = {
       {
         dimention: "2D",
         pointRef: "c",
+        label: "c",
         coordinatesValue: { x: "", y: "" },
       },
     ]);
