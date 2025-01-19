@@ -10,7 +10,7 @@ import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
 import { ArrowRight } from "lucide-react";
 
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FillInMatrixInput from "@/components/fill-in-matrix-input";
 import { useFillBlankMatrixInputStore } from "@/store/fillInBlankMatrixInputStore";
 import Scene3D from "@/components/scene-3d";
@@ -39,16 +39,6 @@ export default function Page() {
   >("notAnswered");
   const { config, reset: resetScene2D } = useScene2DStore();
   const { reset: resetScene3D } = useScene3DStore();
-
-  useLayoutEffect(() => {
-    if (typeof window === "undefined") return;
-    console.log(document);
-
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
 
   useEffect(() => {
     resetScene2D();
