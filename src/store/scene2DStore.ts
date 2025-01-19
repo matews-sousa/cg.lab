@@ -12,6 +12,7 @@ type Scene2DStore = {
   setPoints: (points: Scene2DConfig["points"]) => void;
   setPointTranslation: (id: string, translation: [number, number]) => void;
   setVectors: (vectors: Scene2DConfig["vectors"]) => void;
+  addVector: (vector: TVector) => void;
   setPolygons: (polygons: Scene2DConfig["polygons"]) => void;
   setPolygonScale: (id: string, scale: [number, number]) => void;
   setPolygonRotation: (id: string, rotation: number) => void;
@@ -36,7 +37,7 @@ type Scene2DStore = {
 };
 
 const initialState: Scene2DConfig = {
-  pan: false,
+  pan: true,
   viewBox: {
     x: [-10, 10],
     y: [-7, 7],
@@ -61,6 +62,13 @@ export const useScene2DStore = create<Scene2DStore>((set, get) => ({
     })),
   setVectors: vectors =>
     set(state => ({ config: { ...state.config, vectors } })),
+  addVector: vector =>
+    set(state => ({
+      config: {
+        ...state.config,
+        vectors: [...(state.config.vectors || []), vector],
+      },
+    })),
   setPolygons: polygons =>
     set(state => ({ config: { ...state.config, polygons } })),
   setPolygonScale: (id, scale) =>

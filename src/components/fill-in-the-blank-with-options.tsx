@@ -2,8 +2,14 @@ import { Button } from "./ui/button";
 import { useFillInTheBlankWithOptionsStore } from "@/store/fillInTheBlankWithOptionsStore";
 
 export default function FillInTheBlankWithOptions() {
-  const { sentence, options, selectedValues, handleSelect, handleRemove } =
-    useFillInTheBlankWithOptionsStore();
+  const {
+    sentence,
+    options,
+    selectedValues,
+    selectedOptions,
+    handleSelect,
+    handleRemove,
+  } = useFillInTheBlankWithOptionsStore();
 
   return (
     <div className="text-lg md:text-2xl">
@@ -41,9 +47,7 @@ export default function FillInTheBlankWithOptions() {
       {/* Options list */}
       <div className="flex flex-wrap gap-2 justify-center">
         {options.map(option => {
-          const isDisabled = Object.values(selectedValues).includes(
-            option.value
-          );
+          const isDisabled = Object.values(selectedOptions).includes(option.id);
           return (
             <Button
               key={option.id}
@@ -51,7 +55,7 @@ export default function FillInTheBlankWithOptions() {
                 const firstUnfilledId = sentence
                   .split(" ")
                   .map(part => part.match(/{(.*?)}/)?.[1]) // Extract IDs
-                  .find(id => id && !selectedValues[id]);
+                  .find(id => id);
 
                 if (firstUnfilledId) {
                   handleSelect(firstUnfilledId, option.value);

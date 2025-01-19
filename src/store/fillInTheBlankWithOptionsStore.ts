@@ -1,13 +1,16 @@
 import { create } from "zustand";
 
+type TOption = {
+  id: string;
+  value: string;
+  correct: boolean;
+};
+
 interface FillInTheBlankWithOptionsStore {
   sentence: string; // Sentence with placeholders as {id}
   selectedValues: Record<string, string>; // Map of placeholder id to selected value
-  options: {
-    id: string;
-    value: string;
-    correct: boolean;
-  }[];
+  selectedOptions: string[]; // Map of placeholder id to selected option
+  options: TOption[];
   handleSelect: (id: string, value: string) => void;
   handleRemove: (id: string) => void;
   setOptions: (
@@ -20,18 +23,19 @@ interface FillInTheBlankWithOptionsStore {
 const initialState = {
   sentence: "",
   selectedValues: {},
+  selectedOptions: [],
   options: [],
 };
 
 export const useFillInTheBlankWithOptionsStore =
-  create<FillInTheBlankWithOptionsStore>(set => ({
+  create<FillInTheBlankWithOptionsStore>((set, get) => ({
     ...initialState,
     handleSelect: (id, value) => {
+      const option = get().options.find(option => option.value === value);
+      if (!option) return;
       set(state => ({
-        selectedValues: {
-          ...state.selectedValues,
-          [id]: value,
-        },
+        selectedValues: { ...state.selectedValues, [id]: value },
+        selectedOptions: [...state.selectedOptions, option.id],
       }));
     },
     handleRemove: id => {

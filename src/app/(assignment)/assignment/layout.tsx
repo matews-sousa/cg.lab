@@ -11,10 +11,11 @@ export default function AssingmentLayout({
   children: React.ReactNode;
 }) {
   const slug = window && window.location.pathname.split("/")[2];
+  const backUrl = slug ? `/subject/${slug}` : "/";
 
   return (
     <>
-      <Link href={`/subject/${slug}`}>
+      <Link href={backUrl}>
         <Button
           className="absolute top-4 left-4 rounded-full w-14 h-14 z-50"
           variant="destructive"
