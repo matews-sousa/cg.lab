@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -10,8 +10,17 @@ export default function AssingmentLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const slug = window && window.location.pathname.split("/")[2];
-  const backUrl = slug ? `/subject/${slug}` : "/";
+  const [backUrl, setBackUrl] = useState("/");
+
+  useEffect(() => {
+    // Access window only on the client
+    const slug = window.location.pathname.split("/")[2];
+    const url =
+      slug === "random" || typeof slug === "undefined"
+        ? "/"
+        : `/subject/${slug}`;
+    setBackUrl(url);
+  }, []);
 
   return (
     <>
