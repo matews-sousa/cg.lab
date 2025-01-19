@@ -29,6 +29,7 @@ export type TPolygon = {
   movable?: boolean;
   scale?: [number, number];
   rotation?: number;
+  translation?: [number, number];
 };
 
 export type Annotation = {

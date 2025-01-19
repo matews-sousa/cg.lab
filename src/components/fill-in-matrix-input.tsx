@@ -21,6 +21,7 @@ export default function FillInMatrixInput({ matrix }: Props) {
     getPolygon,
     setPolygonScale,
     setPolygonRotation,
+    setPolygonTranslation,
   } = useScene2DStore();
   const { getCube, updateCube } = useScene3DStore();
 
@@ -96,6 +97,15 @@ export default function FillInMatrixInput({ matrix }: Props) {
         ); // Check if all values are the same and not NaN
         if (!valuesAreValid) return;
         setPolygonRotation(matrix.polygonRefId, rotation[0]);
+      }
+
+      if (matrix.type === MatrixType.TRANSLATION) {
+        const translation = [
+          Number(matrix.matrixValue[0][2].value),
+          Number(matrix.matrixValue[1][2].value),
+        ] as [number, number];
+        if (translation.some(isNaN)) return; // Do nothing if any value is NaN
+        setPolygonTranslation(matrix.polygonRefId, translation);
       }
     }
 
@@ -176,6 +186,7 @@ export default function FillInMatrixInput({ matrix }: Props) {
     getPolygon,
     setPointTranslation,
     setPolygonRotation,
+    setPolygonTranslation,
     getCube,
     updateCube,
   ]);

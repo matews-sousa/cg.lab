@@ -1,43 +1,14 @@
 import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
 import { useScene2DStore } from "@/store/scene2DStore";
-import { Assignment, AssignmentType } from "@/types/Assignment";
+import { AssignmentType, RandomGeneratedAssignment } from "@/types/Assignment";
+import {
+  generateAssignmentId,
+  getRandomVector,
+  getRandomVectorWithTailAndTip,
+} from "@/utils";
 import { vec } from "mafs";
 
 const COORDINATE_LIMITS = [-4, 4] as const;
-
-function getRandomIntInRange(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getRandomVector(range: readonly [number, number]): [number, number] {
-  // make sure the vector is not the zero vector
-  let x, y;
-  do {
-    x = getRandomIntInRange(range[0], range[1]);
-    y = getRandomIntInRange(range[0], range[1]);
-  } while (x === 0 && y === 0);
-  return [x, y];
-}
-
-function getRandomVectorWithTailAndTip(range: readonly [number, number]): {
-  tail: [number, number];
-  tip: [number, number];
-} {
-  // make sure the vector tail and tip are not the same
-  let tail, tip;
-  do {
-    tail = getRandomVector(range);
-    tip = getRandomVector(range);
-  } while (tail[0] === tip[0] && tail[1] === tip[1]);
-  return { tail, tip };
-}
-
-interface RandomAssignmentGenerated extends Assignment {
-  dimensions: "2D" | "3D";
-}
-
-const generateAssignmentId = (prefix: string): string =>
-  `${prefix}-${Math.random().toString(36).substring(7)}`;
 
 function setupScene(
   vectors: Array<{
@@ -78,21 +49,21 @@ function createVectorAssignment({
   type: AssignmentType;
   setup: () => void;
   validate: () => boolean;
-}): RandomAssignmentGenerated {
+}): RandomGeneratedAssignment {
   return {
     id: generateAssignmentId("vector-assignment"),
     dimensions: "2D",
     order: Math.floor(Math.random() * 100),
     title,
     instructions,
-    type: type,
+    type,
     setup,
     validate,
   };
 }
 
 // Assignment Generators
-export function generateVectorTransformationAssignment(): RandomAssignmentGenerated {
+export function generateVectorTransformationAssignment(): RandomGeneratedAssignment {
   const targetVector = getRandomVector(COORDINATE_LIMITS);
   const initialVector = getRandomVectorWithTailAndTip(COORDINATE_LIMITS);
 
@@ -124,7 +95,7 @@ export function generateVectorTransformationAssignment(): RandomAssignmentGenera
   });
 }
 
-export function generateVectorSumAssignment(): RandomAssignmentGenerated {
+export function generateVectorSumAssignment(): RandomGeneratedAssignment {
   const a = getRandomVectorWithTailAndTip(COORDINATE_LIMITS);
   const b = getRandomVectorWithTailAndTip(COORDINATE_LIMITS);
   const targetVector = getRandomVector(COORDINATE_LIMITS);
@@ -183,7 +154,7 @@ export function generateVectorSumAssignment(): RandomAssignmentGenerated {
   });
 }
 
-export function generateVectorFillInAssignment(): RandomAssignmentGenerated {
+export function generateVectorFillInAssignment(): RandomGeneratedAssignment {
   const vector = getRandomVectorWithTailAndTip(COORDINATE_LIMITS);
 
   return createVectorAssignment({
@@ -231,7 +202,7 @@ export function generateVectorFillInAssignment(): RandomAssignmentGenerated {
   });
 }
 
-export function generateVectorSumFillInAssignment(): RandomAssignmentGenerated {
+export function generateVectorSumFillInAssignment(): RandomGeneratedAssignment {
   const a = getRandomVectorWithTailAndTip(COORDINATE_LIMITS);
   const b = getRandomVectorWithTailAndTip(COORDINATE_LIMITS);
 
@@ -307,7 +278,7 @@ export function generateVectorSumFillInAssignment(): RandomAssignmentGenerated {
   });
 }
 
-export function genereateRandomVectorAssignment(): RandomAssignmentGenerated {
+export function generateRandomVectorAssignment(): RandomGeneratedAssignment {
   const assignmentGenerators = [
     generateVectorTransformationAssignment,
     generateVectorSumAssignment,

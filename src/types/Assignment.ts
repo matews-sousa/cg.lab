@@ -17,3 +17,7 @@ export interface Assignment {
   setup: () => void;
   validate: () => boolean;
 }
+
+export interface RandomGeneratedAssignment extends Assignment {
+  dimensions: "2D" | "3D";
+}

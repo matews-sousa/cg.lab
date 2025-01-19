@@ -21,11 +21,11 @@ export const initial2DTranslationMatrixValue: MatrixValue[][] = [
 export const initial2DScalingMatrixValue: MatrixValue[][] = [
   [
     { value: "", editable: true },
-    { value: "", editable: true },
+    { value: 0, editable: false },
     { value: 0, editable: false },
   ],
   [
-    { value: "", editable: true },
+    { value: 0, editable: false },
     { value: "", editable: true },
     { value: 0, editable: false },
   ],
