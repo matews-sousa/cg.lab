@@ -41,6 +41,9 @@ export default function Page() {
   const { reset: resetScene3D } = useScene3DStore();
 
   useLayoutEffect(() => {
+    if (typeof window === "undefined") return;
+    console.log(document);
+
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "auto";
