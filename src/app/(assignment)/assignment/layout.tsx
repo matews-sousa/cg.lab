@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -11,15 +11,19 @@ export default function AssingmentLayout({
   children: React.ReactNode;
 }) {
   const [backUrl, setBackUrl] = useState("/");
+  const [isMounted, setIsMounted] = useState(false);
 
-  useLayoutEffect(() => {
-    if (typeof window === "undefined") return;
+  // Ensure client-only rendering
+  useEffect(() => {
+    setIsMounted(true);
 
+    // Prevent scrolling when the component is mounted
     document.body.style.overflow = "hidden";
     return () => {
+      // Restore scrolling on unmount
       document.body.style.overflow = "auto";
     };
-  });
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -31,6 +35,9 @@ export default function AssingmentLayout({
         : `/subject/${slug}`;
     setBackUrl(url);
   }, []);
+
+  // Prevent rendering anything until the component is mounted on the client
+  if (!isMounted) return null;
 
   return (
     <>
