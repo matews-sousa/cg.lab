@@ -1,3 +1,5 @@
+import { Vector3 } from "three";
+
 export function getRandomIntInRange(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -36,6 +38,14 @@ export function getRandomCoords(
     getRandomIntInRange(range[0], range[1]),
     getRandomIntInRange(range[0], range[1]),
   ];
+}
+
+export function getRandomVector3(range: readonly [number, number]): Vector3 {
+  return new Vector3(
+    getRandomIntInRange(range[0], range[1]),
+    getRandomIntInRange(range[0], range[1]),
+    getRandomIntInRange(range[0], range[1])
+  );
 }
 
 export const generateAssignmentId = (prefix: string): string =>

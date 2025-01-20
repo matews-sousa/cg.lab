@@ -23,6 +23,7 @@ export const scaleMatrix3dAssignment: Assignment = {
       size: new Vector3(1, 1, 1),
       scale: new Vector3(1, 1, 1),
       rotation: new Vector3(0, 0, 0),
+      translation: new Vector3(0, 0, 0),
       color: "red",
     };
     addCube(cube);

@@ -119,7 +119,7 @@ export default function FillInMatrixInput({ matrix }: Props) {
           Number(matrix.matrixValue[2][3].value)
         );
         if (translation.toArray().some(isNaN)) return; // Do nothing if any value is NaN
-        updateCube(cube.id, { ...cube, position: translation });
+        updateCube(cube.id, { ...cube, translation });
       }
       if (cube && matrix.type === MatrixType.SCALING) {
         const scale = new Vector3(
