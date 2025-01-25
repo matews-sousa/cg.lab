@@ -65,7 +65,7 @@ export function generate2DFillInTranslationMatrixAssignment(): RandomGeneratedAs
 
   return createMatrixAssignment({
     title: "Matrix de translação 2D",
-    instructions: `Complete a matrix de translação que desloque o ponto A(${pointA[0]}, ${pointA[1]}) para a posição (${targetPoint[0]}, ${targetPoint[1]})`,
+    instructions: `Complete a matriz de translação que desloque o ponto A(${pointA[0]}, ${pointA[1]}) para a posição (${targetPoint[0]}, ${targetPoint[1]})`,
     type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
     setup: () => {
       setupScene([
@@ -77,6 +77,7 @@ export function generate2DFillInTranslationMatrixAssignment(): RandomGeneratedAs
         },
       ]);
 
+      useFillBlankMatrixInputStore.getState().reset();
       useFillBlankMatrixInputStore.getState().setMatrices([
         {
           id: "translationMatrix",
@@ -149,6 +150,7 @@ export function generate2DFillInTranslationMatrixForSquareAssignment(): RandomGe
         },
       ]);
 
+      useFillBlankMatrixInputStore.getState().reset();
       useFillBlankMatrixInputStore.getState().setMatrices([
         {
           id: "translationMatrix",
@@ -203,7 +205,7 @@ export function generate2DTranslationMatrixAssignment(): RandomGeneratedAssignme
 
   return createMatrixAssignment({
     title: "Matrix de translação 2D",
-    instructions: `Mova o ponto A(${pointA[0]}, ${pointA[1]}) para a posição resultante da aplicação da matrix de translação`,
+    instructions: `Mova o ponto A(${pointA[0]}, ${pointA[1]}) para a posição resultante da aplicação da matriz de translação`,
     type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
     setup: () => {
       setupScene([
@@ -252,7 +254,7 @@ export function generate2DScaleMatrixAssignment(): RandomGeneratedAssignment {
 
   return createMatrixAssignment({
     title: "Matrix de escala 2D",
-    instructions: `Mova os pontos do quadrado para a posição resultante da aplicação da matrix de escala`,
+    instructions: `Mova os pontos do quadrado para a posição resultante da aplicação da matriz de escala`,
     type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
     setup: () => {
       useScene2DStore.getState().setPolygons([

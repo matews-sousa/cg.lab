@@ -3,6 +3,24 @@ import { matricesAssignments } from "./matrices";
 import { matrices3dAssignments } from "./matrices3d";
 import { pointsAssignments } from "./points2d";
 import { vectorAssignments } from "./vectors2d";
+import {
+  generateRandomFillInTheBlankWithOptionsPointAssignment,
+  generateRandomMoveToPositionPointAssignment,
+  generateRandomWhichPositionPointAssignment,
+} from "./generateRandomPointsAssignment";
+import {
+  generateRandomVectorAssignment,
+  generateVectorFillInAssignment,
+  generateVectorSumAssignment,
+  generateVectorSumFillInAssignment,
+  generateVectorTransformationAssignment,
+} from "./generateRandomVectorsAssignment";
+import {
+  generate2DFillInTranslationMatrixAssignment,
+  generate2DFillInTranslationMatrixForSquareAssignment,
+  generate2DScaleMatrixAssignment,
+  generate2DTranslationMatrixAssignment,
+} from "./generateRandom2DMatricesAssignment";
 
 export type Subject = {
   title: string;
@@ -44,5 +62,23 @@ const subjects: Subject[] = [
     type: "3D",
   },
 ];
+
+export const generateAnyRandomAssignment = () => {
+  const generators = [
+    generateRandomMoveToPositionPointAssignment,
+    generateRandomWhichPositionPointAssignment,
+    generateRandomFillInTheBlankWithOptionsPointAssignment,
+    generateRandomVectorAssignment,
+    generateVectorFillInAssignment,
+    generateVectorSumAssignment,
+    generateVectorSumFillInAssignment,
+    generateVectorTransformationAssignment,
+    generate2DFillInTranslationMatrixAssignment,
+    generate2DFillInTranslationMatrixForSquareAssignment,
+    generate2DScaleMatrixAssignment,
+    generate2DTranslationMatrixAssignment,
+  ];
+  return generators[Math.floor(Math.random() * generators.length)]();
+};
 
 export { subjects };

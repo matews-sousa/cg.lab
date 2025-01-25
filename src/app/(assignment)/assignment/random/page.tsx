@@ -21,7 +21,7 @@ import ObjectivePanel from "@/components/objective-panel";
 import Lottie from "lottie-react";
 import successAnimationData from "@/assets/success-anim.json";
 import failAnimationData from "@/assets/fail-anim.json";
-import { generate3DFillInTranslationMatrixAssignment } from "@/constants/assignments/generateRandom3DMatricesAssignment";
+import { generateAnyRandomAssignment } from "@/constants/assignments";
 
 export default function Page() {
   const [assignment, setAssignment] = useState<
@@ -47,7 +47,7 @@ export default function Page() {
     resetFillBlankMatrixInput();
     resetFillInMatrixWithOptions();
 
-    const assi = generate3DFillInTranslationMatrixAssignment();
+    const assi = generateAnyRandomAssignment();
     if (assi) {
       setAssignment(assi);
       assi.setup();
@@ -79,9 +79,14 @@ export default function Page() {
   const handleNext = () => {
     setAssignmentState("notAnswered");
 
-    const assi = generate3DFillInTranslationMatrixAssignment();
+    const assi = generateAnyRandomAssignment();
     if (assi) {
       setAssignment(assi);
+      resetScene2D();
+      resetScene3D();
+      resetFillInTheBlankWithOptions();
+      resetFillBlankMatrixInput();
+      resetFillInMatrixWithOptions();
       assi.setup();
     }
   };

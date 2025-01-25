@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type TOption = {
+export type TOption = {
   id: string;
   value: string;
   correct: boolean;
@@ -9,9 +9,9 @@ type TOption = {
 interface FillInTheBlankWithOptionsStore {
   sentence: string; // Sentence with placeholders as {id}
   selectedValues: Record<string, string>; // Map of placeholder id to selected value
-  selectedOptions: string[]; // Map of placeholder id to selected option
+  selectedOptions: Record<string, TOption>; // Map of placeholder id to selected option
   options: TOption[];
-  handleSelect: (id: string, value: string) => void;
+  handleSelect: (id: string, option: TOption) => void;
   handleRemove: (id: string) => void;
   setOptions: (
     options: { id: string; value: string; correct: boolean }[]
@@ -23,26 +23,33 @@ interface FillInTheBlankWithOptionsStore {
 const initialState = {
   sentence: "",
   selectedValues: {},
-  selectedOptions: [],
+  selectedOptions: {},
   options: [],
 };
 
 export const useFillInTheBlankWithOptionsStore =
-  create<FillInTheBlankWithOptionsStore>((set, get) => ({
+  create<FillInTheBlankWithOptionsStore>(set => ({
     ...initialState,
-    handleSelect: (id, value) => {
-      const option = get().options.find(option => option.value === value);
-      if (!option) return;
-      set(state => ({
-        selectedValues: { ...state.selectedValues, [id]: value },
-        selectedOptions: [...state.selectedOptions, option.id],
-      }));
+    handleSelect: (id, option) => {
+      set(state => {
+        const selectedValues = { ...state.selectedValues };
+        selectedValues[id] = option.value;
+        return {
+          selectedValues,
+          selectedOptions: {
+            ...state.selectedOptions,
+            [id]: option,
+          },
+        };
+      });
     },
     handleRemove: id => {
       set(state => {
-        const updated = { ...state.selectedValues };
-        delete updated[id];
-        return { selectedValues: updated };
+        const selectedValues = { ...state.selectedValues };
+        delete selectedValues[id];
+        const selectedOptions = { ...state.selectedOptions };
+        delete selectedOptions[id];
+        return { selectedValues, selectedOptions };
       });
     },
     setOptions: options => set({ options }),

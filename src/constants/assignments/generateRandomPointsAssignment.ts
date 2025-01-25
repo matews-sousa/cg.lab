@@ -1,164 +1,162 @@
 import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
-import { useFillInTheBlankWithOptionsStore } from "@/store/fillInTheBlankWithOptionsStore";
+import {
+  TOption,
+  useFillInTheBlankWithOptionsStore,
+} from "@/store/fillInTheBlankWithOptionsStore";
 import { useScene2DStore } from "@/store/scene2DStore";
-import { Assignment, AssignmentType } from "@/types/Assignment";
+import { AssignmentType, RandomGeneratedAssignment } from "@/types/Assignment";
+import { getRandomCoords, shuffleArray } from "@/utils";
 
-function getRandomElement<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)];
+const COORDINATE_LIMITS = [-5, 5] as const;
+
+function createPointAssignment({
+  title,
+  instructions,
+  type,
+  setup,
+  validate,
+}: {
+  title: string;
+  instructions: string;
+  type: AssignmentType;
+  setup: () => void;
+  validate: () => boolean;
+}): RandomGeneratedAssignment {
+  return {
+    id: `assignment-${Math.random().toString(36).substring(7)}`,
+    order: Math.floor(Math.random() * 100),
+    dimensions: "2D",
+    title,
+    instructions,
+    type,
+    setup,
+    validate,
+  };
 }
 
-function getRandomPosition(range: [number, number]) {
-  const [min, max] = range;
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+export const generateRandomMoveToPositionPointAssignment = () => {
+  const initialPoint = getRandomCoords(COORDINATE_LIMITS);
+  let targetPosition = getRandomCoords(COORDINATE_LIMITS);
 
-function getRandomColor() {
-  const colors = ["red", "blue", "green", "yellow", "purple", "orange"];
-  return getRandomElement(colors);
-}
+  while (
+    initialPoint[0] === targetPosition[0] &&
+    initialPoint[1] === targetPosition[1]
+  ) {
+    targetPosition = getRandomCoords(COORDINATE_LIMITS);
+  }
 
-function getRandomLabel(index: number) {
-  return String.fromCharCode(65 + index); // Generates labels like A, B, C, etc.
-}
-
-const goalConfigurations = {
-  "move-to-position": {
+  return createPointAssignment({
     title: "Mover para posição",
     type: AssignmentType.INTERACTIVE,
-    instructions: (pointLabel: string, goalPosition: [number, number]) =>
-      `Mova o ponto ${pointLabel} para a posição (${goalPosition[0]}, ${goalPosition[1]}).`,
-    movable: true,
-  },
-  "which-position": {
-    title: "Qual a posição?",
-    type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
-    instructions: (pointLabel: string) =>
-      `Qual a posição do ponto ${pointLabel}?`,
-    movable: false,
-  },
-  "fill-in-the-blank-with-options": {
-    title: "Preencher os espaços em branco",
-    type: AssignmentType.FILL_IN_THE_BLANK_WITH_OPTIONS,
-    instructions: () =>
-      `Preencha os espaços em branco com as coordenadas dos pontos.`,
-    movable: false,
-  },
+    instructions: `Mova o ponto para a posição (${targetPosition[0]}, ${targetPosition[1]}).`,
+    setup: () => {
+      useScene2DStore.getState().setPoints([
+        {
+          id: "a",
+          position: initialPoint,
+          movable: true,
+          color: "blue",
+          label: "a",
+          constraints: {
+            roundCoordinates: true,
+          },
+        },
+      ]);
+    },
+    validate: () => {
+      const point = useScene2DStore.getState().getPoint("a");
+      return (
+        point?.position[0] === targetPosition[0] &&
+        point?.position[1] === targetPosition[1]
+      );
+    },
+  });
 };
 
-export function generateRandomPointsAssignment(): Assignment & {
-  dimensions: "2D" | "3D";
-} {
-  const numPoints = Math.floor(Math.random() * 3) + 2; // Randomly 2-4 points
-  const positionRange: [number, number] = [-5, 5];
-  const goal = getRandomElement(
-    Object.keys(goalConfigurations) as Array<keyof typeof goalConfigurations>
-  );
+export const generateRandomWhichPositionPointAssignment = () => {
+  const point = getRandomCoords(COORDINATE_LIMITS);
 
-  const config = goalConfigurations[goal];
-  const points = Array.from({ length: numPoints }, (_, index) => ({
-    id: getRandomLabel(index),
-    position: [
-      getRandomPosition(positionRange),
-      getRandomPosition(positionRange),
-    ] as [number, number],
-    movable: config.movable,
-    color: getRandomColor(),
-    label: getRandomLabel(index),
-    constraints: {
-      roundCoordinates: true,
-    },
-  }));
-
-  const randomGoalPosition = [
-    getRandomPosition(positionRange),
-    getRandomPosition(positionRange),
-  ] as [number, number];
-
-  const randomTargetPoint = getRandomElement(points);
-
-  const setupHandlers = {
-    "move-to-position": () => {
-      useScene2DStore.getState().setPoints(points);
-    },
-    "which-position": () => {
-      useScene2DStore.getState().setPoints(points);
+  return createPointAssignment({
+    title: "Qual a posição?",
+    type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
+    instructions: `Qual a posição do ponto?`,
+    setup: () => {
+      useScene2DStore.getState().setPoints([
+        {
+          id: "a",
+          position: point,
+          movable: false,
+          color: "blue",
+          label: "a",
+          constraints: {
+            roundCoordinates: true,
+          },
+        },
+      ]);
       useFillInTheBlankStore.getState().setInputs([
         {
           dimention: "2D",
-          label: randomTargetPoint.label,
-          pointRef: randomTargetPoint.id,
+          label: "a",
+          pointRef: "a",
           coordinatesValue: { x: "", y: "" },
         },
       ]);
     },
-    "fill-in-the-blank-with-options": () => {
-      useScene2DStore.getState().setPoints(points);
-      const sentence = `O ponto ${randomTargetPoint.label} tem coordenadas {coordinates${randomTargetPoint.label}}.`;
-      const options = [
-        {
-          id: "1",
-          value: `(${randomTargetPoint.position[0]},${randomTargetPoint.position[1]})`,
-          correct: true,
-        },
-        {
-          id: "2",
-          value: `(${randomGoalPosition[0]},${randomGoalPosition[1]})`,
-          correct: false,
-        },
-        {
-          id: "3",
-          value: `(${randomGoalPosition[1]},${randomGoalPosition[0]})`,
-          correct: false,
-        },
-        {
-          id: "4",
-          value: `(${randomTargetPoint.position[1]},${randomTargetPoint.position[0]})`,
-          correct: false,
-        },
-      ];
-      useFillInTheBlankWithOptionsStore.getState().setSentence(sentence);
-      useFillInTheBlankWithOptionsStore.getState().setOptions(options);
-    },
-  };
-
-  const validateHandlers = {
-    "move-to-position": () => {
-      const point = useScene2DStore.getState().getPoint(randomTargetPoint.id);
-      return (
-        point?.position[0] === randomGoalPosition[0] &&
-        point?.position[1] === randomGoalPosition[1]
-      );
-    },
-    "which-position": () => {
-      const point = useScene2DStore.getState().getPoint(randomTargetPoint.id);
-      const input = useFillInTheBlankStore
-        .getState()
-        .getInputByPointRef(randomTargetPoint.id);
+    validate: () => {
+      const point = useScene2DStore.getState().getPoint("a");
+      const input = useFillInTheBlankStore.getState().getInputByPointRef("a");
       return (
         point?.position[0] === input?.coordinatesValue.x &&
         point?.position[1] === input?.coordinatesValue.y
       );
     },
-    "fill-in-the-blank-with-options": () => {
-      const { selectedOptions, options } =
-        useFillInTheBlankWithOptionsStore.getState();
-      return selectedOptions.every(
-        optionId => options.find(option => option.id === optionId)?.correct
-      );
-    },
-  };
+  });
+};
 
-  return {
-    id: `assignment-${Math.random().toString(36).substring(7)}`,
-    order: Math.floor(Math.random() * 100), // Random order
-    title: config.title,
-    instructions: config.instructions(
-      randomTargetPoint.label,
-      randomGoalPosition
-    ),
-    type: config.type,
-    setup: setupHandlers[goal],
-    validate: validateHandlers[goal],
-    dimensions: "2D",
-  };
-}
+export const generateRandomFillInTheBlankWithOptionsPointAssignment = () => {
+  const point = getRandomCoords(COORDINATE_LIMITS);
+  const sentence = `O ponto tem coordenadas {coordinates}.`;
+
+  const randomOptions: TOption[] = [];
+  for (let i = 0; i < 3; i++) {
+    const randomPos = getRandomCoords(COORDINATE_LIMITS);
+    randomOptions.push({
+      id: `option-${i}`,
+      value: `(${randomPos[0]},${randomPos[1]})`,
+      correct: false,
+    });
+  }
+  randomOptions.push({
+    id: "option-3",
+    value: `(${point[0]},${point[1]})`,
+    correct: true,
+  });
+
+  const shuffledOptions = shuffleArray(randomOptions);
+
+  return createPointAssignment({
+    title: "Preencher os espaços em branco",
+    type: AssignmentType.FILL_IN_THE_BLANK_WITH_OPTIONS,
+    instructions: ``,
+    setup: () => {
+      useScene2DStore.getState().setPoints([
+        {
+          id: "a",
+          position: point,
+          movable: false,
+          color: "blue",
+          label: "A",
+          constraints: {
+            roundCoordinates: true,
+          },
+        },
+      ]);
+      useFillInTheBlankWithOptionsStore.getState().setSentence(sentence);
+      useFillInTheBlankWithOptionsStore.getState().setOptions(shuffledOptions);
+    },
+    validate: () => {
+      const { selectedOptions } = useFillInTheBlankWithOptionsStore.getState();
+      return Object.values(selectedOptions).every(option => option.correct);
+    },
+  });
+};

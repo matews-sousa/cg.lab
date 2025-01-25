@@ -2,14 +2,8 @@ import { Button } from "./ui/button";
 import { useFillInTheBlankWithOptionsStore } from "@/store/fillInTheBlankWithOptionsStore";
 
 export default function FillInTheBlankWithOptions() {
-  const {
-    sentence,
-    options,
-    selectedValues,
-    selectedOptions,
-    handleSelect,
-    handleRemove,
-  } = useFillInTheBlankWithOptionsStore();
+  const { sentence, options, selectedOptions, handleSelect, handleRemove } =
+    useFillInTheBlankWithOptionsStore();
 
   return (
     <div className="text-lg md:text-2xl">
@@ -24,9 +18,9 @@ export default function FillInTheBlankWithOptions() {
                 key={id}
                 className="border-b-2 w-24 border-zinc-900 py-1 self-end"
               >
-                {selectedValues[id] ? (
+                {selectedOptions[id] ? (
                   <Button variant="secondary" onClick={() => handleRemove(id)}>
-                    {selectedValues[id]}
+                    {selectedOptions[id].value}
                   </Button>
                 ) : (
                   <Button
@@ -47,7 +41,9 @@ export default function FillInTheBlankWithOptions() {
       {/* Options list */}
       <div className="flex flex-wrap gap-2 justify-center">
         {options.map(option => {
-          const isDisabled = Object.values(selectedOptions).includes(option.id);
+          const isDisabled = Object.values(selectedOptions).some(
+            opt => opt.id === option.id
+          );
           return (
             <Button
               key={option.id}
@@ -58,7 +54,7 @@ export default function FillInTheBlankWithOptions() {
                   .find(id => id);
 
                 if (firstUnfilledId) {
-                  handleSelect(firstUnfilledId, option.value);
+                  handleSelect(firstUnfilledId, option);
                 }
               }}
               disabled={isDisabled}
