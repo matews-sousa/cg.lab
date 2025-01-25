@@ -95,10 +95,9 @@ export default function Page({
 
   const handleNext = () => {
     if (!assignment) return;
-    const currentOrder = assignment?.order;
-    const nextAssignment = subjects
-      .find(s => s.slug === subject)
-      ?.assignments.find(a => a.order === currentOrder + 1);
+    const currentAssignmentIndex =
+      subjectData?.assignments.findIndex(a => a.id === assignment.id) ?? -1;
+    const nextAssignment = subjectData?.assignments[currentAssignmentIndex + 1];
     if (nextAssignment) {
       redirect(`/assignment/${subject}/${nextAssignment.id}`);
     } else {

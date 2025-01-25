@@ -2,43 +2,81 @@ import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
 import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
 
-export const whichPositionAssignment: Assignment = {
-  id: "which-position",
-  order: 4,
-  title: "Qual a posição?",
-  instructions: "Qual a posição do ponto A?",
-  type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
-  setup: () => {
-    const { setPoints } = useScene2DStore.getState();
-    setPoints([
-      {
-        id: "A",
-        position: [-2, 2],
-        movable: false,
-        color: "red",
-        label: "A",
-        constraints: {
-          roundCoordinates: true,
-        },
-      },
-    ]);
+interface WhichPositionCoordsInputAssignment {
+  order: number;
+  title: string;
+  instructions: string;
+  pointPosition: [number, number];
+}
 
-    useFillInTheBlankStore.getState().setInputs([
-      {
-        dimention: "2D",
-        pointRef: "A",
-        label: "A",
-        coordinatesValue: { x: "", y: "" },
-      },
-    ]);
+function createWhichPositionCoordsInputsAssignment({
+  order,
+  title,
+  instructions,
+  pointPosition,
+}: WhichPositionCoordsInputAssignment): Assignment {
+  return {
+    id: `which-position-${order}`,
+    order,
+    title,
+    instructions,
+    type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
+    setup: () => {
+      const { setPoints } = useScene2DStore.getState();
+      setPoints([
+        {
+          id: "A",
+          position: pointPosition,
+          movable: false,
+          color: "red",
+          label: "A",
+          constraints: {
+            roundCoordinates: true,
+          },
+        },
+      ]);
+
+      useFillInTheBlankStore.getState().setInputs([
+        {
+          dimention: "2D",
+          pointRef: "A",
+          label: "A",
+          coordinatesValue: { x: "", y: "" },
+        },
+      ]);
+    },
+    validate: () => {
+      const { getInputByPointRef } = useFillInTheBlankStore.getState();
+      const input = getInputByPointRef("A");
+      if (!input) return false;
+      const coordinates = input.coordinatesValue;
+      const isCorrect =
+        coordinates?.x === pointPosition[0] &&
+        coordinates.y === pointPosition[1];
+      useFillInTheBlankStore.getState().reset();
+      return isCorrect;
+    },
+  };
+}
+
+const whichPositionAssignments = [
+  {
+    order: 7,
+    title: "Qual a posição do ponto?",
+    instructions: "Qual a posição do ponto A?",
+    pointPosition: [-2, 2] as [number, number],
   },
-  validate: () => {
-    const { getInputByPointRef } = useFillInTheBlankStore.getState();
-    const input = getInputByPointRef("A");
-    if (!input) return false;
-    const coordinates = input.coordinatesValue;
-    const isCorrect = coordinates?.x === -2 && coordinates.y === 2;
-    useFillInTheBlankStore.getState().reset();
-    return isCorrect;
+  {
+    order: 8,
+    title: "Qual a posição do ponto? 2",
+    instructions: "Qual a posição do ponto A?",
+    pointPosition: [3, -4] as [number, number],
   },
-};
+];
+
+export const whichPositionAssignmentList = whichPositionAssignments.map(
+  assignment =>
+    createWhichPositionCoordsInputsAssignment({
+      ...assignment,
+    })
+);
