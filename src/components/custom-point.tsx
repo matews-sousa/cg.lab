@@ -10,10 +10,16 @@ interface Props {
 export default function CustomPoint({ point, polygonId }: Props) {
   const { movePoint, movePolygonPoint } = useScene2DStore();
 
-  const constraints = point.constraints?.roundCoordinates
-    ? ([x, y]: [number, number]) =>
-        [Math.round(x), Math.round(y)] as [number, number]
-    : undefined;
+  const gridStep = 0.5;
+
+  // Constraint function to snap to grid points
+  const constraints = (mousePosition: [number, number]) => {
+    const [x, y] = mousePosition;
+    return [
+      Math.round(x / gridStep) * gridStep, // Snap x to the nearest grid step
+      Math.round(y / gridStep) * gridStep, // Snap y to the nearest grid step
+    ] as [number, number];
+  };
 
   const handlePointMove = (newPosition: [number, number]) => {
     if (polygonId) {

@@ -1,13 +1,17 @@
-import { changeTheVectorAssignment } from "./changeTheVector";
-import { defineTheVectorAssignment } from "./defineTheVector";
-import { insertVectorSumAssignment } from "./insertVectorSum";
-import { pointDisplacementAssignment } from "./pointDisplacement";
-import { vectorSumAssignment } from "./vectorSum";
+import { adjustVectorSumAssignmentsList } from "./adjustTheVectorToSum";
+import { changeTheVectorAssignmentList } from "./changeTheVector";
+import { defineTheVectorAssignmentList } from "./defineTheVector";
+import { insertVectorSumAssignmentList } from "./insertVectorSum";
+import { pointDisplacementAssignmentList } from "./pointDisplacement";
+import { vectorLengthAssignment } from "./vectorLength";
+import { vectorSumAssignmentList } from "./vectorSum";
 
 export const vectorAssignments = [
-  changeTheVectorAssignment,
-  defineTheVectorAssignment,
-  vectorSumAssignment,
-  insertVectorSumAssignment,
-  pointDisplacementAssignment,
+  ...changeTheVectorAssignmentList,
+  ...defineTheVectorAssignmentList,
+  ...vectorSumAssignmentList,
+  ...insertVectorSumAssignmentList,
+  ...adjustVectorSumAssignmentsList,
+  ...pointDisplacementAssignmentList,
+  vectorLengthAssignment,
 ];

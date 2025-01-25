@@ -34,7 +34,10 @@ export default function VectorWithControls({ vector }: { vector: TVector }) {
         <MovablePoint
           point={vector.tail}
           constrain={([x, y]: [number, number]) =>
-            [Math.round(x), Math.round(y)] as [number, number]
+            [Math.round(x / 0.5) * 0.5, Math.round(y / 0.5) * 0.5] as [
+              number,
+              number
+            ]
           }
           onMove={newPosition => {
             setVectorTail(vector.id, newPosition);
@@ -49,7 +52,10 @@ export default function VectorWithControls({ vector }: { vector: TVector }) {
             setVectorTip(vector.id, newPosition);
           }}
           constrain={([x, y]: [number, number]) =>
-            [Math.round(x), Math.round(y)] as [number, number]
+            [Math.round(x / 0.5) * 0.5, Math.round(y / 0.5) * 0.5] as [
+              number,
+              number
+            ]
           }
         />
       )}
@@ -61,7 +67,10 @@ export default function VectorWithControls({ vector }: { vector: TVector }) {
             (vector.tip[1] + vector.tail[1]) / 2,
           ]}
           constrain={([x, y]: [number, number]) =>
-            [Math.round(x), Math.round(y)] as [number, number]
+            [Math.round(x / 0.5) * 0.5, Math.round(y / 0.5) * 0.5] as [
+              number,
+              number
+            ]
           }
           onMove={newPosition => {
             const newTail = [

@@ -2,55 +2,110 @@ import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
 import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
 
-export const pointDisplacementAssignment: Assignment = {
-  id: "point-displacement",
-  title: "Deslocamento de Ponto",
-  instructions:
-    "Descreva o vetor de deslocamento que leva o ponto A para a posição (2, 3).",
-  order: 5,
-  type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
-  setup: () => {
-    const { setPoints } = useScene2DStore.getState();
-    setPoints([
-      {
-        id: "A",
-        label: "A",
-        position: [-1, 2],
-        movable: false,
-        color: "red",
-      },
-    ]);
+interface PointDisplacementInputProps {
+  order: number;
+  pointPosition: [number, number];
+  goalPosition: [number, number];
+}
 
-    const { setInputs } = useFillInTheBlankStore.getState();
-    setInputs([
-      {
-        dimention: "2D",
-        coordinatesValue: { x: "", y: "" },
-        pointRef: "A",
-        label: "v",
-      },
-    ]);
-  },
-  validate: () => {
-    const { getInputByPointRef } = useFillInTheBlankStore.getState();
-    const { setVectors } = useScene2DStore.getState();
-    const vector = getInputByPointRef("A");
-    if (!vector) return false;
-
-    const { x, y } = vector.coordinatesValue;
-    if (x === 3 && y === 1) {
-      setVectors([
+function createPointDisplacementAssignment({
+  order,
+  pointPosition,
+  goalPosition,
+}: PointDisplacementInputProps): Assignment {
+  return {
+    id: `point-displacement-${order}`,
+    title: `Desloque o ponto`,
+    instructions: `Descreva o vetor de deslocamento do ponto para a posição (${goalPosition[0]}, ${goalPosition[1]}).`,
+    order,
+    type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
+    setup: () => {
+      const { setPoints } = useScene2DStore.getState();
+      setPoints([
         {
-          id: "displacement-vector",
-          tail: [-1, 2],
-          tip: [2, 3],
-          color: "blue",
+          id: "A",
+          label: "A",
+          position: pointPosition,
+          movable: false,
+          color: "red",
+        },
+      ]);
+
+      const { setInputs } = useFillInTheBlankStore.getState();
+      setInputs([
+        {
+          dimention: "2D",
+          coordinatesValue: { x: "", y: "" },
+          pointRef: "A",
           label: "v",
         },
       ]);
-      return true;
-    }
+    },
+    validate: () => {
+      const { getInputByPointRef } = useFillInTheBlankStore.getState();
+      const { setVectors } = useScene2DStore.getState();
+      const vectorInput = getInputByPointRef("A");
+      if (!vectorInput) return false;
 
-    return false;
+      const { x, y } = vectorInput.coordinatesValue;
+      const inputedVector = [x, y];
+      const displacementVector = [
+        goalPosition[0] - pointPosition[0],
+        goalPosition[1] - pointPosition[1],
+      ];
+
+      const isCorrect =
+        inputedVector[0] === displacementVector[0] &&
+        inputedVector[1] === displacementVector[1];
+
+      if (isCorrect) {
+        setVectors([
+          {
+            id: "displacement-vector",
+            tail: pointPosition,
+            tip: goalPosition,
+            color: "blue",
+            label: "v",
+          },
+        ]);
+      }
+      return isCorrect;
+    },
+  };
+}
+
+const pointDisplacementAssignmentsProps: PointDisplacementInputProps[] = [
+  {
+    order: 1,
+    pointPosition: [0, 0],
+    goalPosition: [3, 4],
   },
-};
+  {
+    order: 2,
+    pointPosition: [1, 2],
+    goalPosition: [4, 6],
+  },
+  {
+    order: 3,
+    pointPosition: [-1, 2],
+    goalPosition: [3, 2],
+  },
+  {
+    order: 4,
+    pointPosition: [-3, 4],
+    goalPosition: [2, 2],
+  },
+  {
+    order: 5,
+    pointPosition: [2, -3],
+    goalPosition: [-3, 2],
+  },
+  {
+    order: 6,
+    pointPosition: [0, 0],
+    goalPosition: [-2, -3],
+  },
+];
+
+export const pointDisplacementAssignmentList: Assignment[] =
+  pointDisplacementAssignmentsProps.map(createPointDisplacementAssignment);
