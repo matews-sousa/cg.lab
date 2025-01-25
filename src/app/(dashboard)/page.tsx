@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,7 +16,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-16">
+    <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-16 items-start">
       <div className="flex flex-col gap-4 mb-4 lg:mb-0">
         <Card>
           <CardHeader>
@@ -63,6 +65,19 @@ export default function Home() {
               </div>
             </div>
           </CardFooter>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Treine com Exercícios Aleatórios!</CardTitle>
+            <CardDescription>
+              Aqui você pode praticar com exercícios gerados aleatoriamente.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/assignment/random">
+              <Button className="w-full">Começar</Button>
+            </Link>
+          </CardContent>
         </Card>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 col-span-2 gap-4">

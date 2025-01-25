@@ -7,6 +7,7 @@ export type TCube = {
   position: Vector3;
   size: Vector3;
   color: string;
+  translation: Vector3;
   rotation: Vector3;
   scale: Vector3;
   customXRotationMatrix?: Matrix4 | null;

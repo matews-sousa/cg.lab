@@ -7,6 +7,7 @@ import {
   GizmoViewport,
   OrbitControls,
   Text,
+  Billboard,
 } from "@react-three/drei";
 import Cube from "./cube";
 import { useScene3DStore } from "@/store/scene3DStore";
@@ -35,15 +36,36 @@ function Scene() {
         rotation={[0, 0, Math.PI / 2]}
       />
 
-      <Text position={[8.5, 0, 0]} color="white" fontSize={1}>
-        X+
-      </Text>
-      <Text position={[0, 8.5, 0]} color="white" fontSize={1}>
-        Y+
-      </Text>
-      <Text position={[0, 0, 8.5]} color="white" fontSize={1}>
-        Z+
-      </Text>
+      <Billboard follow position={[8.5, 0, 0]}>
+        <Text
+          color="white"
+          fontSize={1}
+          outlineColor="black"
+          outlineWidth={0.02}
+        >
+          X+
+        </Text>
+      </Billboard>
+      <Billboard follow position={[0, 8.5, 0]}>
+        <Text
+          color="white"
+          fontSize={1}
+          outlineColor="black"
+          outlineWidth={0.02}
+        >
+          Y+
+        </Text>
+      </Billboard>
+      <Billboard follow position={[0, 0, 8.5]}>
+        <Text
+          color="white"
+          fontSize={1}
+          outlineColor="black"
+          outlineWidth={0.02}
+        >
+          Z+
+        </Text>
+      </Billboard>
 
       <axesHelper args={[8]} />
 

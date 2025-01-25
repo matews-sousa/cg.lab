@@ -21,6 +21,7 @@ export const completeRotationMatrix3dYAssignment: Assignment = {
       scale: new Vector3(1, 1, 1),
       rotation: new Vector3(0, 0, 0),
       size: new Vector3(1, 1, 1),
+      translation: new Vector3(0, 0, 0),
       color: "red",
     });
 
@@ -31,6 +32,7 @@ export const completeRotationMatrix3dYAssignment: Assignment = {
       scale: new Vector3(1, 1, 1),
       rotation: new Vector3(0, 45, 0),
       size: new Vector3(1, 1, 1),
+      translation: new Vector3(0, 0, 0),
       color: "red",
     });
 

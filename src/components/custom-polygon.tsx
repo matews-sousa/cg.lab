@@ -1,4 +1,4 @@
-import { Polygon, Transform, useMovablePoint } from "mafs";
+import { Polygon, Transform } from "mafs";
 import CustomPoint from "./custom-point";
 import { TPolygon } from "@/types/Scene2DConfig";
 import { degreesToRadians } from "@/lib/utils";
@@ -8,19 +8,6 @@ interface Props {
 }
 
 export default function CustomPolygon({ polygon }: Props) {
-  // Calculate the polygon's center
-  const polygonCenter = polygon.points
-    .reduce(
-      (acc, point) => [acc[0] + point.position[0], acc[1] + point.position[1]],
-      [0, 0]
-    )
-    .map(coord => coord / polygon.points.length) as [number, number];
-
-  // Translation control
-  const t = useMovablePoint(polygonCenter, {
-    constrain: ([x, y]) => [Math.round(x), Math.round(y)],
-  });
-
   if (polygon.points.length < 4) {
     return (
       <>
@@ -40,7 +27,7 @@ export default function CustomPolygon({ polygon }: Props) {
   return (
     <>
       {/* Transformations */}
-      <Transform translate={t.point}>
+      <Transform translate={polygon.translation}>
         <Transform rotate={degreesToRadians(polygon.rotation ?? 0)}>
           <Transform scale={polygon.scale}>
             {/* Render polygon */}
@@ -50,6 +37,7 @@ export default function CustomPolygon({ polygon }: Props) {
               color={polygon.color}
               strokeStyle={polygon.strokeStyle}
             />
+            {/* Render vertices as draggable points */}
             {polygon.points.map(point => (
               <CustomPoint
                 key={point.id}
@@ -59,10 +47,7 @@ export default function CustomPolygon({ polygon }: Props) {
             ))}
           </Transform>
         </Transform>
-        {/* Render vertices as draggable points */}
       </Transform>
-      {/* Render controls */}
-      {polygon.movable && t.element}
     </>
   );
 }
