@@ -3,7 +3,7 @@ import { Assignment, AssignmentType } from "@/types/Assignment";
 import { getRandomVectorWithTailAndTip } from "@/utils";
 import { vec } from "mafs";
 
-type VectorTailAndTip = {
+export type VectorTailAndTip = {
   tail: [number, number];
   tip: [number, number];
 };

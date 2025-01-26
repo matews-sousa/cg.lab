@@ -3,9 +3,9 @@ import { create } from "zustand";
 export interface VecLenFormula {
   vectorRefId: string;
   values: {
-    x: number;
-    y: number;
-    z: number;
+    x: number | string;
+    y: number | string;
+    z: number | string;
   };
   dimensions: "2D" | "3D";
 }
@@ -17,7 +17,7 @@ interface FillInVecLengthFormulaStore {
   setVectorRefId: (vectorRefId: string) => void;
   setValues: (
     vectorRefId: string,
-    values: { x: number; y: number; z: number }
+    values: { x: number | string; y: number | string; z: number | string }
   ) => void;
   setDimensions: (vectorRefId: string, dimensions: "2D" | "3D") => void;
   reset: () => void;

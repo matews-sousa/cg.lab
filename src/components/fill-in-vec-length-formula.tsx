@@ -15,8 +15,26 @@ export default function FillInVecLengthFormula({ vecLengthFormula }: Props) {
   const handleChange =
     (key: keyof typeof values) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValues(vectorRefId, { ...values, [key]: Number(event.target.value) });
+      // make it accept - and .
+      const value = event.target.value.replace(/[^0-9.-]/g, "");
+
+      // accept only one dot in any position
+      if (value.includes(".") && value.split(".").length > 2) return;
+
+      // accept only one minus at the beginning
+      if (value.includes("-") && value.split("-").length > 2) return;
+      if (value.includes("-") && value.indexOf("-") !== 0) return;
+
+      setValues(vectorRefId, { ...values, [key]: value });
     };
+
+  const allValuesAreNumbers = Object.values(values).every(
+    value => isNaN(Number(value)) === false
+  );
+
+  const calculatedLength = allValuesAreNumbers
+    ? Math.sqrt(Number(values.x) ** 2 + Number(values.y) ** 2).toPrecision(2)
+    : "???";
 
   // Define the keys to render based on dimensions
   const dimensionKeys = dimensions === "3D" ? ["x", "y", "z"] : ["x", "y"];
@@ -49,7 +67,7 @@ export default function FillInVecLengthFormula({ vecLengthFormula }: Props) {
             <React.Fragment key={key}>
               <div className="relative w-8 h-8">
                 <input
-                  value={values[key as keyof typeof values] || ""}
+                  value={values[key as keyof typeof values]}
                   onChange={handleChange(key as keyof typeof values)}
                   type="text"
                   className="text-2xl w-full h-full border-b-2 bg-transparent border-b-black text-center focus:outline-none"
@@ -61,6 +79,10 @@ export default function FillInVecLengthFormula({ vecLengthFormula }: Props) {
               )}
             </React.Fragment>
           ))}
+        </div>
+        <div>
+          <span className="text-3xl"> = </span>
+          <span className="text-3xl">{calculatedLength}</span>
         </div>
       </div>
     </div>
