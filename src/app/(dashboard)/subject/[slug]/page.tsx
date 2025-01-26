@@ -17,6 +17,7 @@ import {
   LayoutGrid,
   MousePointerSquareDashedIcon,
   Puzzle,
+  Radical,
   Space,
   Variable,
 } from "lucide-react";
@@ -37,6 +38,7 @@ export default function SubjectPage({
     FILL_IN_THE_BLANK_MATRIX: <LayoutGrid />,
     FILL_IN_THE_BLANK_MATRIX_WITH_OPTIONS: <MousePointerSquareDashedIcon />,
     FILL_IN_THE_BLANK_WITH_OPTIONS: <Space />,
+    FILL_IN_THE_BLANK_FORMULA: <Radical />,
     PARAMETERIZED: <Variable />,
     REORDER: <BringToFront />,
   };
