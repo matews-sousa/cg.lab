@@ -33,7 +33,7 @@ export default function FillInVecLengthFormula({ vecLengthFormula }: Props) {
   );
 
   const calculatedLength = allValuesAreNumbers
-    ? Math.sqrt(Number(values.x) ** 2 + Number(values.y) ** 2).toPrecision(2)
+    ? Math.sqrt(Number(values.x) ** 2 + Number(values.y) ** 2).toPrecision(3)
     : "???";
 
   // Define the keys to render based on dimensions
@@ -65,7 +65,7 @@ export default function FillInVecLengthFormula({ vecLengthFormula }: Props) {
         <div className="flex items-center absolute left-10">
           {dimensionKeys.map((key, index) => (
             <React.Fragment key={key}>
-              <div className="relative w-8 h-8">
+              <div className="relative w-10 h-10">
                 <input
                   value={values[key as keyof typeof values]}
                   onChange={handleChange(key as keyof typeof values)}
@@ -80,10 +80,10 @@ export default function FillInVecLengthFormula({ vecLengthFormula }: Props) {
             </React.Fragment>
           ))}
         </div>
-        <div>
-          <span className="text-3xl"> = </span>
-          <span className="text-3xl">{calculatedLength}</span>
-        </div>
+      </div>
+      <div>
+        <span className="text-3xl"> = </span>
+        <span className="text-3xl">{calculatedLength}</span>
       </div>
     </div>
   );
