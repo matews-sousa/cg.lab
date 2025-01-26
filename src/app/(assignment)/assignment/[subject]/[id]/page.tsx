@@ -23,6 +23,8 @@ import ObjectivePanel from "@/components/objective-panel";
 import Lottie from "lottie-react";
 import successAnimationData from "@/assets/success-anim.json";
 import failAnimationData from "@/assets/fail-anim.json";
+import FillInVecLengthFormula from "@/components/fill-in-vec-length-formula";
+import { useFillInVecLengthFormulaStore } from "@/store/fillInVecLengthFormulaStore";
 
 export default function Page({
   params,
@@ -39,6 +41,8 @@ export default function Page({
     useFillBlankMatrixInputStore();
   const { reset: resetFillInMatrixWithOptions } =
     useFillInMatrixWithOptionsStore();
+  const { vecLengthFormulas, reset: resetFillInVecLengthFormulaStore } =
+    useFillInVecLengthFormulaStore();
   const [assignmentState, setAssignmentState] = useState<
     "notAnswered" | "correct" | "incorrect"
   >("notAnswered");
@@ -58,6 +62,7 @@ export default function Page({
     resetFillInTheBlankWithOptions();
     resetFillBlankMatrixInput();
     resetFillInMatrixWithOptions();
+    resetFillInVecLengthFormulaStore();
 
     const subj = subjects.find(s => s.slug === subject);
     if (!subj) return;
@@ -75,6 +80,7 @@ export default function Page({
     resetFillInTheBlankWithOptions,
     resetFillBlankMatrixInput,
     resetFillInMatrixWithOptions,
+    resetFillInVecLengthFormulaStore,
   ]);
 
   const handleConfirm = () => {
@@ -89,6 +95,7 @@ export default function Page({
     resetFillInTheBlankWithOptions();
     resetFillBlankMatrixInput();
     resetFillInMatrixWithOptions();
+    resetFillInVecLengthFormulaStore();
     setAssignmentState("notAnswered");
     assignment?.setup();
   };
@@ -181,6 +188,13 @@ export default function Page({
                 AssignmentType.FILL_IN_THE_BLANK_MATRIX_WITH_OPTIONS && (
                 <FillInMatrixWithOptions />
               )}
+
+              {vecLengthFormulas.map((vecLengthFormula, index) => (
+                <FillInVecLengthFormula
+                  key={index}
+                  vecLengthFormula={vecLengthFormula}
+                />
+              ))}
 
               <div className="flex items-center justify-center gap-4 mt-4">
                 <Button onClick={handleConfirm}>Confirmar</Button>

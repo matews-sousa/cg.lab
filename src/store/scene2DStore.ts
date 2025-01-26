@@ -32,6 +32,7 @@ type Scene2DStore = {
   ) => void;
   setVectorTail: (id: string, tail: [number, number]) => void;
   setVectorTip: (id: string, tip: [number, number]) => void;
+  setVectorLabel: (id: string, label: string) => void;
   getPoint: (id: string) => TPoint | undefined;
   getVector: (id: string) => TVector | undefined;
   getPolygon: (id: string) => TPolygon | undefined;
@@ -162,6 +163,16 @@ export const useScene2DStore = create<Scene2DStore>((set, get) => ({
         ),
       },
     })),
+  setVectorLabel: (id, label) => {
+    set(state => ({
+      config: {
+        ...state.config,
+        vectors: state.config.vectors?.map(vector =>
+          vector.id === id ? { ...vector, label } : vector
+        ),
+      },
+    }));
+  },
   getPoint: id => get().config.points?.find(point => point.id === id),
   getVector: id => get().config.vectors?.find(vector => vector.id === id),
   getPolygon: id => get().config.polygons?.find(polygon => polygon.id === id),
