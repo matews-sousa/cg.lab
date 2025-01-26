@@ -45,7 +45,7 @@ export default function SubjectPage({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 md:gap-16">
-      <Card className="mb-4 md:mb-0 self-start sticky top-4 lg:col-span-1">
+      <Card className="mb-4 md:mb-0 self-start md:sticky top-4 lg:col-span-1">
         <CardHeader>
           <CardTitle className="text-3xl font-bold">{subject?.title}</CardTitle>
           <CardDescription>{subject?.description}</CardDescription>
