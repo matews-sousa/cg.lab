@@ -5,6 +5,7 @@ import { insertVectorSumAssignmentList } from "./insertVectorSum";
 import { pointDisplacementAssignmentList } from "./pointDisplacement";
 import { vectorLengthAssignmentList } from "./vectorLength";
 import { vectorScalarAssignmentList } from "./vectorScalar";
+import { vectorScalarFillInCoordsAssignmentList } from "./vectorScalarFillInCoords";
 import { vectorSumAssignmentList } from "./vectorSum";
 
 export const vectorAssignments = [
@@ -15,5 +16,6 @@ export const vectorAssignments = [
   ...adjustVectorSumAssignmentsList,
   ...pointDisplacementAssignmentList,
   ...vectorScalarAssignmentList,
+  ...vectorScalarFillInCoordsAssignmentList,
   ...vectorLengthAssignmentList,
 ];

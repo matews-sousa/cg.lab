@@ -1,6 +1,7 @@
 import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
 import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
+import { vec } from "mafs";
 
 interface DefineTheVectorAssignmentProps {
   order: number;
@@ -63,9 +64,15 @@ function createDefineTheVectorAssignment({
     validate() {
       const { getInputByPointRef } = useFillInTheBlankStore.getState();
       const v = getInputByPointRef("v");
-      const isCorrect =
-        v?.coordinatesValue.x === pointB[0] - pointA[0] &&
-        v?.coordinatesValue.y === pointB[1] - pointA[1];
+      console.log(v);
+      if (!v) return false;
+
+      const vector = vec.sub(pointB, pointA);
+      const inputX = Number(v?.coordinatesValue.x);
+      const inputY = Number(v?.coordinatesValue.y);
+      console.log(vector);
+
+      const isCorrect = inputX === vector[0] && inputY === vector[1];
       return isCorrect;
     },
   };

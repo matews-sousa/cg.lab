@@ -50,9 +50,10 @@ function createWhichPositionCoordsInputsAssignment({
       const input = getInputByPointRef("A");
       if (!input) return false;
       const coordinates = input.coordinatesValue;
+      const inputX = Number(coordinates.x);
+      const inputY = Number(coordinates.y);
       const isCorrect =
-        coordinates?.x === pointPosition[0] &&
-        coordinates.y === pointPosition[1];
+        inputX === pointPosition[0] && inputY === pointPosition[1];
       useFillInTheBlankStore.getState().reset();
       return isCorrect;
     },
