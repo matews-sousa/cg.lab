@@ -1,6 +1,7 @@
 import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
 import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
+import { vec } from "mafs";
 
 interface PointDisplacementInputProps {
   order: number;
@@ -48,11 +49,8 @@ function createPointDisplacementAssignment({
       if (!vectorInput) return false;
 
       const { x, y } = vectorInput.coordinatesValue;
-      const inputedVector = [x, y];
-      const displacementVector = [
-        goalPosition[0] - pointPosition[0],
-        goalPosition[1] - pointPosition[1],
-      ];
+      const inputedVector = [Number(x), Number(y)];
+      const displacementVector = vec.sub(goalPosition, pointPosition);
 
       const isCorrect =
         inputedVector[0] === displacementVector[0] &&

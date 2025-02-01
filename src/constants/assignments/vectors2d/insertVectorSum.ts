@@ -66,9 +66,9 @@ function createInsertVectorSumAssignment({
       const vecB = vec.sub(b.tip, b.tail);
 
       const sum = vec.add(vecA, vecB);
-      const isCorrect =
-        input.coordinatesValue.x === sum[0] &&
-        input.coordinatesValue.y === sum[1];
+      const inputX = Number(input.coordinatesValue.x);
+      const inputY = Number(input.coordinatesValue.y);
+      const isCorrect = inputX === sum[0] && inputY === sum[1];
 
       if (isCorrect) {
         addVector({
