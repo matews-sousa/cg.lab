@@ -179,10 +179,9 @@ export default function Page({
                 <FillFormulaWithOptions />
               )}
 
-              {assignment?.type === AssignmentType.FILL_IN_THE_BLANK_MATRIX &&
-                matrices.map(matrix => (
-                  <FillInMatrixInput key={matrix.id} matrix={matrix} />
-                ))}
+              {matrices.map(matrix => (
+                <FillInMatrixInput key={matrix.id} matrix={matrix} />
+              ))}
 
               {assignment?.type ===
                 AssignmentType.FILL_IN_THE_BLANK_MATRIX_WITH_OPTIONS && (

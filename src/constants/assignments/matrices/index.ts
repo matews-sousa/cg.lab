@@ -1,11 +1,11 @@
+import { applyTranslationmatrixToPointAssignmentListList } from "./applyTranslationMatrixToPoint";
 import { rotationMatrixAssignment } from "./rotationMatrix";
 import { scalePolygonAssignment } from "./scalePolygon";
-import { translationMatrixAssignment } from "./translationMatrix";
-import { translationMatrixAssignment2 } from "./translationMatrix2";
+import { translationMatrix2dAssignmentList } from "./translationMatrix";
 
 export const matricesAssignments = [
-  translationMatrixAssignment,
-  translationMatrixAssignment2,
+  ...translationMatrix2dAssignmentList,
+  ...applyTranslationmatrixToPointAssignmentListList,
   scalePolygonAssignment,
   rotationMatrixAssignment,
 ];
