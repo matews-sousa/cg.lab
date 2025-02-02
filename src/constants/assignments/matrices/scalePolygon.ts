@@ -12,7 +12,7 @@ interface ScalePolygonAssignmentProps {
   goalScale: [number, number];
 }
 
-const generateSquarePoints = (
+export const generateSquarePoints = (
   centerPos: [number, number],
   size: [number, number]
 ): [number, number][] => {
