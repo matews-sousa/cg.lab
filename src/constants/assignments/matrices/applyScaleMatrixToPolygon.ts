@@ -1,16 +1,19 @@
 import { Assignment, AssignmentType } from "@/types/Assignment";
-import { generateSquarePoints } from "./scalePolygon";
 import { useScene2DStore } from "@/store/scene2DStore";
 import { initial2DScalingMatrixValue } from "@/constants/inicial2DMatricesValues";
 import {
   MatrixType,
   useFillBlankMatrixInputStore,
 } from "@/store/fillInBlankMatrixInputStore";
+import { generateSquarePoints, generateTrianglePoints } from "@/utils";
 
 interface ApplyScaleMatrixToPolygonProps {
   order: number;
-  squareCenter: [number, number];
-  squareSize: [number, number];
+  squareCenter?: [number, number];
+  squareSize?: [number, number];
+  triangleCenter?: [number, number];
+  triangleSize?: number;
+  triangleType?: "equilateral" | "isosceles" | "scalene";
   goalScale: [number, number];
 }
 
@@ -19,8 +22,19 @@ function createApplyScaleMatrixToPolygon({
   goalScale,
   squareCenter,
   squareSize,
+  triangleCenter,
+  triangleSize,
+  triangleType,
 }: ApplyScaleMatrixToPolygonProps): Assignment {
-  const squarePoints = generateSquarePoints(squareCenter, squareSize);
+  let initialPoints: [number, number][] = [];
+  if (squareCenter && squareSize)
+    initialPoints = generateSquarePoints(squareCenter, squareSize);
+  else if (triangleCenter && triangleSize && triangleType)
+    initialPoints = generateTrianglePoints(
+      triangleCenter,
+      triangleType,
+      triangleSize
+    );
 
   return {
     id: `apply-scale-matrix-to-polygon-${order}`,
@@ -35,7 +49,7 @@ function createApplyScaleMatrixToPolygon({
         {
           id: "square",
           color: "blue",
-          points: squarePoints.map((point, index) => ({
+          points: initialPoints.map((point, index) => ({
             id: `point${index}`,
             position: point,
             movable: true,
@@ -63,7 +77,7 @@ function createApplyScaleMatrixToPolygon({
       const polygon = getPolygon("square");
       if (!polygon) return false;
 
-      const transformedPoints = squarePoints.map(point => ({
+      const transformedPoints = initialPoints.map(point => ({
         x: point[0] * goalScale[0],
         y: point[1] * goalScale[1],
       }));
@@ -105,6 +119,34 @@ const applyScaleMatrixToPolygonAssignmentProps: ApplyScaleMatrixToPolygonProps[]
       squareCenter: [0.5, 0.5],
       squareSize: [1, 1],
       goalScale: [2, 1],
+    },
+    {
+      order: 5,
+      triangleCenter: [0, 0],
+      triangleSize: 1,
+      triangleType: "equilateral",
+      goalScale: [2, 2],
+    },
+    {
+      order: 6,
+      triangleCenter: [0, 0],
+      triangleSize: 1,
+      triangleType: "equilateral",
+      goalScale: [1, 2],
+    },
+    {
+      order: 7,
+      triangleCenter: [1, 1],
+      triangleSize: 1,
+      triangleType: "isosceles",
+      goalScale: [2, 1],
+    },
+    {
+      order: 8,
+      triangleCenter: [-2, 3],
+      triangleSize: 2,
+      triangleType: "scalene",
+      goalScale: [2, 2],
     },
   ];
 

@@ -4,6 +4,7 @@ import {
 } from "@/store/fillInBlankMatrixInputStore";
 import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
+import { generateSquarePoints } from "@/utils";
 
 interface ScalePolygonAssignmentProps {
   order: number;
@@ -11,24 +12,6 @@ interface ScalePolygonAssignmentProps {
   squareSize: [number, number];
   goalScale: [number, number];
 }
-
-export const generateSquarePoints = (
-  centerPos: [number, number],
-  size: [number, number]
-): [number, number][] => {
-  const centerX = centerPos[0];
-  const centerY = centerPos[1];
-  const sizeX = size[0];
-  const sizeY = size[1];
-
-  // Calculate square vertices based on the center and size
-  return [
-    [centerX - sizeX / 2, centerY - sizeY / 2],
-    [centerX + sizeX / 2, centerY - sizeY / 2],
-    [centerX + sizeX / 2, centerY + sizeY / 2],
-    [centerX - sizeX / 2, centerY + sizeY / 2],
-  ];
-};
 
 function createScalePolygonAssignment({
   order,
