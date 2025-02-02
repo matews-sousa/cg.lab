@@ -22,6 +22,7 @@ export default function FillInMatrixInput({ matrix }: Props) {
     setPolygonScale,
     setPolygonRotation,
     setPolygonTranslation,
+    setPointScale,
   } = useScene2DStore();
   const { getCube, updateCube } = useScene3DStore();
 
@@ -68,6 +69,14 @@ export default function FillInMatrixInput({ matrix }: Props) {
         ] as [number, number];
         if (translation.some(isNaN)) return; // Do nothing if any value is NaN
         setPointTranslation(matrix.pointRefId, translation);
+      }
+
+      if (point && matrix.type === MatrixType.SCALING) {
+        const value00 = Number(matrix.matrixValue[0][0].value);
+        const value11 = Number(matrix.matrixValue[1][1].value);
+        const scale = [value00, value11] as [number, number];
+        if (scale.some(isNaN)) return; // Do nothing if any value is NaN
+        setPointScale(matrix.pointRefId, scale);
       }
     }
 
@@ -185,6 +194,7 @@ export default function FillInMatrixInput({ matrix }: Props) {
     getPoint,
     getPolygon,
     setPointTranslation,
+    setPointScale,
     setPolygonRotation,
     setPolygonTranslation,
     getCube,

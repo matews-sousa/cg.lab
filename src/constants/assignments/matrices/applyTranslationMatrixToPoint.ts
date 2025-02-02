@@ -19,7 +19,7 @@ function createTranslationMatrix2DAssignment({
 }: ApplyTranslationMatrixToPointProps): Assignment {
   return {
     id: `apply-translation-matrix-2d-${order}`,
-    title: "Matriz de Translação",
+    title: "Aplique a Matriz de Translação",
     instructions: `Mova o ponto A(${initialPosition[0]}, ${initialPosition[1]}) para a posição resultante após a aplicação da matriz de translação.`,
     order,
     type: AssignmentType.INTERACTIVE,

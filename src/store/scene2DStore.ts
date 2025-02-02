@@ -11,6 +11,7 @@ type Scene2DStore = {
   setConfig: (config: Scene2DConfig) => void;
   setPoints: (points: Scene2DConfig["points"]) => void;
   setPointTranslation: (id: string, translation: [number, number]) => void;
+  setPointScale: (id: string, scale: [number, number]) => void;
   setVectors: (vectors: Scene2DConfig["vectors"]) => void;
   addVector: (vector: TVector) => void;
   setPolygons: (polygons: Scene2DConfig["polygons"]) => void;
@@ -60,6 +61,15 @@ export const useScene2DStore = create<Scene2DStore>((set, get) => ({
         ...state.config,
         points: state.config.points?.map(point =>
           point.id === id ? { ...point, translation } : point
+        ),
+      },
+    })),
+  setPointScale: (id, scale) =>
+    set(state => ({
+      config: {
+        ...state.config,
+        points: state.config.points?.map(point =>
+          point.id === id ? { ...point, scale } : point
         ),
       },
     })),

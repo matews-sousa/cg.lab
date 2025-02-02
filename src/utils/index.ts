@@ -59,3 +59,72 @@ export const shuffleArray = <T>(array: T[]): T[] => {
   }
   return shuffled;
 };
+
+export const generateSquarePoints = (
+  centerPos: [number, number],
+  size: [number, number]
+): [number, number][] => {
+  const centerX = centerPos[0];
+  const centerY = centerPos[1];
+  const sizeX = size[0];
+  const sizeY = size[1];
+
+  // Calculate square vertices based on the center and size
+  return [
+    [centerX - sizeX / 2, centerY - sizeY / 2],
+    [centerX + sizeX / 2, centerY - sizeY / 2],
+    [centerX + sizeX / 2, centerY + sizeY / 2],
+    [centerX - sizeX / 2, centerY + sizeY / 2],
+  ];
+};
+
+type TriangleType = "equilateral" | "isosceles" | "scalene";
+
+function roundToHalf(value: number): number {
+  // Round to the nearest 0.5
+  return Math.round(value * 2) / 2;
+}
+
+export function generateTrianglePoints(
+  centerPos: [number, number],
+  triangleType: TriangleType,
+  size: number = 1
+): [number, number][] {
+  const [cx, cy] = centerPos;
+  let points: [number, number][];
+
+  switch (triangleType) {
+    case "equilateral":
+      // Equilateral triangle points
+      points = [
+        [cx, cy - (size * Math.sqrt(3)) / 3], // Top vertex
+        [cx - size / 2, cy + (size * Math.sqrt(3)) / 6], // Bottom left vertex
+        [cx + size / 2, cy + (size * Math.sqrt(3)) / 6], // Bottom right vertex
+      ];
+      break;
+
+    case "isosceles":
+      // Isosceles triangle points
+      points = [
+        [cx, cy - size / 2], // Top vertex
+        [cx - size / 2, cy + size / 2], // Bottom left vertex
+        [cx + size / 2, cy + size / 2], // Bottom right vertex
+      ];
+      break;
+
+    case "scalene":
+      // Scalene triangle points (arbitrary points)
+      points = [
+        [cx, cy - size / 2], // Top vertex
+        [cx - size / 3, cy + size / 2], // Bottom left vertex
+        [cx + size / 2, cy + size / 4], // Bottom right vertex
+      ];
+      break;
+
+    default:
+      throw new Error("Invalid triangle type");
+  }
+
+  // Round all points to the nearest 0.5
+  return points.map(([x, y]) => [roundToHalf(x), roundToHalf(y)]);
+}
