@@ -32,15 +32,23 @@ export default function CustomPoint({ point, polygonId }: Props) {
   if (!point.movable) {
     return (
       <>
-        <Transform translate={point.translation}>
+        <Transform translate={point.translation} scale={point.scale}>
           <Point
             key={point.id}
             x={point.position[0]}
             y={point.position[1]}
             color={point.color}
           />
-          {point.label && (
-            <Transform translate={[0, -0.7]}>
+        </Transform>
+        {point.label && (
+          <Transform
+            translate={
+              point.translation
+                ? [0 + point.translation[0], -0.7 + point.translation[1]]
+                : [0, -0.7]
+            }
+          >
+            <Transform scale={point.scale}>
               <LaTeX
                 at={point.position}
                 tex={point.label
@@ -48,8 +56,8 @@ export default function CustomPoint({ point, polygonId }: Props) {
                   .replace("${y}", point.position[1].toString())}
               />
             </Transform>
-          )}
-        </Transform>
+          </Transform>
+        )}
       </>
     );
   }
