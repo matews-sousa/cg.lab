@@ -42,20 +42,24 @@ export default function Navbar() {
         <Link href="/" className="text-2xl font-bold">
           CG.lab
         </Link>
-        <div className="space-x-4">
+        <div>
           {user ? (
             <>
-              <Button onClick={handleSignOut}>Sair</Button>
+              <Button variant="destructive" onClick={handleSignOut}>
+                Sair
+              </Button>
             </>
           ) : (
-            <>
+            <div className="flex gap-4">
               <Link href="/login">
-                <Button>Entrar</Button>
+                <Button className="w-full">Entrar</Button>
               </Link>
               <Link href="/sign-up">
-                <Button>Registrar</Button>
+                <Button variant="outline" className="w-full">
+                  Registrar
+                </Button>
               </Link>
-            </>
+            </div>
           )}
         </div>
       </div>
