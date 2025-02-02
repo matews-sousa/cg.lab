@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Card,
   CardContent,
@@ -8,62 +8,87 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { useAuthActions } from "@convex-dev/auth/react";
 
 import { z } from "zod";
-import { redirect } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "convex/react";
+import { api } from "../../convex/_generated/api";
 
-export const SignUpSchema = z
+export const signUpSchema = z
   .object({
-    name: z.string().min(1, "Nome é obrigatório"),
-    email: z.string().email("Email inválido"),
-    password: z.string().min(8, "Senha deve ter pelo menos 8 caracteres"),
-    passwordConfirmation: z.string(),
+    name: z.string({ message: "Nome é obrigatório" }).min(1, {
+      message: "Nome é obrigatório",
+    }),
+    email: z.string({ message: "Email é obrigatório" }).email({
+      message: "Email inválido",
+    }),
+    password: z.string({ message: "Senha é obrigatória" }).min(8, {
+      message: "Senha deve ter no mínimo 8 caracteres",
+    }),
+    passwordConfirmation: z.string({
+      message: "Confirmação de senha é obrigatória",
+    }),
   })
   .refine(data => data.password === data.passwordConfirmation, {
     message: "Senhas não coincidem",
     path: ["passwordConfirmation"], // Attach the error to passwordConfirmation
   });
 
-export type SignUpFormData = z.infer<typeof SignUpSchema>;
+export type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export default function SignUpForm() {
   const { signIn } = useAuthActions();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+  const form = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      passwordConfirmation: "",
+    },
+  });
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-    const formData = new FormData(event.currentTarget as HTMLFormElement);
-    const data: SignUpFormData = {
-      name: formData.get("name") as string,
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
-      passwordConfirmation: formData.get("passwordConfirm") as string,
-    };
-    const result = SignUpSchema.safeParse(data);
-    if (!result.success) {
-      console.error(result.error);
-      setIsSubmitting(false);
+  const checkEmailAlreadyExists = useMutation(api.users.getUserByEmail);
+
+  const handleSubmit = async (values: SignUpFormData) => {
+    const user = await checkEmailAlreadyExists({
+      email: values.email,
+    });
+
+    if (user) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao registrar",
+        description: "O email informado já está em uso",
+      });
       return;
     }
 
     try {
       await signIn("password", {
         flow: "signUp",
-        email: data.email,
-        password: data.password,
-        name: data.name,
+        email: values.email,
+        password: values.password,
+        name: values.name,
       });
-      redirect("/login");
     } catch (error) {
       console.error("Failed to sign up", error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -74,46 +99,81 @@ export default function SignUpForm() {
         <CardDescription>Crie uma conta para acessar o CG.lab</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit}>
-          {/* hidden input to Convex recognize if it's a Login or SignUp */}
-          <input type="hidden" name="flow" value="signUp" />{" "}
-          <div className="flex flex-col gap-6">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Nome</Label>
-              <Input id="name" name="name" type="text" />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="seuemail@email.com"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input id="password" name="password" type="password" />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="passwordConfirmation">Confirmar senha</Label>
-              <Input
-                id="passwordConfirmation"
-                name="passwordConfirm"
-                type="password"
-              />
-            </div>
-            <Button className="w-full" type="submit" disabled={isSubmitting}>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nome</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Senha</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="passwordConfirmation"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirmar senha</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              className="w-full"
+              type="submit"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting && (
+                <Loader2 className="animate-spin" />
+              )}
               Registrar
             </Button>
-          </div>
-          <div className="mt-4 text-center text-sm">
-            Já possui uma conta?{" "}
-            <Link href="/login" className="underline underline-offset-4">
-              Entrar
-            </Link>
-          </div>
-        </form>
+            <div className="mt-4 text-center text-sm">
+              Já possui uma conta?{" "}
+              <Link href="/login" className="underline underline-offset-4">
+                Entrar
+              </Link>
+            </div>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );
