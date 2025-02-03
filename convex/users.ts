@@ -1,5 +1,5 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { mutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 export const currentUser = query({
@@ -22,5 +22,17 @@ export const getUserByEmail = mutation({
       .query("users")
       .filter(q => q.eq(q.field("email"), args.email))
       .unique();
+  },
+});
+
+export const resetAllUsersPracticedWeekDays = internalMutation({
+  args: {},
+  handler: async ctx => {
+    const users = await ctx.db.query("users").collect();
+    for (const user of users) {
+      await ctx.db.patch(user._id, {
+        practicedWeekDays: [],
+      });
+    }
   },
 });
