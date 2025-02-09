@@ -31,7 +31,8 @@ export default function Home() {
     0
   );
   const currentUserDailyMission = defaultDailyMissions.find(
-    mission => mission.id === user?.currentDailyMissionId
+    mission =>
+      mission.id === user?.currentDailyMissionId || defaultDailyMissions[0].id
   );
   const currentDailyMissionProgressPercentage = Math.round(
     ((user?.currentDailyMissionProgress ?? 0) /
@@ -126,7 +127,7 @@ export default function Home() {
                 <div className="flex items-center gap-4">
                   <Progress value={currentDailyMissionProgressPercentage} />
                   <p>
-                    {user?.currentDailyMissionProgress}/
+                    {user?.currentDailyMissionProgress || 0}/
                     {currentUserDailyMission?.target}
                   </p>
                 </div>

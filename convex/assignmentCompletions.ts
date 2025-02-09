@@ -37,18 +37,21 @@ export const completeAssignment = mutation({
       });
     }
 
-    const currentUserDailyMission = defaultDailyMissions.find(
-      mission => mission.id === user?.currentDailyMissionId
-    );
+    const currentUserDailyMission =
+      defaultDailyMissions.find(
+        mission => mission.id === user?.currentDailyMissionId
+      ) ?? defaultDailyMissions[0];
+
     if (
       currentUserDailyMission &&
       currentUserDailyMission.subjectCategory === args.subjectCategory
     ) {
-      const currentDailyMissionProgress =
-        user?.currentDailyMissionProgress ?? 0;
-      const newProgress = currentDailyMissionProgress + 1;
+      const currentProgress = user?.currentDailyMissionProgress ?? 0;
+      const newProgress = currentProgress + 1;
+
       if (newProgress <= currentUserDailyMission.target) {
         await ctx.db.patch(userId, {
+          currentDailyMissionId: currentUserDailyMission.id,
           currentDailyMissionProgress: newProgress,
         });
       }
