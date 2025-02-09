@@ -63,22 +63,50 @@ const subjects: Subject[] = [
   },
 ];
 
-export const generateAnyRandomAssignment = () => {
-  const generators = [
+export const generateAnyRandomAssignment = (selectedSubjects: string[]) => {
+  // Define generators for each subject
+  const pointGenerators = [
     generateRandomMoveToPositionPointAssignment,
     generateRandomWhichPositionPointAssignment,
     generateRandomFillInTheBlankWithOptionsPointAssignment,
+  ];
+
+  const vectorGenerators = [
     generateRandomVectorAssignment,
     generateVectorFillInAssignment,
     generateVectorSumAssignment,
     generateVectorSumFillInAssignment,
     generateVectorTransformationAssignment,
+  ];
+
+  const matrixGenerators = [
     generate2DFillInTranslationMatrixAssignment,
     generate2DFillInTranslationMatrixForSquareAssignment,
     generate2DScaleMatrixAssignment,
     generate2DTranslationMatrixAssignment,
   ];
-  return generators[Math.floor(Math.random() * generators.length)]();
+
+  // Combine generators based on selected subjects
+  const generators = selectedSubjects.flatMap(subject => {
+    if (subject === "points") {
+      return pointGenerators;
+    } else if (subject === "vectors") {
+      return vectorGenerators;
+    } else if (subject === "matrices") {
+      return matrixGenerators;
+    }
+    return []; // Return an empty array for unknown subjects
+  });
+
+  // Check if there are any generators available
+  if (generators.length === 0) {
+    throw new Error("No generators found for the selected subjects.");
+  }
+
+  // Select a random generator and execute it
+  const randomGenerator =
+    generators[Math.floor(Math.random() * generators.length)];
+  return randomGenerator();
 };
 
 export { subjects };

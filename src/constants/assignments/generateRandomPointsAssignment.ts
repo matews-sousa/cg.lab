@@ -111,10 +111,12 @@ export const generateRandomWhichPositionPointAssignment = () => {
     validate: () => {
       const point = useScene2DStore.getState().getPoint("a");
       const input = useFillInTheBlankStore.getState().getInputByPointRef("a");
-      return (
-        point?.position[0] === input?.coordinatesValue.x &&
-        point?.position[1] === input?.coordinatesValue.y
-      );
+      if (!point || !input) return false;
+
+      const inputX = Number(input.coordinatesValue.x);
+      const inputY = Number(input.coordinatesValue.y);
+
+      return point?.position[0] === inputX && point?.position[1] === inputY;
     },
   });
 };

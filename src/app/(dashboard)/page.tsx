@@ -19,6 +19,7 @@ import StreakCard from "@/components/streak-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
 import { defaultDailyMissions } from "@/constants/defaultDailyMissions";
+import RandomAssignmentCard from "@/components/random-assignment-card";
 
 export default function Home() {
   const user = useQuery(api.users.currentUser);
@@ -97,19 +98,7 @@ export default function Home() {
         )}
 
         {/* Random Assignment Card (always visible) */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Treine com Exercícios Aleatórios!</CardTitle>
-            <CardDescription>
-              Aqui você pode praticar com exercícios gerados aleatoriamente.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href="/assignment/random">
-              <Button className="w-full">Começar</Button>
-            </Link>
-          </CardContent>
-        </Card>
+        <RandomAssignmentCard />
 
         <Card>
           <CardHeader>
