@@ -42,6 +42,9 @@ export default function Page() {
   const { config, reset: resetScene2D } = useScene2DStore();
   const { reset: resetScene3D } = useScene3DStore();
 
+  const completeAssignmentMutation = useMutation(
+    api.assignmentCompletions.completeAssignment
+  );
   const updateUserStreakMutation = useMutation(api.users.updateUserStreak);
 
   useEffect(() => {
@@ -68,6 +71,12 @@ export default function Page() {
     if (!assignment) return;
     const isCorrect = assignment.validate();
     if (isCorrect) {
+      completeAssignmentMutation({
+        assignmentId: "",
+        subject: "",
+        subjectCategory: assignment.subjectCategory,
+        ignoreCompletionSave: true,
+      });
       updateUserStreakMutation();
     }
     setAssignmentState(isCorrect ? "correct" : "incorrect");

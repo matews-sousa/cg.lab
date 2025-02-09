@@ -2,6 +2,7 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { internalMutation, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import lostCurrentStreak from "../src/utils/lostCurrentStreak";
+import { defaultDailyMissions } from "../src/constants/defaultDailyMissions";
 import { format } from "date-fns";
 
 export const currentUser = query({
@@ -80,6 +81,23 @@ export const resetAllUsersPracticedWeekDays = internalMutation({
     for (const user of users) {
       await ctx.db.patch(user._id, {
         practicedWeekDays: [],
+      });
+    }
+  },
+});
+
+export const resetAllUsersDailyMissionProgress = internalMutation({
+  args: {},
+  handler: async ctx => {
+    const users = await ctx.db.query("users").collect();
+    for (const user of users) {
+      const randomMissionIndex = Math.floor(
+        Math.random() * defaultDailyMissions.length
+      );
+      const randomMissionId = defaultDailyMissions[randomMissionIndex].id;
+      await ctx.db.patch(user._id, {
+        currentDailyMissionId: randomMissionId,
+        currentDailyMissionProgress: 0,
       });
     }
   },

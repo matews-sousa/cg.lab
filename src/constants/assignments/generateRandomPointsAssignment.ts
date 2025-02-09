@@ -6,6 +6,7 @@ import {
 import { useScene2DStore } from "@/store/scene2DStore";
 import { AssignmentType, RandomGeneratedAssignment } from "@/types/Assignment";
 import { getRandomCoords, shuffleArray } from "@/utils";
+import { SubjectCategories } from "../defaultDailyMissions";
 
 const COORDINATE_LIMITS = [-5, 5] as const;
 
@@ -13,12 +14,14 @@ function createPointAssignment({
   title,
   instructions,
   type,
+  subjectCategory,
   setup,
   validate,
 }: {
   title: string;
   instructions: string;
   type: AssignmentType;
+  subjectCategory: SubjectCategories;
   setup: () => void;
   validate: () => boolean;
 }): RandomGeneratedAssignment {
@@ -29,6 +32,7 @@ function createPointAssignment({
     title,
     instructions,
     type,
+    subjectCategory,
     setup,
     validate,
   };
@@ -49,6 +53,7 @@ export const generateRandomMoveToPositionPointAssignment = () => {
     title: "Mover para posição",
     type: AssignmentType.INTERACTIVE,
     instructions: `Mova o ponto para a posição (${targetPosition[0]}, ${targetPosition[1]}).`,
+    subjectCategory: "points",
     setup: () => {
       useScene2DStore.getState().setPoints([
         {
@@ -80,6 +85,7 @@ export const generateRandomWhichPositionPointAssignment = () => {
     title: "Qual a posição?",
     type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
     instructions: `Qual a posição do ponto?`,
+    subjectCategory: "points",
     setup: () => {
       useScene2DStore.getState().setPoints([
         {
@@ -138,6 +144,7 @@ export const generateRandomFillInTheBlankWithOptionsPointAssignment = () => {
     title: "Preencher os espaços em branco",
     type: AssignmentType.FILL_IN_THE_BLANK_WITH_OPTIONS,
     instructions: ``,
+    subjectCategory: "points",
     setup: () => {
       useScene2DStore.getState().setPoints([
         {

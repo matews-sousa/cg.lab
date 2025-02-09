@@ -10,6 +10,7 @@ import {
   initial3DScalingMatrixValue,
   initial3DTranslationMatrixValue,
 } from "../initial3DMatricesValues";
+import { SubjectCategories } from "../defaultDailyMissions";
 
 const COORDINATE_LIMITS = [0, 3] as [number, number];
 
@@ -17,12 +18,14 @@ function createMatrixAssignment({
   title,
   instructions,
   type,
+  subjectCategory,
   setup,
   validate,
 }: {
   title: string;
   instructions: string;
   type: AssignmentType;
+  subjectCategory: SubjectCategories;
   setup: () => void;
   validate: () => boolean;
 }) {
@@ -33,6 +36,7 @@ function createMatrixAssignment({
     title,
     instructions,
     type,
+    subjectCategory,
     setup,
     validate,
   };
@@ -48,6 +52,7 @@ export function generate3DFillInTranslationMatrixAssignment(): RandomGeneratedAs
     title: "Complete a matriz de translação 3D",
     instructions: `Complete a matriz de Translação para que mova o cubo A para que fique igual ao cubo B`,
     type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
+    subjectCategory: "translation-matrix",
     setup: () => {
       const { addCube, addObjectiveCube, reset } = useScene3DStore.getState();
       reset();
@@ -104,6 +109,7 @@ export function generate3DFillInScaleMatrixAssignment(): RandomGeneratedAssignme
     title: "Complete a matriz de escala 3D",
     instructions: `Complete a matriz de Escala para que o cubo A fique igual ao cubo B`,
     type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
+    subjectCategory: "scaling-matrix",
     setup() {
       const { addCube, addObjectiveCube, reset } = useScene3DStore.getState();
       reset();

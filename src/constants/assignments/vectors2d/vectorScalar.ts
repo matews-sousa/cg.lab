@@ -20,6 +20,7 @@ function createVectorScalarAssignment({
     instructions: `Aplique uma escalar de ${scalar} ao vetor v = (${initialVector.tip[0]}, ${initialVector.tip[1]}).`,
     order,
     type: AssignmentType.INTERACTIVE,
+    subjectCategory: "vector-scalar",
     setup() {
       const { addVector } = useScene2DStore.getState();
       addVector({

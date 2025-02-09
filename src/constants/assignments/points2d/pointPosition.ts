@@ -27,6 +27,7 @@ function createPointPositionWithOptionsAssignment({
     title,
     instructions,
     type: AssignmentType.FILL_IN_THE_BLANK_WITH_OPTIONS,
+    subjectCategory: "points",
     setup() {
       const { setPoints } = useScene2DStore.getState();
       setPoints([

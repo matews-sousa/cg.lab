@@ -13,4 +13,13 @@ crons.weekly(
   internal.users.resetAllUsersPracticedWeekDays
 );
 
+crons.daily(
+  "Reset all users daily mission progress",
+  {
+    hourUTC: 12,
+    minuteUTC: 0,
+  },
+  internal.users.resetAllUsersDailyMissionProgress
+);
+
 export default crons;

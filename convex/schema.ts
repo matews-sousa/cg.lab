@@ -12,8 +12,10 @@ const schema = defineSchema({
     bestStreak: v.optional(v.number()),
     lastCompletedDate: v.optional(v.string()),
     practicedWeekDays: v.optional(v.array(v.string())),
+    currentDailyMissionId: v.optional(v.string()),
+    currentDailyMissionProgress: v.optional(v.number()),
   }).index("email", ["email"]),
-  assignment_completions: defineTable({
+  assignmentCompletions: defineTable({
     userId: v.string(),
     assignmentId: v.string(),
     subject: v.string(),

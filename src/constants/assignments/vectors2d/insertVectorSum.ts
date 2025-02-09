@@ -28,6 +28,7 @@ function createInsertVectorSumAssignment({
     instructions,
     order,
     type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
+    subjectCategory: "vector-sum",
     setup: () => {
       const { setVectors } = useScene2DStore.getState();
       setVectors([

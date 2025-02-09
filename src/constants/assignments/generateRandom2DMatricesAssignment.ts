@@ -10,6 +10,7 @@ import {
   initial2DScalingMatrixValue,
   initial2DTranslationMatrixValue,
 } from "../inicial2DMatricesValues";
+import { SubjectCategories } from "../defaultDailyMissions";
 
 const COORDINATE_LIMITS = [-4, 4] as [number, number];
 
@@ -38,12 +39,14 @@ function createMatrixAssignment({
   title,
   instructions,
   type,
+  subjectCategory,
   setup,
   validate,
 }: {
   title: string;
   instructions: string;
   type: AssignmentType;
+  subjectCategory: SubjectCategories;
   setup: () => void;
   validate: () => boolean;
 }) {
@@ -53,6 +56,7 @@ function createMatrixAssignment({
     order: Math.floor(Math.random() * 100),
     title,
     instructions,
+    subjectCategory,
     type,
     setup,
     validate,
@@ -67,6 +71,7 @@ export function generate2DFillInTranslationMatrixAssignment(): RandomGeneratedAs
     title: "Matrix de translação 2D",
     instructions: `Complete a matriz de translação que desloque o ponto A(${pointA[0]}, ${pointA[1]}) para a posição (${targetPoint[0]}, ${targetPoint[1]})`,
     type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
+    subjectCategory: "translation-matrix",
     setup: () => {
       setupScene([
         {
@@ -124,6 +129,7 @@ export function generate2DFillInTranslationMatrixForSquareAssignment(): RandomGe
     title: "Matrix de translação 2D",
     instructions: `Complete a matriz de Translação que desloque o quadrado Azul para o quadrado Verde`,
     type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
+    subjectCategory: "translation-matrix",
     setup: () => {
       useScene2DStore.getState().reset();
       useScene2DStore.getState().setPolygons([
@@ -207,6 +213,7 @@ export function generate2DTranslationMatrixAssignment(): RandomGeneratedAssignme
     title: "Matrix de translação 2D",
     instructions: `Mova o ponto A(${pointA[0]}, ${pointA[1]}) para a posição resultante da aplicação da matriz de translação`,
     type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
+    subjectCategory: "translation-matrix",
     setup: () => {
       setupScene([
         {
@@ -256,6 +263,7 @@ export function generate2DScaleMatrixAssignment(): RandomGeneratedAssignment {
     title: "Matrix de escala 2D",
     instructions: `Mova os pontos do quadrado para a posição resultante da aplicação da matriz de escala`,
     type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
+    subjectCategory: "scaling-matrix",
     setup: () => {
       useScene2DStore.getState().setPolygons([
         {

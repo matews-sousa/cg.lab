@@ -20,6 +20,7 @@ function createAlignPointsInAxisAssignment({
     title,
     instructions,
     type: AssignmentType.INTERACTIVE,
+    subjectCategory: "points",
     setup: () => {
       const { setPoints } = useScene2DStore.getState();
       setPoints([

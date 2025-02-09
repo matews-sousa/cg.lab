@@ -43,6 +43,7 @@ function createApplyScaleMatrixToPolygon({
     instructions:
       "Mova os pontos para a posição resultante da aplicação da matriz de escala.",
     type: AssignmentType.INTERACTIVE,
+    subjectCategory: "scaling-matrix",
     setup() {
       const { setPolygons } = useScene2DStore.getState();
       setPolygons([

@@ -18,6 +18,7 @@ import { api } from "../../../convex/_generated/api";
 import StreakCard from "@/components/streak-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
+import { defaultDailyMissions } from "@/constants/defaultDailyMissions";
 
 export default function Home() {
   const user = useQuery(api.users.currentUser);
@@ -29,7 +30,14 @@ export default function Home() {
     (prev, curr) => prev + curr,
     0
   );
-  console.log(subjectsCompletionProgress, allCompletions);
+  const currentUserDailyMission = defaultDailyMissions.find(
+    mission => mission.id === user?.currentDailyMissionId
+  );
+  const currentDailyMissionProgressPercentage = Math.round(
+    ((user?.currentDailyMissionProgress ?? 0) /
+      (currentUserDailyMission?.target ?? 1)) *
+      100
+  );
 
   useEffect(() => {
     if (user !== undefined) {
@@ -99,6 +107,27 @@ export default function Home() {
             <Link href="/assignment/random">
               <Button className="w-full">Começar</Button>
             </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Missões diárias</CardTitle>
+            <CardDescription>
+              Complete missões diárias para ganhar pontos de experiência.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div>
+              <p className="text-sm">{currentUserDailyMission?.title}</p>
+              <div className="flex items-center gap-4">
+                <Progress value={currentDailyMissionProgressPercentage} />
+                <p>
+                  {user?.currentDailyMissionProgress}/
+                  {currentUserDailyMission?.target}
+                </p>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>

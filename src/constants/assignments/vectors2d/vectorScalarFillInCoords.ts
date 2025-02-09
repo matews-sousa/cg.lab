@@ -21,6 +21,7 @@ function createVectorScalarFillInCoordsAssignment({
     instructions: `Defina o vetor resultante após aplicar uma escalar de ${scalar} ao vetor v.`,
     order,
     type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
+    subjectCategory: "vector-scalar",
     setup() {
       const { addVector } = useScene2DStore.getState();
       addVector({

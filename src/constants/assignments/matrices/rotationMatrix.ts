@@ -13,6 +13,7 @@ export const rotationMatrixAssignment: Assignment = {
     "Altere a matriz de rotação para rotacionar o quadrado em 45 graus no eixo Z.",
   order: 4,
   type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
+  subjectCategory: "rotation-matrix",
   setup: () => {
     const { setPolygons } = useScene2DStore.getState();
     setPolygons([

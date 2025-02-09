@@ -7,6 +7,7 @@ import {
   getRandomVectorWithTailAndTip,
 } from "@/utils";
 import { vec } from "mafs";
+import { SubjectCategories } from "../defaultDailyMissions";
 
 const COORDINATE_LIMITS = [-4, 4] as const;
 
@@ -41,12 +42,14 @@ function createVectorAssignment({
   title,
   instructions,
   type,
+  subjectCategory,
   setup,
   validate,
 }: {
   title: string;
   instructions: string;
   type: AssignmentType;
+  subjectCategory: SubjectCategories;
   setup: () => void;
   validate: () => boolean;
 }): RandomGeneratedAssignment {
@@ -57,6 +60,7 @@ function createVectorAssignment({
     title,
     instructions,
     type,
+    subjectCategory,
     setup,
     validate,
   };
@@ -71,6 +75,7 @@ export function generateVectorTransformationAssignment(): RandomGeneratedAssignm
     title: "Transforme o vetor",
     type: AssignmentType.INTERACTIVE,
     instructions: `Transforme o vetor a em (${targetVector[0]}, ${targetVector[1]}).`,
+    subjectCategory: "vector-basics",
     setup: () => {
       setupScene([
         {
@@ -104,6 +109,7 @@ export function generateVectorSumAssignment(): RandomGeneratedAssignment {
     title: "Some os vetores",
     instructions: `Mude os vetores a e b para que a soma deles seja (${targetVector[0]}, ${targetVector[1]}).`,
     type: AssignmentType.INTERACTIVE,
+    subjectCategory: "vector-sum",
     setup: () => {
       setupScene([
         {
@@ -161,6 +167,7 @@ export function generateVectorFillInAssignment(): RandomGeneratedAssignment {
     title: "Preencha o vetor",
     type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
     instructions: "Preencha o vetor com os valores corretos.",
+    subjectCategory: "vector-basics",
     setup: () => {
       setupScene([
         {
@@ -210,6 +217,7 @@ export function generateVectorSumFillInAssignment(): RandomGeneratedAssignment {
     title: "Preencha a soma dos vetores",
     type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
     instructions: "Qual é a soma dos vetores a e b?.",
+    subjectCategory: "vector-sum",
     setup: () => {
       setupScene([
         {

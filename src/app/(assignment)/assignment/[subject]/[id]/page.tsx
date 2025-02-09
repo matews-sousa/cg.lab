@@ -98,6 +98,7 @@ export default function Page({
       completeAssignmentMutation({
         assignmentId: assignment.id,
         subject,
+        subjectCategory: assignment.subjectCategory,
       });
       updateUserStreakMutation();
     }

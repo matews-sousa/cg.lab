@@ -21,6 +21,7 @@ function createWhichPositionCoordsInputsAssignment({
     title,
     instructions,
     type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
+    subjectCategory: "points",
     setup: () => {
       const { setPoints } = useScene2DStore.getState();
       setPoints([

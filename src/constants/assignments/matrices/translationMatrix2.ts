@@ -12,6 +12,7 @@ export const translationMatrixAssignment2: Assignment = {
     "Altere a matriz de translação para mover o ponto A para a posição (2, 3).",
   order: 2,
   type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
+  subjectCategory: "translation-matrix",
   setup: () => {
     const { setPoints } = useScene2DStore.getState();
     setPoints([
