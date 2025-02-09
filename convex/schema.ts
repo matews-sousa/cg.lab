@@ -13,6 +13,12 @@ const schema = defineSchema({
     lastCompletedDate: v.optional(v.string()),
     practicedWeekDays: v.optional(v.array(v.string())),
   }).index("email", ["email"]),
+  assignment_completions: defineTable({
+    userId: v.string(),
+    assignmentId: v.string(),
+    subject: v.string(),
+    completedAt: v.string(),
+  }).index("userId", ["userId"]),
 });
 
 export default schema;

@@ -25,6 +25,8 @@ import successAnimationData from "@/assets/success-anim.json";
 import failAnimationData from "@/assets/fail-anim.json";
 import FillInVecLengthFormula from "@/components/fill-in-vec-length-formula";
 import { useFillInVecLengthFormulaStore } from "@/store/fillInVecLengthFormulaStore";
+import { useMutation } from "convex/react";
+import { api } from "../../../../../../convex/_generated/api";
 
 export default function Page({
   params,
@@ -48,6 +50,11 @@ export default function Page({
   >("notAnswered");
   const { config, reset: resetScene2D } = useScene2DStore();
   const { reset: resetScene3D } = useScene3DStore();
+
+  const completeAssignmentMutation = useMutation(
+    api.assignmentCompletions.completeAssignment
+  );
+  const updateUserStreakMutation = useMutation(api.users.updateUserStreak);
 
   useLayoutEffect(() => {
     document.body.style.overflow = "hidden";
@@ -86,6 +93,14 @@ export default function Page({
   const handleConfirm = () => {
     if (!assignment) return;
     const isCorrect = assignment.validate();
+
+    if (isCorrect) {
+      completeAssignmentMutation({
+        assignmentId: assignment.id,
+        subject,
+      });
+      updateUserStreakMutation();
+    }
     setAssignmentState(isCorrect ? "correct" : "incorrect");
   };
 

@@ -22,6 +22,14 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const user = useQuery(api.users.currentUser);
   const [loading, setLoading] = useState(true);
+  const subjectsCompletionProgress = useQuery(
+    api.assignmentCompletions.getSubjectsCompletionProgress
+  );
+  const allCompletions = Object.values(subjectsCompletionProgress ?? {}).reduce(
+    (prev, curr) => prev + curr,
+    0
+  );
+  console.log(subjectsCompletionProgress, allCompletions);
 
   useEffect(() => {
     if (user !== undefined) {
@@ -52,7 +60,7 @@ export default function Home() {
           <>
             {user ? (
               // ✅ Logged-in user sees progress tracking
-              <StreakCard user={user} />
+              <StreakCard user={user} allCompletions={allCompletions} />
             ) : (
               // ❌ Not logged-in user sees a prompt to register
               <Card>
@@ -97,25 +105,35 @@ export default function Home() {
 
       {/* Subjects Grid (always visible) */}
       <div className="grid grid-cols-1 md:grid-cols-2 col-span-2 gap-4">
-        {subjects.map(subject => (
-          <Card key={subject.slug} className="self-start">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                {subject.type === "2D" ? <Blocks /> : <Box />}
-                {subject.title}
-              </CardTitle>
-              <CardDescription>{subject.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Progress value={33} />
-            </CardContent>
-            <CardFooter>
-              <Link href={`/subject/${subject.slug}`}>
-                <Button>Iniciar</Button>
-              </Link>
-            </CardFooter>
-          </Card>
-        ))}
+        {subjects.map(subject => {
+          const totalCompletion =
+            subjectsCompletionProgress?.[subject.slug] ?? 0;
+          const completionPercentage = Math.round(
+            (totalCompletion / subject.assignments.length) * 100
+          );
+
+          return (
+            <Card key={subject.slug} className="self-start">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  {subject.type === "2D" ? <Blocks /> : <Box />}
+                  {subject.title}
+                </CardTitle>
+                <CardDescription>{subject.description}</CardDescription>
+              </CardHeader>
+              {user && (
+                <CardContent>
+                  <Progress value={completionPercentage} />
+                </CardContent>
+              )}
+              <CardFooter>
+                <Link href={`/subject/${subject.slug}`}>
+                  <Button>Iniciar</Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

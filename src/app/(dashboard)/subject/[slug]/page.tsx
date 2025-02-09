@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { subjects } from "@/constants/assignments";
 import { AssignmentType } from "@/types/Assignment";
+import { useQuery } from "convex/react";
 import {
   BadgeCheck,
   BringToFront,
@@ -23,6 +24,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import React, { use } from "react";
+import { api } from "../../../../../convex/_generated/api";
 
 export default function SubjectPage({
   params,
@@ -31,6 +33,12 @@ export default function SubjectPage({
 }) {
   const { slug } = use(params);
   const subject = subjects.find(s => s.slug === slug);
+  const assignmentsCompletions = useQuery(
+    api.assignmentCompletions.getAssignmentCompletionsBySubject,
+    {
+      subject: slug,
+    }
+  );
 
   const assignmentTypeToIcon: Record<AssignmentType, React.ReactElement> = {
     INTERACTIVE: <Grab />,
@@ -51,7 +59,10 @@ export default function SubjectPage({
           <CardDescription>{subject?.description}</CardDescription>
         </CardHeader>
         <CardContent>
-          <p>0/{subject?.assignments.length} exercícios</p>
+          <p>
+            {assignmentsCompletions?.length ?? "?"}/
+            {subject?.assignments.length} exercícios
+          </p>
         </CardContent>
       </Card>
       <div className="grid grid-cols-1 md:grid-cols-2 col-span-2 gap-4">
@@ -63,10 +74,14 @@ export default function SubjectPage({
                   {assignmentTypeToIcon[assignment.type]}
                   {assignment.title}
                 </div>
-                <div className="flex items-center gap-1 p-1 bg-green-200 border border-green-300 rounded-md shadow-sm">
-                  <BadgeCheck size={14} />
-                  <p className="text-xs">Completo</p>
-                </div>
+                {assignmentsCompletions?.some(
+                  assi => assi.assignmentId === assignment.id
+                ) && (
+                  <div className="flex items-center gap-1 p-1 bg-green-200 border border-green-300 rounded-md shadow-sm">
+                    <BadgeCheck size={14} />
+                    <p className="text-xs">Completo</p>
+                  </div>
+                )}
               </CardTitle>
               <CardDescription>{assignment.instructions}</CardDescription>
             </CardHeader>

@@ -13,9 +13,10 @@ import { Doc } from "../../convex/_generated/dataModel";
 
 interface Props {
   user: Doc<"users">;
+  allCompletions: number;
 }
 
-export default function StreakCard({ user }: Props) {
+export default function StreakCard({ user, allCompletions }: Props) {
   const daysOfWeek = ["D", "S", "T", "Q", "Q", "S", "S"]; // Days from Sunday to Saturday
   const practicedDays = new Set(user?.practicedWeekDays || []);
 
@@ -57,7 +58,7 @@ export default function StreakCard({ user }: Props) {
           </div>
           <div className="flex-1 bg-gray-100 rounded-md shadow-sm border flex flex-col items-center p-2">
             <span className="text-sm">Exercícios</span>
-            <span className="text-2xl font-bold">24</span>
+            <span className="text-2xl font-bold">{allCompletions}</span>
           </div>
         </div>
       </CardFooter>
