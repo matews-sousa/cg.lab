@@ -1,3 +1,4 @@
+import { Assignment } from "@/types/Assignment";
 import { adjustVectorSumAssignmentsList } from "./adjustTheVectorToSum";
 import { changeTheVectorAssignmentList } from "./changeTheVector";
 import { defineTheVectorAssignmentList } from "./defineTheVector";
@@ -8,7 +9,7 @@ import { vectorScalarAssignmentList } from "./vectorScalar";
 import { vectorScalarFillInCoordsAssignmentList } from "./vectorScalarFillInCoords";
 import { vectorSumAssignmentList } from "./vectorSum";
 
-export const vectorAssignments = [
+export const vectorAssignments: Assignment[] = [
   ...changeTheVectorAssignmentList,
   ...defineTheVectorAssignmentList,
   ...vectorSumAssignmentList,

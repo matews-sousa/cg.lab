@@ -13,6 +13,7 @@ export const translationMatrix3dAssignment: Assignment = {
     "Altere a matriz de translação no cubo A para que fique igual ao cubo B.",
   order: 1,
   type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
+  subjectCategory: "translation-matrix",
   setup() {
     const { addCube, addObjectiveCube } = useScene3DStore.getState();
     const { addMatrix } = useFillBlankMatrixInputStore.getState();

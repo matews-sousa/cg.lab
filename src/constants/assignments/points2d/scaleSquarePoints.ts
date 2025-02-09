@@ -9,6 +9,7 @@ export const scaleSquarePointsAssignment: Assignment = {
   instructions:
     "Mude a posição dos pontos para que o quadrado tenha o dobro do tamanho.",
   order: 7,
+  subjectCategory: "points",
   setup: () => {
     const { setPolygons } = useScene2DStore.getState();
     setPolygons([

@@ -27,6 +27,7 @@ function createAdjustVectorSumAssignment({
     instructions,
     order,
     type: AssignmentType.INTERACTIVE,
+    subjectCategory: "vector-sum",
     setup: () => {
       const { setVectors } = useScene2DStore.getState();
       setVectors([

@@ -14,6 +14,7 @@ export const rotationMatrixY3dAssignment: Assignment = {
     "Altere a matriz de rotação 3D no eixo Y para que o cubo gire 45 graus.",
   order: 4,
   type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
+  subjectCategory: "rotation-matrix",
   setup() {
     const { addCube } = useScene3DStore.getState();
     const { addMatrix } = useFillBlankMatrixInputStore.getState();

@@ -1,3 +1,5 @@
+import { SubjectCategories } from "@/constants/defaultDailyMissions";
+
 export enum AssignmentType {
   INTERACTIVE = "INTERACTIVE",
   PARAMETERIZED = "PARAMETERIZED",
@@ -15,6 +17,7 @@ export interface Assignment {
   title: string;
   instructions: string;
   type: AssignmentType;
+  subjectCategory: SubjectCategories;
   setup: () => void;
   validate: () => boolean;
 }

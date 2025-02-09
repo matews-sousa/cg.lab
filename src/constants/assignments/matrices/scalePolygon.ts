@@ -32,6 +32,7 @@ function createScalePolygonAssignment({
     instructions: `Altere a matriz de escala para que o quadrado fique com tamanho (${goalSquareWidth}, ${goalSquareHeight}).`,
     order,
     type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
+    subjectCategory: "scaling-matrix",
     setup: () => {
       const { setPolygons } = useScene2DStore.getState();
       setPolygons([

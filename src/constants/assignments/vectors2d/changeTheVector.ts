@@ -25,6 +25,7 @@ function createChangeTheVectorAssignment({
     title,
     instructions,
     type: AssignmentType.INTERACTIVE,
+    subjectCategory: "vector-basics",
     setup: () => {
       useScene2DStore.getState().reset();
       const { setVectors } = useScene2DStore.getState();

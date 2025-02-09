@@ -26,6 +26,7 @@ function createVectorLengthFormulaAssignment({
       "Ajuste os valores da fórmula para calcular o comprimento do vetor.",
     type: AssignmentType.FILL_IN_THE_BLANK_FORMULA,
     order,
+    subjectCategory: "vector-length",
     setup() {
       const { addVector } = useScene2DStore.getState();
       addVector({

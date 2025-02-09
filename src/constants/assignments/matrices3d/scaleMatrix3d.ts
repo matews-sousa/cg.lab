@@ -13,6 +13,7 @@ export const scaleMatrix3dAssignment: Assignment = {
     "Altere a matriz de escala no cubo A para que fique com o dobro do tamanho.",
   order: 2,
   type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
+  subjectCategory: "scaling-matrix",
   setup() {
     const { addCube } = useScene3DStore.getState();
     const { addMatrix } = useFillBlankMatrixInputStore.getState();

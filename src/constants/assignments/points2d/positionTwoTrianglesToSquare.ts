@@ -8,6 +8,7 @@ export const positionTwoTrianglesToSquare: Assignment = {
   title: "Forme um quadrado",
   instructions: "Mova os pontos para formar um quadrado.",
   order: 8,
+  subjectCategory: "points",
   setup: () => {
     const { setPolygons } = useScene2DStore.getState();
     setPolygons([

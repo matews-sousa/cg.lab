@@ -22,6 +22,8 @@ import Lottie from "lottie-react";
 import successAnimationData from "@/assets/success-anim.json";
 import failAnimationData from "@/assets/fail-anim.json";
 import { generateAnyRandomAssignment } from "@/constants/assignments";
+import { api } from "../../../../../convex/_generated/api";
+import { useMutation } from "convex/react";
 
 export default function Page() {
   const [assignment, setAssignment] = useState<
@@ -39,6 +41,11 @@ export default function Page() {
   >("notAnswered");
   const { config, reset: resetScene2D } = useScene2DStore();
   const { reset: resetScene3D } = useScene3DStore();
+
+  const completeAssignmentMutation = useMutation(
+    api.assignmentCompletions.completeAssignment
+  );
+  const updateUserStreakMutation = useMutation(api.users.updateUserStreak);
 
   useEffect(() => {
     resetScene2D();
@@ -63,6 +70,15 @@ export default function Page() {
   const handleConfirm = () => {
     if (!assignment) return;
     const isCorrect = assignment.validate();
+    if (isCorrect) {
+      completeAssignmentMutation({
+        assignmentId: "",
+        subject: "",
+        subjectCategory: assignment.subjectCategory,
+        ignoreCompletionSave: true,
+      });
+      updateUserStreakMutation();
+    }
     setAssignmentState(isCorrect ? "correct" : "incorrect");
   };
 

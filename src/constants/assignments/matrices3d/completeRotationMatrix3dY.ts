@@ -13,6 +13,7 @@ export const completeRotationMatrix3dYAssignment: Assignment = {
     "Complete a matrix para que o cubo seja rotacionado 45 graus no sentido anti-horário.",
   type: AssignmentType.FILL_IN_THE_BLANK_MATRIX_WITH_OPTIONS,
   order: 6,
+  subjectCategory: "rotation-matrix",
   setup() {
     useScene3DStore.getState().addCube({
       id: "cube",

@@ -23,6 +23,7 @@ function createApplyScaleMatrix2DAssignment({
     instructions: `Mova o ponto A(${initialPosition[0]}, ${initialPosition[1]}) para a posição resultante após a aplicação da matriz de escala.`,
     order,
     type: AssignmentType.INTERACTIVE,
+    subjectCategory: "scaling-matrix",
     setup: () => {
       const { setPoints } = useScene2DStore.getState();
       setPoints([
