@@ -8,6 +8,7 @@ export const distanceBetweenPointsAssignment: Assignment = {
   title: "Distância entre pontos",
   instructions: "Mova os pontos para que a distância entre eles seja 6.",
   type: AssignmentType.INTERACTIVE,
+  subjectCategory: "points",
   setup: () => {
     const { setPoints } = useScene2DStore.getState();
     setPoints([

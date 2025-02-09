@@ -1,4 +1,4 @@
-import { AssignmentType } from "@/types/Assignment";
+import { Assignment, AssignmentType } from "@/types/Assignment";
 import { VectorTailAndTip } from "./adjustTheVectorToSum";
 import { useScene2DStore } from "@/store/scene2DStore";
 import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
@@ -14,7 +14,7 @@ function createVectorScalarFillInCoordsAssignment({
   order,
   initialVector,
   scalar,
-}: VectorScalarFillInCoordsAssignmentProps) {
+}: VectorScalarFillInCoordsAssignmentProps): Assignment {
   return {
     id: `vector-scalar-fill-in-coords-${order}`,
     title: "Multiplicação de vetor por escalar",

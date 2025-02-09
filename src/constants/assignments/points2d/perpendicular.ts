@@ -7,6 +7,7 @@ export const perpendicularAssignment: Assignment = {
   title: "Perpendicularidade",
   instructions: "Mova os pontos para que fiquem perpendiculares verticalmente.",
   type: AssignmentType.INTERACTIVE,
+  subjectCategory: "points",
   setup: () => {
     const { setPoints } = useScene2DStore.getState();
     setPoints([
