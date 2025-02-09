@@ -47,7 +47,7 @@ export const completeAssignment = mutation({
       const currentDailyMissionProgress =
         user?.currentDailyMissionProgress ?? 0;
       const newProgress = currentDailyMissionProgress + 1;
-      if (newProgress < currentUserDailyMission.target) {
+      if (newProgress <= currentUserDailyMission.target) {
         await ctx.db.patch(userId, {
           currentDailyMissionProgress: newProgress,
         });
