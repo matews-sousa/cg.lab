@@ -114,21 +114,25 @@ export default function Home() {
           <CardHeader>
             <CardTitle>Missões diárias</CardTitle>
             <CardDescription>
-              Complete missões diárias para ganhar pontos de experiência.
+              {user
+                ? "Complete missões diárias para ganhar pontos de experiência."
+                : "Faça login para começar a completar missões diárias."}
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div>
-              <p className="text-sm">{currentUserDailyMission?.title}</p>
-              <div className="flex items-center gap-4">
-                <Progress value={currentDailyMissionProgressPercentage} />
-                <p>
-                  {user?.currentDailyMissionProgress}/
-                  {currentUserDailyMission?.target}
-                </p>
+          {user && (
+            <CardContent>
+              <div>
+                <p className="text-sm">{currentUserDailyMission?.title}</p>
+                <div className="flex items-center gap-4">
+                  <Progress value={currentDailyMissionProgressPercentage} />
+                  <p>
+                    {user?.currentDailyMissionProgress}/
+                    {currentUserDailyMission?.target}
+                  </p>
+                </div>
               </div>
-            </div>
-          </CardContent>
+            </CardContent>
+          )}
         </Card>
       </div>
 
