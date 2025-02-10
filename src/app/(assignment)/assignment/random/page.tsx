@@ -25,6 +25,7 @@ import { generateAnyRandomAssignment } from "@/constants/assignments";
 import { api } from "../../../../../convex/_generated/api";
 import { useMutation } from "convex/react";
 import { useSearchParams } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
 
 export default function Page() {
   const [assignment, setAssignment] = useState<
@@ -75,17 +76,23 @@ export default function Page() {
     selectedSubjects,
   ]);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!assignment) return;
     const isCorrect = assignment.validate();
     if (isCorrect) {
-      completeAssignmentMutation({
+      const completedMission = await completeAssignmentMutation({
         assignmentId: "",
         subject: "",
         subjectCategory: assignment.subjectCategory,
         ignoreCompletionSave: true,
       });
       updateUserStreakMutation();
+      if (completedMission) {
+        toast({
+          title: "Missão diária concluída!",
+          description: "Parabéns, você completou uma missão diária.",
+        });
+      }
     }
     setAssignmentState(isCorrect ? "correct" : "incorrect");
   };

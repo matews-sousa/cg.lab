@@ -31,10 +31,11 @@ export default function Home() {
     (prev, curr) => prev + curr,
     0
   );
-  const currentUserDailyMission = defaultDailyMissions.find(
-    mission =>
-      mission.id === user?.currentDailyMissionId || defaultDailyMissions[0].id
-  );
+  const currentUserDailyMission = user?.currentDailyMissionId
+    ? defaultDailyMissions.find(
+        mission => mission.id === user?.currentDailyMissionId
+      )
+    : defaultDailyMissions[0];
   const currentDailyMissionProgressPercentage = Math.round(
     ((user?.currentDailyMissionProgress ?? 0) /
       (currentUserDailyMission?.target ?? 1)) *

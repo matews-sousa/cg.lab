@@ -41,7 +41,7 @@ export const completeAssignment = mutation({
       defaultDailyMissions.find(
         mission => mission.id === user?.currentDailyMissionId
       ) ?? defaultDailyMissions[0];
-
+    let completedMission = false;
     if (
       currentUserDailyMission &&
       currentUserDailyMission.subjectCategory === args.subjectCategory
@@ -55,7 +55,12 @@ export const completeAssignment = mutation({
           currentDailyMissionProgress: newProgress,
         });
       }
+
+      if (newProgress === currentUserDailyMission.target) {
+        completedMission = true;
+      }
     }
+    return completedMission;
   },
 });
 
