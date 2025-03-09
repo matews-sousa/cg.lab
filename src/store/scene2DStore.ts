@@ -37,6 +37,7 @@ type Scene2DStore = {
   getPoint: (id: string) => TPoint | undefined;
   getVector: (id: string) => TVector | undefined;
   getPolygon: (id: string) => TPolygon | undefined;
+  setViewBox: (viewBox: Scene2DConfig["viewBox"]) => void;
   reset: () => void;
 };
 
@@ -186,5 +187,7 @@ export const useScene2DStore = create<Scene2DStore>((set, get) => ({
   getPoint: id => get().config.points?.find(point => point.id === id),
   getVector: id => get().config.vectors?.find(vector => vector.id === id),
   getPolygon: id => get().config.polygons?.find(polygon => polygon.id === id),
+  setViewBox: viewBox =>
+    set(state => ({ config: { ...state.config, viewBox } })),
   reset: () => set({ config: initialState }),
 }));
