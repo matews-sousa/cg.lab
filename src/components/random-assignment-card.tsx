@@ -18,20 +18,16 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { subjectOptions } from "@/constants/assignments";
 
-// List of available subjects
-const subjects = [
-  { id: "points", label: "Pontos" },
-  { id: "vectors", label: "Vetores" },
-  { id: "matrices", label: "Matrizes" },
-];
+const initialSelectedSubjects = subjectOptions
+  .filter(subject => subject.generators.length > 0)
+  .map(subject => subject.id);
 
 export default function RandomAssignmentCard() {
-  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([
-    "points",
-    "vectors",
-    "matrices",
-  ]);
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>(
+    initialSelectedSubjects
+  );
 
   // Handle checkbox changes
   const handleSubjectChange = (subjectId: string) => {
@@ -64,16 +60,24 @@ export default function RandomAssignmentCard() {
             <DropdownMenuContent>
               <div className="space-y-2 mb-2">
                 <Label>Selecione os assuntos:</Label>
-                {subjects.map(subject => (
-                  <div key={subject.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={subject.id}
-                      checked={selectedSubjects.includes(subject.id)}
-                      onCheckedChange={() => handleSubjectChange(subject.id)}
-                    />
-                    <Label htmlFor={subject.id}>{subject.label}</Label>
-                  </div>
-                ))}
+                {subjectOptions.map(
+                  subject =>
+                    subject.generators.length > 0 && (
+                      <div
+                        key={subject.id}
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id={subject.id}
+                          checked={selectedSubjects.includes(subject.id)}
+                          onCheckedChange={() =>
+                            handleSubjectChange(subject.id)
+                          }
+                        />
+                        <Label htmlFor={subject.id}>{subject.label}</Label>
+                      </div>
+                    )
+                )}
               </div>
             </DropdownMenuContent>
           </DropdownMenu>

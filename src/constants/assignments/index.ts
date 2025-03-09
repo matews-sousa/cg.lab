@@ -9,7 +9,6 @@ import {
   generateRandomWhichPositionPointAssignment,
 } from "./generateRandomPointsAssignment";
 import {
-  generateRandomVectorAssignment,
   generateVectorFillInAssignment,
   generateVectorSumAssignment,
   generateVectorSumFillInAssignment,
@@ -30,6 +29,7 @@ export type Subject = {
   type: "2D" | "3D";
 };
 
+// Static subjects with their assignments
 const subjects: Subject[] = [
   {
     title: "Pontos 2D",
@@ -63,39 +63,69 @@ const subjects: Subject[] = [
   },
 ];
 
-export const generateAnyRandomAssignment = (selectedSubjects: string[]) => {
-  // Define generators for each subject
-  const pointGenerators = [
-    generateRandomMoveToPositionPointAssignment,
-    generateRandomWhichPositionPointAssignment,
-    generateRandomFillInTheBlankWithOptionsPointAssignment,
-  ];
+// Subject options for the dropdown menu with their generators
+export const subjectOptions = [
+  {
+    id: "points",
+    label: "Pontos",
+    generators: [
+      generateRandomMoveToPositionPointAssignment,
+      generateRandomWhichPositionPointAssignment,
+      generateRandomFillInTheBlankWithOptionsPointAssignment,
+    ],
+  },
+  {
+    id: "vector-basics",
+    label: "Básico de vetores",
+    generators: [
+      generateVectorFillInAssignment,
+      generateVectorTransformationAssignment,
+    ],
+  },
+  {
+    id: "vector-sum",
+    label: "Soma de vetores",
+    generators: [
+      generateVectorSumAssignment,
+      generateVectorSumFillInAssignment,
+    ],
+  },
+  {
+    id: "scalar-multiplication",
+    label: "Multiplicação por escalar",
+    generators: [],
+  },
+  { id: "vector-length", label: "Módulo de vetores", generators: [] },
+  {
+    id: "translation-matrix",
+    label: "Matriz de translação",
+    generators: [
+      generate2DTranslationMatrixAssignment,
+      generate2DFillInTranslationMatrixAssignment,
+      generate2DFillInTranslationMatrixForSquareAssignment,
+    ],
+  },
+  {
+    id: "scale-matrix",
+    label: "Matriz de escala",
+    generators: [generate2DScaleMatrixAssignment],
+  },
+  {
+    id: "rotation-matrix",
+    label: "Matriz de rotação",
+    generators: [],
+  },
+] as const;
 
-  const vectorGenerators = [
-    generateRandomVectorAssignment,
-    generateVectorFillInAssignment,
-    generateVectorSumAssignment,
-    generateVectorSumFillInAssignment,
-    generateVectorTransformationAssignment,
-  ];
+export type SubjectOptionsKey = (typeof subjectOptions)[number]["id"];
 
-  const matrixGenerators = [
-    generate2DFillInTranslationMatrixAssignment,
-    generate2DFillInTranslationMatrixForSquareAssignment,
-    generate2DScaleMatrixAssignment,
-    generate2DTranslationMatrixAssignment,
-  ];
-
+export const generateAnyRandomAssignment = (
+  selectedSubjects: SubjectOptionsKey[]
+) => {
   // Combine generators based on selected subjects
   const generators = selectedSubjects.flatMap(subject => {
-    if (subject === "points") {
-      return pointGenerators;
-    } else if (subject === "vectors") {
-      return vectorGenerators;
-    } else if (subject === "matrices") {
-      return matrixGenerators;
-    }
-    return []; // Return an empty array for unknown subjects
+    const subjectOption = subjectOptions.find(s => s.id === subject);
+    return subjectOption?.generators ?? [];
   });
 
   // Check if there are any generators available

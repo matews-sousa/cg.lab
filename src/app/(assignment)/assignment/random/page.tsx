@@ -21,7 +21,10 @@ import ObjectivePanel from "@/components/objective-panel";
 import Lottie from "lottie-react";
 import successAnimationData from "@/assets/success-anim.json";
 import failAnimationData from "@/assets/fail-anim.json";
-import { generateAnyRandomAssignment } from "@/constants/assignments";
+import {
+  generateAnyRandomAssignment,
+  SubjectOptionsKey,
+} from "@/constants/assignments";
 import { api } from "../../../../../convex/_generated/api";
 import { useMutation } from "convex/react";
 import { useSearchParams } from "next/navigation";
@@ -48,7 +51,7 @@ export default function Page() {
   const selectedSubjects = useMemo(
     () => searchParams.getAll("subjects"),
     [searchParams]
-  );
+  ) as SubjectOptionsKey[];
 
   const completeAssignmentMutation = useMutation(
     api.assignmentCompletions.completeAssignment
