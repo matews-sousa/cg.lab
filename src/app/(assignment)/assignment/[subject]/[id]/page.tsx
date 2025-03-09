@@ -12,7 +12,13 @@ import { Assignment, AssignmentType } from "@/types/Assignment";
 import { ArrowRight } from "lucide-react";
 import { redirect } from "next/navigation";
 
-import React, { useEffect, useLayoutEffect, use, useState } from "react";
+import React, {
+  useEffect,
+  useLayoutEffect,
+  use,
+  useState,
+  useCallback,
+} from "react";
 import FillInMatrixInput from "@/components/fill-in-matrix-input";
 import { useFillBlankMatrixInputStore } from "@/store/fillInBlankMatrixInputStore";
 import Scene3D from "@/components/scene-3d";
@@ -58,6 +64,22 @@ export default function Page({
   );
   const updateUserStreakMutation = useMutation(api.users.updateUserStreak);
 
+  const resetAll = useCallback(() => {
+    resetScene2D();
+    resetScene3D();
+    resetFillInTheBlankWithOptions();
+    resetFillBlankMatrixInput();
+    resetFillInMatrixWithOptions();
+    resetFillInVecLengthFormulaStore();
+  }, [
+    resetScene2D,
+    resetScene3D,
+    resetFillInTheBlankWithOptions,
+    resetFillBlankMatrixInput,
+    resetFillInMatrixWithOptions,
+    resetFillInVecLengthFormulaStore,
+  ]);
+
   useLayoutEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -66,12 +88,7 @@ export default function Page({
   }, []);
 
   useEffect(() => {
-    resetScene2D();
-    resetScene3D();
-    resetFillInTheBlankWithOptions();
-    resetFillBlankMatrixInput();
-    resetFillInMatrixWithOptions();
-    resetFillInVecLengthFormulaStore();
+    resetAll();
 
     const subj = subjects.find(s => s.slug === subject);
     if (!subj) return;
@@ -81,18 +98,9 @@ export default function Page({
       setAssignment(assi);
       assi.setup();
     }
-  }, [
-    id,
-    subject,
-    resetScene2D,
-    resetScene3D,
-    resetFillInTheBlankWithOptions,
-    resetFillBlankMatrixInput,
-    resetFillInMatrixWithOptions,
-    resetFillInVecLengthFormulaStore,
-  ]);
+  }, [id, subject, resetAll]);
 
-  const handleConfirm = async () => {
+  const handleConfirm = useCallback(async () => {
     if (!assignment) return;
     const isCorrect = assignment.validate();
 
@@ -105,10 +113,10 @@ export default function Page({
     if (isCorrect && data.userSession) {
       // Complete the assignment, it return if the user completed a daily mission and the user last completed date
       const data = await completeAssignmentMutation({
-        assignmentId: "",
-        subject: "",
+        assignmentId: assignment.id,
+        subject: subject,
         subjectCategory: assignment.subjectCategory,
-        ignoreCompletionSave: true,
+        ignoreCompletionSave: false,
       });
 
       // Only update the streak if the user hasn't completed a task today
@@ -128,20 +136,20 @@ export default function Page({
       }
     }
     setAssignmentState(isCorrect ? "correct" : "incorrect");
-  };
+  }, [
+    assignment,
+    completeAssignmentMutation,
+    updateUserStreakMutation,
+    subject,
+  ]);
 
-  const handleTryAgain = () => {
-    resetScene2D();
-    resetScene3D();
-    resetFillInTheBlankWithOptions();
-    resetFillBlankMatrixInput();
-    resetFillInMatrixWithOptions();
-    resetFillInVecLengthFormulaStore();
+  const handleTryAgain = useCallback(() => {
+    resetAll();
     setAssignmentState("notAnswered");
     assignment?.setup();
-  };
+  }, [resetAll, assignment]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (!assignment) return;
     const currentAssignmentIndex =
       subjectData?.assignments.findIndex(a => a.id === assignment.id) ?? -1;
@@ -151,7 +159,19 @@ export default function Page({
     } else {
       redirect(`/subject/${subject}`);
     }
-  };
+  }, [assignment, subject, subjectData]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        if (assignmentState === "notAnswered") handleConfirm();
+        if (assignmentState === "incorrect") handleTryAgain();
+        if (assignmentState === "correct") handleNext();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [assignmentState, handleConfirm, handleTryAgain, handleNext]);
 
   return (
     <>

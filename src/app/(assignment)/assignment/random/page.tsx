@@ -10,7 +10,7 @@ import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
 import { ArrowRight } from "lucide-react";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import FillInMatrixInput from "@/components/fill-in-matrix-input";
 import { useFillBlankMatrixInputStore } from "@/store/fillInBlankMatrixInputStore";
 import Scene3D from "@/components/scene-3d";
@@ -59,28 +59,31 @@ export default function Page() {
   );
   const updateUserStreakMutation = useMutation(api.users.updateUserStreak);
 
-  useEffect(() => {
+  const resetAll = useCallback(() => {
     resetScene2D();
     resetScene3D();
     resetFillInTheBlankWithOptions();
     resetFillBlankMatrixInput();
     resetFillInMatrixWithOptions();
-
-    const assi = generateAnyRandomAssignment(selectedSubjects);
-    if (assi) {
-      setAssignment(assi);
-      assi.setup();
-    }
   }, [
     resetScene2D,
     resetScene3D,
     resetFillInTheBlankWithOptions,
     resetFillBlankMatrixInput,
     resetFillInMatrixWithOptions,
-    selectedSubjects,
   ]);
 
-  const handleConfirm = async () => {
+  useEffect(() => {
+    resetAll();
+
+    const assi = generateAnyRandomAssignment(selectedSubjects);
+    if (assi) {
+      setAssignment(assi);
+      assi.setup();
+    }
+  }, [resetAll, selectedSubjects]);
+
+  const handleConfirm = useCallback(async () => {
     if (!assignment) return;
     const isCorrect = assignment.validate();
 
@@ -116,32 +119,36 @@ export default function Page() {
       }
     }
     setAssignmentState(isCorrect ? "correct" : "incorrect");
-  };
+  }, [assignment, completeAssignmentMutation, updateUserStreakMutation]);
 
-  const handleTryAgain = () => {
-    resetScene2D();
-    resetScene3D();
-    resetFillInTheBlankWithOptions();
-    resetFillBlankMatrixInput();
-    resetFillInMatrixWithOptions();
+  const handleTryAgain = useCallback(() => {
+    resetAll();
     setAssignmentState("notAnswered");
     assignment?.setup();
-  };
+  }, [resetAll, assignment]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     setAssignmentState("notAnswered");
 
     const assi = generateAnyRandomAssignment(selectedSubjects);
     if (assi) {
       setAssignment(assi);
-      resetScene2D();
-      resetScene3D();
-      resetFillInTheBlankWithOptions();
-      resetFillBlankMatrixInput();
-      resetFillInMatrixWithOptions();
+      resetAll();
       assi.setup();
     }
-  };
+  }, [resetAll, selectedSubjects]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        if (assignmentState === "notAnswered") handleConfirm();
+        if (assignmentState === "incorrect") handleTryAgain();
+        if (assignmentState === "correct") handleNext();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [assignmentState, handleConfirm, handleTryAgain, handleNext]);
 
   return (
     <>
