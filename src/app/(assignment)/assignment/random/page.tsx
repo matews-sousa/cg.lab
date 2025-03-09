@@ -10,7 +10,7 @@ import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
 import { ArrowRight } from "lucide-react";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import FillInMatrixInput from "@/components/fill-in-matrix-input";
 import { useFillBlankMatrixInputStore } from "@/store/fillInBlankMatrixInputStore";
 import Scene3D from "@/components/scene-3d";
@@ -21,9 +21,14 @@ import ObjectivePanel from "@/components/objective-panel";
 import Lottie from "lottie-react";
 import successAnimationData from "@/assets/success-anim.json";
 import failAnimationData from "@/assets/fail-anim.json";
-import { generateAnyRandomAssignment } from "@/constants/assignments";
+import {
+  generateAnyRandomAssignment,
+  SubjectOptionsKey,
+} from "@/constants/assignments";
 import { api } from "../../../../../convex/_generated/api";
 import { useMutation } from "convex/react";
+import { useSearchParams } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
 
 export default function Page() {
   const [assignment, setAssignment] = useState<
@@ -42,6 +47,12 @@ export default function Page() {
   const { config, reset: resetScene2D } = useScene2DStore();
   const { reset: resetScene3D } = useScene3DStore();
 
+  const searchParams = useSearchParams();
+  const selectedSubjects = useMemo(
+    () => searchParams.getAll("subjects"),
+    [searchParams]
+  ) as SubjectOptionsKey[];
+
   const completeAssignmentMutation = useMutation(
     api.assignmentCompletions.completeAssignment
   );
@@ -54,7 +65,7 @@ export default function Page() {
     resetFillBlankMatrixInput();
     resetFillInMatrixWithOptions();
 
-    const assi = generateAnyRandomAssignment();
+    const assi = generateAnyRandomAssignment(selectedSubjects);
     if (assi) {
       setAssignment(assi);
       assi.setup();
@@ -65,19 +76,26 @@ export default function Page() {
     resetFillInTheBlankWithOptions,
     resetFillBlankMatrixInput,
     resetFillInMatrixWithOptions,
+    selectedSubjects,
   ]);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!assignment) return;
     const isCorrect = assignment.validate();
     if (isCorrect) {
-      completeAssignmentMutation({
+      const completedMission = await completeAssignmentMutation({
         assignmentId: "",
         subject: "",
         subjectCategory: assignment.subjectCategory,
         ignoreCompletionSave: true,
       });
       updateUserStreakMutation();
+      if (completedMission) {
+        toast({
+          title: "Missão diária concluída!",
+          description: "Parabéns, você completou uma missão diária.",
+        });
+      }
     }
     setAssignmentState(isCorrect ? "correct" : "incorrect");
   };
@@ -95,7 +113,7 @@ export default function Page() {
   const handleNext = () => {
     setAssignmentState("notAnswered");
 
-    const assi = generateAnyRandomAssignment();
+    const assi = generateAnyRandomAssignment(selectedSubjects);
     if (assi) {
       setAssignment(assi);
       resetScene2D();

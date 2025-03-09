@@ -27,6 +27,7 @@ import FillInVecLengthFormula from "@/components/fill-in-vec-length-formula";
 import { useFillInVecLengthFormulaStore } from "@/store/fillInVecLengthFormulaStore";
 import { useMutation } from "convex/react";
 import { api } from "../../../../../../convex/_generated/api";
+import { toast } from "@/hooks/use-toast";
 
 export default function Page({
   params,
@@ -90,17 +91,23 @@ export default function Page({
     resetFillInVecLengthFormulaStore,
   ]);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!assignment) return;
     const isCorrect = assignment.validate();
 
     if (isCorrect) {
-      completeAssignmentMutation({
+      const completedMission = await completeAssignmentMutation({
         assignmentId: assignment.id,
         subject,
         subjectCategory: assignment.subjectCategory,
       });
       updateUserStreakMutation();
+      if (completedMission) {
+        toast({
+          title: "Missão diária concluída!",
+          description: "Parabéns, você completou uma missão diária.",
+        });
+      }
     }
     setAssignmentState(isCorrect ? "correct" : "incorrect");
   };

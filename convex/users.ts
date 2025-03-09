@@ -3,7 +3,7 @@ import { internalMutation, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import lostCurrentStreak from "../src/utils/lostCurrentStreak";
 import { defaultDailyMissions } from "../src/constants/defaultDailyMissions";
-import { format } from "date-fns";
+import { addHours, format } from "date-fns";
 
 export const currentUser = query({
   args: {},
@@ -53,21 +53,24 @@ export const updateUserStreak = mutation({
       return;
     }
 
+    const completionDate = new Date(); // Convex server timezone (UTC)
+    const localDate = addHours(completionDate, -3).toISOString(); // UTC-3 timezone (America/Sao_Paulo)
+
     if (lostCurrentStreak(lastCompletedDate)) {
       const newBestStreak = Math.max(1, bestStreak);
-      const formatedPracticedWeekDay = format(new Date(), "iii");
+      const formatedPracticedWeekDay = format(localDate, "iii");
       await ctx.db.patch(userId, {
         streak: 1,
         bestStreak: newBestStreak,
-        lastCompletedDate: new Date().toISOString(),
+        lastCompletedDate: localDate,
         practicedWeekDays: [formatedPracticedWeekDay],
       });
     } else {
-      const formatedPracticedWeekDay = format(new Date(), "iii");
+      const formatedPracticedWeekDay = format(localDate, "iii");
       await ctx.db.patch(userId, {
         streak: streak + 1,
         bestStreak: Math.max(streak + 1, bestStreak),
-        lastCompletedDate: new Date().toISOString(),
+        lastCompletedDate: localDate,
         practicedWeekDays: [...practicedWeekDays, formatedPracticedWeekDay],
       });
     }

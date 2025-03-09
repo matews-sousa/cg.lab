@@ -82,7 +82,6 @@ export function generate2DFillInTranslationMatrixAssignment(): RandomGeneratedAs
         },
       ]);
 
-      useFillBlankMatrixInputStore.getState().reset();
       useFillBlankMatrixInputStore.getState().setMatrices([
         {
           id: "translationMatrix",
@@ -156,7 +155,6 @@ export function generate2DFillInTranslationMatrixForSquareAssignment(): RandomGe
         },
       ]);
 
-      useFillBlankMatrixInputStore.getState().reset();
       useFillBlankMatrixInputStore.getState().setMatrices([
         {
           id: "translationMatrix",
@@ -227,7 +225,7 @@ export function generate2DTranslationMatrixAssignment(): RandomGeneratedAssignme
         },
       ]);
 
-      const newMatrixValue = initial2DTranslationMatrixValue;
+      const newMatrixValue = structuredClone(initial2DTranslationMatrixValue);
       newMatrixValue[0][2].value = targetPoint[0] - pointA[0];
       newMatrixValue[0][2].editable = false;
       newMatrixValue[1][2].value = targetPoint[1] - pointA[1];
@@ -280,7 +278,7 @@ export function generate2DScaleMatrixAssignment(): RandomGeneratedAssignment {
         },
       ]);
 
-      const newMatrixValue = initial2DScalingMatrixValue;
+      const newMatrixValue = structuredClone(initial2DScalingMatrixValue);
       newMatrixValue[0][0].value = randomScaleTarget[0];
       newMatrixValue[0][0].editable = false;
       newMatrixValue[1][1].value = randomScaleTarget[1];
