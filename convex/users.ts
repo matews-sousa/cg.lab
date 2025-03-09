@@ -3,7 +3,7 @@ import { internalMutation, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import lostCurrentStreak from "../src/utils/lostCurrentStreak";
 import { defaultDailyMissions } from "../src/constants/defaultDailyMissions";
-import { addHours, format } from "date-fns";
+import { addHours, format, isSameDay } from "date-fns";
 
 export const currentUser = query({
   args: {},
@@ -50,8 +50,8 @@ export const updateUserStreak = mutation({
     const localDate = addHours(completionDate, -3).toISOString(); // UTC-3 timezone (America/Sao_Paulo)
 
     const lastCompletionIsToday =
-      format(new Date(lastCompletedDate), "yyyy-MM-dd") ===
-      format(localDate, "yyyy-MM-dd");
+      lastCompletedDate &&
+      isSameDay(new Date(lastCompletedDate), completionDate);
     if (lastCompletionIsToday) return; // Do nothing if the user already completed a task today
 
     if (lostCurrentStreak(lastCompletedDate)) {

@@ -29,6 +29,7 @@ import { api } from "../../../../../convex/_generated/api";
 import { useMutation } from "convex/react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
+import { isSameDay } from "date-fns";
 
 export default function Page() {
   const [assignment, setAssignment] = useState<
@@ -82,15 +83,32 @@ export default function Page() {
   const handleConfirm = async () => {
     if (!assignment) return;
     const isCorrect = assignment.validate();
-    if (isCorrect) {
-      const completedMission = await completeAssignmentMutation({
+
+    // Work around to get the user session from the cookie in the browser
+    // This is for reducing the number of Convex function calls
+    const res = await fetch("/api/getSession");
+    const data = await res.json();
+
+    // If the user is authenticated and the answer is correct, complete the assignment
+    if (isCorrect && data.userSession) {
+      // Complete the assignment, it return if the user completed a daily mission and the user last completed date
+      const data = await completeAssignmentMutation({
         assignmentId: "",
         subject: "",
         subjectCategory: assignment.subjectCategory,
         ignoreCompletionSave: true,
       });
-      updateUserStreakMutation();
-      if (completedMission) {
+
+      // Only update the streak if the user hasn't completed a task today
+      // This is to avoid calling the updateUserStreak function unnecessarily
+      if (
+        !isSameDay(data?.userLastCompletedDate ?? new Date(), new Date()) ||
+        !data?.userLastCompletedDate
+      ) {
+        await updateUserStreakMutation();
+      }
+
+      if (data?.completedMission) {
         toast({
           title: "Missão diária concluída!",
           description: "Parabéns, você completou uma missão diária.",

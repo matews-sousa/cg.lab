@@ -60,7 +60,7 @@ export const completeAssignment = mutation({
         completedMission = true;
       }
     }
-    return completedMission;
+    return { completedMission, userLastCompletedDate: user?.lastCompletedDate };
   },
 });
 
