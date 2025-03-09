@@ -46,15 +46,13 @@ export const updateUserStreak = mutation({
     const lastCompletedDate = user.lastCompletedDate ?? "";
     const practicedWeekDays = user.practicedWeekDays ?? [];
 
-    // if last completed date is today, do nothing
-    if (
-      new Date(lastCompletedDate).toDateString() === new Date().toDateString()
-    ) {
-      return;
-    }
-
     const completionDate = new Date(); // Convex server timezone (UTC)
     const localDate = addHours(completionDate, -3).toISOString(); // UTC-3 timezone (America/Sao_Paulo)
+
+    const lastCompletionIsToday =
+      format(new Date(lastCompletedDate), "yyyy-MM-dd") ===
+      format(localDate, "yyyy-MM-dd");
+    if (lastCompletionIsToday) return; // Do nothing if the user already completed a task today
 
     if (lostCurrentStreak(lastCompletedDate)) {
       const newBestStreak = Math.max(1, bestStreak);
