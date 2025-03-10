@@ -19,6 +19,8 @@ type Scene2DStore = {
   setPolygonScale: (id: string, scale: [number, number]) => void;
   setPolygonRotation: (id: string, rotation: number) => void;
   setPolygonTranslation: (id: string, translation: [number, number]) => void;
+  setPolygonPoints: (id: string, points: TPolygon["points"]) => void;
+  setObjectivePolygons: (polygons: Scene2DConfig["objectivePolygons"]) => void;
   setAnnotations: (annotations: Scene2DConfig["annotations"]) => void;
   movePoint: (id: string, position: [number, number]) => void;
   movePolygonPoint: (
@@ -84,12 +86,20 @@ export const useScene2DStore = create<Scene2DStore>((set, get) => ({
       },
     })),
   setPolygons: polygons =>
-    set(state => ({ config: { ...state.config, polygons } })),
+    set(state => ({
+      config: {
+        ...state.config,
+        polygons: polygons?.map(p => ({ ...p, originalPoints: p.points })),
+      },
+    })),
   addPolygon: polygon =>
     set(state => ({
       config: {
         ...state.config,
-        polygons: [...(state.config.polygons || []), polygon],
+        polygons: [
+          ...(state.config.polygons || []),
+          { ...polygon, originalPoints: polygon.points },
+        ],
       },
     })),
   setPolygonScale: (id, scale) =>
@@ -119,6 +129,17 @@ export const useScene2DStore = create<Scene2DStore>((set, get) => ({
         ),
       },
     })),
+  setPolygonPoints: (id, points) =>
+    set(state => ({
+      config: {
+        ...state.config,
+        polygons: state.config.polygons?.map(polygon =>
+          polygon.id === id ? { ...polygon, points } : polygon
+        ),
+      },
+    })),
+  setObjectivePolygons: objectivePolygons =>
+    set(state => ({ config: { ...state.config, objectivePolygons } })),
   setAnnotations: annotations =>
     set(state => ({ config: { ...state.config, annotations } })),
   movePoint: (id, position) =>

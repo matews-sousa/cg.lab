@@ -49,7 +49,7 @@ export default function SubjectPage({
     FILL_IN_THE_BLANK_WITH_OPTIONS: <Space />,
     FILL_IN_THE_BLANK_FORMULA: <Radical />,
     PARAMETERIZED: <Variable />,
-    REORDER: <BringToFront />,
+    ORDER_MATRIX_MULTIPLICATION: <BringToFront />,
   };
 
   const mapSubjectCategoryToPortuguese: Record<SubjectCategories, string> = {

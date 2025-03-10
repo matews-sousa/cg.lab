@@ -35,6 +35,9 @@ import { useMutation } from "convex/react";
 import { api } from "../../../../../../convex/_generated/api";
 import { toast } from "@/hooks/use-toast";
 import { isSameDay } from "date-fns";
+import OrderMatrixMultiplication from "@/components/order-matrix-multiplication";
+import { useOrderMatrixStore } from "@/store/orderMatrixMultiplicationStore";
+import ObjectivePanel2D from "@/components/objective-panel-2d";
 
 export default function Page({
   params,
@@ -58,6 +61,7 @@ export default function Page({
   >("notAnswered");
   const { config, reset: resetScene2D } = useScene2DStore();
   const { reset: resetScene3D } = useScene3DStore();
+  const { reset: resetOrderMatrix } = useOrderMatrixStore();
 
   const completeAssignmentMutation = useMutation(
     api.assignmentCompletions.completeAssignment
@@ -71,6 +75,7 @@ export default function Page({
     resetFillBlankMatrixInput();
     resetFillInMatrixWithOptions();
     resetFillInVecLengthFormulaStore();
+    resetOrderMatrix();
   }, [
     resetScene2D,
     resetScene3D,
@@ -78,6 +83,7 @@ export default function Page({
     resetFillBlankMatrixInput,
     resetFillInMatrixWithOptions,
     resetFillInVecLengthFormulaStore,
+    resetOrderMatrix,
   ]);
 
   useLayoutEffect(() => {
@@ -183,6 +189,8 @@ export default function Page({
 
       <ObjectivePanel />
 
+      <ObjectivePanel2D />
+
       <div className="absolute bottom-4 bg-gray-200 p-4 rounded-md left-2 w-3/4 md:w-[40%] border-b-4 border-b-gray-400">
         <div className="text-center">
           {assignmentState === "correct" && (
@@ -255,6 +263,8 @@ export default function Page({
                   vecLengthFormula={vecLengthFormula}
                 />
               ))}
+
+              <OrderMatrixMultiplication />
 
               <div className="flex items-center justify-center gap-4 mt-4">
                 <Button onClick={handleConfirm}>Confirmar</Button>

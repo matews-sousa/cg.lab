@@ -6,7 +6,8 @@ export type SubjectCategories =
   | "vector-length"
   | "translation-matrix"
   | "rotation-matrix"
-  | "scaling-matrix";
+  | "scaling-matrix"
+  | "matrix-multiplication";
 
 export type DailyMission = {
   id: string;
