@@ -104,10 +104,12 @@ export default function Page() {
 
       // Only update the streak if the user hasn't completed a task today
       // This is to avoid calling the updateUserStreak function unnecessarily
-      if (
+      const shouldUpdateStreak =
         !isSameDay(data?.userLastCompletedDate ?? new Date(), new Date()) ||
-        !data?.userLastCompletedDate
-      ) {
+        !data?.userLastCompletedDate;
+      console.log("data?.userLastCompletedDate", data?.userLastCompletedDate);
+      console.log("shouldUpdateStreak", shouldUpdateStreak);
+      if (shouldUpdateStreak) {
         await updateUserStreakMutation();
       }
 

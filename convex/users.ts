@@ -50,8 +50,7 @@ export const updateUserStreak = mutation({
     const localDate = addHours(completionDate, -3).toISOString(); // UTC-3 timezone (America/Sao_Paulo)
 
     const lastCompletionIsToday =
-      lastCompletedDate &&
-      isSameDay(new Date(lastCompletedDate), completionDate);
+      lastCompletedDate && isSameDay(new Date(lastCompletedDate), localDate);
     if (lastCompletionIsToday) return; // Do nothing if the user already completed a task today
 
     if (lostCurrentStreak(lastCompletedDate)) {
