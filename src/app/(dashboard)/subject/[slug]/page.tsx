@@ -61,6 +61,7 @@ export default function SubjectPage({
     "translation-matrix": "Matriz de translação",
     "rotation-matrix": "Matriz de rotação",
     "scaling-matrix": "Matriz de escala",
+    "matrix-multiplication": "Multiplicação de matrizes",
   };
 
   return (
