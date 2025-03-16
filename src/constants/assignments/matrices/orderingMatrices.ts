@@ -44,10 +44,25 @@ function createOrderMatrixMultiplication({
         },
       ]);
 
-      const { addMatrix } = useOrderMatrixStore.getState();
-      addMatrix(new Matrix3().translate(-1.5, -1.5).transpose());
-      addMatrix(new Matrix3().scale(2, 2));
-      addMatrix(new Matrix3().translate(1, 1).transpose());
+      const { createObject, setMatricesOptions } =
+        useOrderMatrixStore.getState();
+      createObject("square1");
+
+      const options = [
+        {
+          id: "translate-to-origin",
+          matrix: new Matrix3().translate(-1.5, -1.5).transpose(),
+        },
+        {
+          id: "scale",
+          matrix: new Matrix3().scale(2, 2),
+        },
+        {
+          id: "translate-back",
+          matrix: new Matrix3().translate(1, 1).transpose(),
+        },
+      ];
+      setMatricesOptions(options);
     },
     validate() {
       return false;

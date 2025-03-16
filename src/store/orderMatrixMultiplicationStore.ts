@@ -1,53 +1,87 @@
 import { Matrix3, Matrix4 } from "three";
 import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
+
+type MatrixOption = {
+  id: string;
+  matrix: Matrix3 | Matrix4;
+};
 
 interface OrderMatrixStore {
-  matrices: Array<Matrix3 | Matrix4>;
-  objects: Record<string, Array<Matrix3 | Matrix4>>;
-  addMatrix: (matrix: Matrix3 | Matrix4) => void;
-  addObjectMatrix: (object: string, matrix: Matrix3 | Matrix4) => void;
+  matricesOptions: MatrixOption[];
+  objectsMatrices: Record<string, Array<Matrix3 | Matrix4>>;
+  setObjectsMatrices: (
+    objectsMatrices: Record<string, Array<Matrix3 | Matrix4>>
+  ) => void;
+  setMatricesOptions: (matricesOptions: MatrixOption[]) => void;
+  addMatrixOption: (id: string, matrix: Matrix3 | Matrix4) => void;
+  createObject: (objectKey: string) => void;
+  addObjectMatrix: (objectKey: string, matrix: Matrix3 | Matrix4) => void;
   addObjectMatrices: (
-    object: string,
+    objectKey: string,
     matrices: Array<Matrix3 | Matrix4>
   ) => void;
-  removeMatrix: (index: number) => void;
-  removeObjectMatrix: (object: string, index: number) => void;
+  updateObjectMatrix: (
+    objectKey: string,
+    index: number,
+    matrix: Matrix3 | Matrix4
+  ) => void;
+  setObjectMatrices: (
+    objectKey: string,
+    matrices: Array<Matrix3 | Matrix4>
+  ) => void;
+  removeObjectMatrix: (objectKey: string, index: number) => void;
   reset: () => void;
 }
 
 const initialState = {
-  matrices: [],
-  objects: {},
+  matricesOptions: [],
+  objectsMatrices: {},
 };
 
-export const useOrderMatrixStore = create<OrderMatrixStore>(set => ({
-  ...initialState,
-  addMatrix: matrix =>
-    set(state => ({ matrices: [...state.matrices, matrix] })),
-  addObjectMatrix: (object, matrix) =>
-    set(state => ({
-      objects: {
-        ...state.objects,
-        [object]: [...(state.objects[object] ?? []), matrix],
-      },
-    })),
-  addObjectMatrices: (object, matrices) =>
-    set(state => ({
-      objects: {
-        ...state.objects,
-        [object]: matrices,
-      },
-    })),
-  removeMatrix: index =>
-    set(state => ({
-      matrices: state.matrices.filter((_, i) => i !== index),
-    })),
-  removeObjectMatrix: (object, index) =>
-    set(state => ({
-      objects: {
-        ...state.objects,
-        [object]: state.objects[object].filter((_, i) => i !== index),
-      },
-    })),
-  reset: () => set({ ...initialState }),
-}));
+export const useOrderMatrixStore = create<OrderMatrixStore>()(
+  immer(set => ({
+    ...initialState,
+    setObjectsMatrices: objectsMatrices => set({ objectsMatrices }),
+    setMatricesOptions: matricesOptions =>
+      set(state => {
+        state.matricesOptions = matricesOptions;
+      }),
+    addMatrixOption(id, matrix) {
+      set(state => {
+        state.matricesOptions.push({ id, matrix });
+      });
+    },
+    createObject: objectKey =>
+      set(state => {
+        state.objectsMatrices[objectKey] = [];
+      }),
+    addObjectMatrix: (objectKey, matrix) =>
+      set(state => {
+        state.objectsMatrices[objectKey].push(matrix);
+      }),
+    addObjectMatrices: (objectKey, matrices) =>
+      set(state => {
+        state.objectsMatrices[objectKey] = matrices;
+      }),
+    updateObjectMatrix: (objectKey, index, matrix) =>
+      set(state => {
+        state.objectsMatrices[objectKey][index] = matrix;
+      }),
+    setObjectMatrices: (objectKey, matrices) =>
+      set(state => {
+        state.objectsMatrices[objectKey] = matrices;
+      }),
+    removeObjectMatrix: (objectKey, index) =>
+      set(state => {
+        state.objectsMatrices[objectKey] = state.objectsMatrices[
+          objectKey
+        ].filter((_, i) => i !== index);
+      }),
+    reset: () =>
+      set(state => {
+        state.matricesOptions = [];
+        state.objectsMatrices = {};
+      }),
+  }))
+);
