@@ -2,9 +2,11 @@ import { Matrix3, Matrix4 } from "three";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
-type MatrixOption = {
+export type MatrixOption = {
   id: string;
   matrix: Matrix3 | Matrix4;
+  rotationAxis?: "x" | "y" | "z";
+  rotationAngle?: number;
 };
 
 interface OrderMatrixStore {

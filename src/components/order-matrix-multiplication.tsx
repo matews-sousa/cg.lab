@@ -89,7 +89,7 @@ export default function OrderMatrixMultiplication() {
     if (over && active.id !== over.id) {
       console.log("active", active.id);
       console.log("over", over.id);
-      const objectKey = "square1";
+      const objectKey = Object.keys(objectsMatrices)[0];
       const activeIndex = Number(String(active.id).split("-")[2]);
       const overIndex = Number(String(over.id).split("-")[2]);
       setObjectMatrices(
@@ -142,33 +142,41 @@ export default function OrderMatrixMultiplication() {
           >
             <Droppable objectKey={objectKey}>
               {objectsMatrices[objectKey]?.length > 0 ? (
-                objectsMatrices[objectKey].map((matrix, index) => (
-                  <Fragment key={index}>
-                    <div className="relative">
-                      <SortableItem
-                        matrix={matrix}
-                        id={`matrix-${objectKey}-${index}`}
-                      />
-                      <Button
-                        size="icon"
-                        variant="destructive"
-                        className="absolute -top-3 -right-3 text-xs rounded-full p-1 w-8 h-8"
-                        onClick={() => handleRemoveMatrix(index)}
-                      >
-                        <Trash size={20} />
-                      </Button>
-                    </div>
-                    {index < objectsMatrices[objectKey].length - 1 && (
-                      <Latex>
-                        {`$$
+                objectsMatrices[objectKey].map((matrix, index) => {
+                  const matrixOption = matricesOptions.find(
+                    option => option.matrix === matrix
+                  );
+                  return (
+                    <Fragment key={index}>
+                      <div className="relative">
+                        <SortableItem id={`matrix-${objectKey}-${index}`}>
+                          <MatrixLatex
+                            matrix={matrix}
+                            rotationAxis={matrixOption?.rotationAxis}
+                            rotationAngle={matrixOption?.rotationAngle}
+                          />
+                        </SortableItem>
+                        <Button
+                          size="icon"
+                          variant="destructive"
+                          className="absolute -top-3 -right-3 text-xs rounded-full p-1 w-8 h-8"
+                          onClick={() => handleRemoveMatrix(index)}
+                        >
+                          <Trash size={20} />
+                        </Button>
+                      </div>
+                      {index < objectsMatrices[objectKey].length - 1 && (
+                        <Latex>
+                          {`$$
                         \\times
                         $$`}
-                      </Latex>
-                    )}
-                  </Fragment>
-                ))
+                        </Latex>
+                      )}
+                    </Fragment>
+                  );
+                })
               ) : (
-                <div className="text-gray-400">
+                <div className="text-gray-400 text-center w-full">
                   Escolha as matrizes para serem ordenadas
                 </div>
               )}
@@ -178,7 +186,7 @@ export default function OrderMatrixMultiplication() {
 
         <DragOverlay>
           {activeMatrix && (
-            <div className="text-sm bg-blue-500 hover:bg-blue-600 rounded-md text-white opacity-40">
+            <div className="text-sm p-1 bg-blue-500 hover:bg-blue-600 rounded-md text-white opacity-40">
               <MatrixLatex matrix={activeMatrix} />
             </div>
           )}
@@ -191,7 +199,11 @@ export default function OrderMatrixMultiplication() {
             onClick={() => handleOptionClick(option)}
             className="text-sm bg-blue-500 hover:bg-blue-600 rounded-md text-white"
           >
-            <MatrixLatex matrix={option.matrix} />
+            <MatrixLatex
+              matrix={option.matrix}
+              rotationAxis={option.rotationAxis}
+              rotationAngle={option.rotationAngle}
+            />
           </button>
         ))}
       </div>
@@ -213,7 +225,7 @@ function Droppable({
   return (
     <div
       ref={setNodeRef}
-      className="flex items-center justify-center gap-2 bg-gray-100 p-0 rounded-lg shadow w-full h-32"
+      className="flex items-center justify-start gap-2 bg-gray-100 p-0 rounded-lg shadow w-full h-32 overflow-x-auto px-2"
     >
       {children}
     </div>
@@ -221,10 +233,10 @@ function Droppable({
 }
 
 function SortableItem({
-  matrix,
+  children,
   id,
 }: {
-  matrix: Matrix3 | Matrix4;
+  children: React.ReactNode;
   id: string;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -240,23 +252,68 @@ function SortableItem({
       style={style}
       {...attributes}
       {...listeners}
-      className="relative text-sm bg-blue-500 hover:bg-blue-600 rounded-md text-white"
+      className="relative p-1 text-sm bg-blue-500 hover:bg-blue-600 rounded-md text-white"
     >
-      <MatrixLatex matrix={matrix} />
+      {children}
     </div>
   );
 }
 
-function MatrixLatex({ matrix }: { matrix: Matrix3 | Matrix4 }) {
+function formatMatrixElement(
+  value: number,
+  row: number,
+  col: number,
+  rotationAxis?: "x" | "y" | "z",
+  rotationAngle?: number
+): string {
+  if (!rotationAxis || !rotationAngle) {
+    return value.toFixed(1);
+  }
+
+  // Handle known values dynamically using axis and angle
+  if (rotationAxis === "x") {
+    if (row === 1 && col === 1) return `\\cos ${rotationAngle}^\\circ`;
+    if (row === 1 && col === 2) return `-\\sin ${rotationAngle}^\\circ`;
+    if (row === 2 && col === 1) return `\\sin ${rotationAngle}^\\circ`;
+    if (row === 2 && col === 2) return `\\cos ${rotationAngle}^\\circ`;
+  }
+
+  if (rotationAxis === "y") {
+    if (row === 0 && col === 0) return `\\cos ${rotationAngle}^\\circ`;
+    if (row === 0 && col === 2) return `\\sin ${rotationAngle}^\\circ`;
+    if (row === 2 && col === 0) return `-\\sin ${rotationAngle}^\\circ`;
+    if (row === 2 && col === 2) return `\\cos ${rotationAngle}^\\circ`;
+  }
+
+  if (rotationAxis === "z") {
+    if (row === 0 && col === 0) return `\\cos ${rotationAngle}^\\circ`;
+    if (row === 0 && col === 1) return `-\\sin ${rotationAngle}^\\circ`;
+    if (row === 1 && col === 0) return `\\sin ${rotationAngle}^\\circ`;
+    if (row === 1 && col === 1) return `\\cos ${rotationAngle}^\\circ`;
+  }
+
+  // Default: return number with 2 decimal places
+  return value.toFixed(1);
+}
+
+function MatrixLatex({
+  matrix,
+  rotationAxis,
+  rotationAngle,
+}: {
+  matrix: Matrix3 | Matrix4;
+  rotationAxis?: "x" | "y" | "z";
+  rotationAngle?: number;
+}) {
   return (
-    <div className="text-sm p-1 rounded-md">
+    <div className="text-sm rounded-md">
       {matrix instanceof Matrix3 ? (
         <Latex>
           {`$$
           \\begin{bmatrix}
-            ${matrix.elements[0]} & ${matrix.elements[1]} & ${matrix.elements[2]} \\\\
-            ${matrix.elements[3]} & ${matrix.elements[4]} & ${matrix.elements[5]} \\\\
-            ${matrix.elements[6]} & ${matrix.elements[7]} & ${matrix.elements[8]} \\\\
+            ${formatMatrixElement(matrix.elements[0], 0, 0, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[1], 0, 1, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[2], 0, 2, rotationAxis, rotationAngle)} \\\\
+            ${formatMatrixElement(matrix.elements[3], 1, 0, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[4], 1, 1, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[5], 1, 2, rotationAxis, rotationAngle)} \\\\
+            ${formatMatrixElement(matrix.elements[6], 2, 0, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[7], 2, 1, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[8], 2, 2, rotationAxis, rotationAngle)} \\\\
           \\end{bmatrix}
           $$`}
         </Latex>
@@ -264,10 +321,10 @@ function MatrixLatex({ matrix }: { matrix: Matrix3 | Matrix4 }) {
         <Latex>
           {`$$
           \\begin{bmatrix}
-            ${matrix.elements[0]} & ${matrix.elements[1]} & ${matrix.elements[2]} & ${matrix.elements[3]} \\\\
-            ${matrix.elements[4]} & ${matrix.elements[5]} & ${matrix.elements[6]} & ${matrix.elements[7]} \\\\
-            ${matrix.elements[8]} & ${matrix.elements[9]} & ${matrix.elements[10]} & ${matrix.elements[11]} \\\\
-            ${matrix.elements[12]} & ${matrix.elements[13]} & ${matrix.elements[14]} & ${matrix.elements[15]} \\\\
+            ${formatMatrixElement(matrix.elements[0], 0, 0, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[1], 0, 1, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[2], 0, 2, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[3], 0, 3, rotationAxis, rotationAngle)} \\\\
+            ${formatMatrixElement(matrix.elements[4], 1, 0, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[5], 1, 1, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[6], 1, 2, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[7], 1, 3, rotationAxis, rotationAngle)} \\\\
+            ${formatMatrixElement(matrix.elements[8], 2, 0, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[9], 2, 1, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[10], 2, 2, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[11], 2, 3, rotationAxis, rotationAngle)} \\\\
+            ${formatMatrixElement(matrix.elements[12], 3, 0, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[13], 3, 1, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[14], 3, 2, rotationAxis, rotationAngle)} & ${formatMatrixElement(matrix.elements[15], 3, 3)} \\\\
           \\end{bmatrix}
           $$`}
         </Latex>
