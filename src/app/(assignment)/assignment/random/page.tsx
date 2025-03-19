@@ -113,8 +113,6 @@ export default function Page() {
       const shouldUpdateStreak =
         !isSameDay(data?.userLastCompletedDate ?? new Date(), new Date()) ||
         !data?.userLastCompletedDate;
-      console.log("data?.userLastCompletedDate", data?.userLastCompletedDate);
-      console.log("shouldUpdateStreak", shouldUpdateStreak);
       if (shouldUpdateStreak) {
         await updateUserStreakMutation();
       }
