@@ -30,6 +30,8 @@ import { useMutation } from "convex/react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { isSameDay } from "date-fns";
+import ObjectivePanel2D from "@/components/objective-panel-2d";
+import OrderMatrixMultiplication from "@/components/order-matrix-multiplication";
 
 export default function Page() {
   const [assignment, setAssignment] = useState<
@@ -161,6 +163,7 @@ export default function Page() {
       )}
 
       <ObjectivePanel />
+      <ObjectivePanel2D />
 
       <div className="absolute bottom-4 bg-gray-200 p-4 rounded-md left-2 w-3/4 md:w-[40%] border-b-4 border-b-gray-400">
         <div className="text-center">
@@ -228,6 +231,8 @@ export default function Page() {
                 AssignmentType.FILL_IN_THE_BLANK_MATRIX_WITH_OPTIONS && (
                 <FillInMatrixWithOptions />
               )}
+
+              <OrderMatrixMultiplication />
 
               <div className="flex items-center justify-center gap-4 mt-4">
                 <Button onClick={handleConfirm}>Confirmar</Button>

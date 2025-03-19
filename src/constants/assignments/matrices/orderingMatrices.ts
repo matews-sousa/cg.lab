@@ -56,7 +56,7 @@ function createOrderMatrixMultiplication({
   };
 }
 
-function createSquare(
+export function createSquare(
   id: string,
   color: string,
   position: [number, number],
@@ -73,7 +73,10 @@ function createSquare(
   };
 }
 
-function applyMatrixToSquare(matrices: Matrix3[], square: TPolygon): TPolygon {
+export function applyMatrixToSquare(
+  matrices: Matrix3[],
+  square: TPolygon
+): TPolygon {
   const newPoints = square.points?.map(point => {
     const modelMatrix = new Matrix3().identity();
     matrices.forEach(matrix => modelMatrix.multiply(matrix));
