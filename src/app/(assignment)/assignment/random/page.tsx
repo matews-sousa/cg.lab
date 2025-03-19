@@ -32,6 +32,7 @@ import { toast } from "@/hooks/use-toast";
 import { isSameDay } from "date-fns";
 import ObjectivePanel2D from "@/components/objective-panel-2d";
 import OrderMatrixMultiplication from "@/components/order-matrix-multiplication";
+import { useOrderMatrixStore } from "@/store/orderMatrixMultiplicationStore";
 
 export default function Page() {
   const [assignment, setAssignment] = useState<
@@ -49,6 +50,7 @@ export default function Page() {
   >("notAnswered");
   const { config, reset: resetScene2D } = useScene2DStore();
   const { reset: resetScene3D } = useScene3DStore();
+  const { reset: resetOrderMatrix } = useOrderMatrixStore();
 
   const searchParams = useSearchParams();
   const selectedSubjects = useMemo(
@@ -67,12 +69,14 @@ export default function Page() {
     resetFillInTheBlankWithOptions();
     resetFillBlankMatrixInput();
     resetFillInMatrixWithOptions();
+    resetOrderMatrix();
   }, [
     resetScene2D,
     resetScene3D,
     resetFillInTheBlankWithOptions,
     resetFillBlankMatrixInput,
     resetFillInMatrixWithOptions,
+    resetOrderMatrix,
   ]);
 
   useEffect(() => {

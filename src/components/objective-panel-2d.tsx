@@ -6,6 +6,8 @@ import CustomPolygon from "./custom-polygon";
 export default function ObjectivePanel2D() {
   const { config } = useScene2DStore();
 
+  if (!config.objectivePolygons) return null;
+
   return (
     <div className="absolute top-4 right-4 border-2 border-gray-400 bg-black rounded-sm w-[30%] h-64 overflow-hidden">
       <Mafs pan={true} viewBox={{ x: [-5, 5], y: [-4, 4] }} height={250}>
