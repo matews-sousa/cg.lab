@@ -5,12 +5,20 @@ import {
 import { useScene2DStore } from "@/store/scene2DStore";
 import { AssignmentType, RandomGeneratedAssignment } from "@/types/Assignment";
 import { TPoint } from "@/types/Scene2DConfig";
-import { getRandomCoords } from "@/utils";
+import { getRandomCoords, getRandomIntInRange } from "@/utils";
 import {
   initial2DScalingMatrixValue,
   initial2DTranslationMatrixValue,
 } from "../inicial2DMatricesValues";
 import { SubjectCategories } from "../defaultDailyMissions";
+import { Matrix3 } from "three";
+import { applyMatrixToSquare, createSquare } from "./matrices/orderingMatrices";
+import {
+  MatrixOption,
+  useOrderMatrixStore,
+} from "@/store/orderMatrixMultiplicationStore";
+import { degreesToRadians } from "@/lib/utils";
+import { shuffleArray } from "@/utils";
 
 const COORDINATE_LIMITS = [-4, 4] as [number, number];
 
@@ -311,6 +319,125 @@ export function generate2DScaleMatrixAssignment(): RandomGeneratedAssignment {
       });
 
       return isCorrect;
+    },
+  });
+}
+
+function generateTransformations() {
+  const transformations = [];
+
+  // Add translation (ensure it's not zero)
+  const translation = getRandomCoords([-3, 3]);
+  if (translation[0] !== 0 || translation[1] !== 0) {
+    transformations.push({
+      type: "translation",
+      value: translation,
+    });
+  }
+
+  // Add scaling (ensure it's not 1)
+  const scaling = getRandomCoords([1, 3]);
+  if (scaling[0] !== 1 || scaling[1] !== 1) {
+    transformations.push({
+      type: "scaling",
+      value: scaling,
+    });
+  }
+
+  // Add rotation (ensure it's not 0°)
+  const rotation = getRandomIntInRange(-45, 45);
+  if (rotation !== 0) {
+    transformations.push({
+      type: "rotation",
+      value: rotation,
+    });
+  }
+
+  // Ensure at least two transformations are applied
+  if (transformations.length < 2) {
+    transformations.push({
+      type: "translation",
+      value: getRandomCoords([-3, 3]),
+    });
+  }
+
+  return transformations;
+}
+
+function generateMatrices(
+  transformations: (
+    | { type: string; value: [number, number] }
+    | { type: string; value: number }
+  )[]
+) {
+  return transformations.map(({ type, value }) => {
+    const matrix = new Matrix3();
+    switch (type) {
+      case "translation":
+        if (Array.isArray(value))
+          matrix.makeTranslation(value[0], value[1]).transpose();
+        break;
+      case "scaling":
+        if (Array.isArray(value)) matrix.makeScale(value[0], value[1]);
+        break;
+      case "rotation":
+        if (typeof value === "number")
+          matrix.makeRotation(degreesToRadians(value));
+        break;
+    }
+    return matrix;
+  });
+}
+
+export function generate2DMatrixMultiplicationSortingAssignment(): RandomGeneratedAssignment {
+  const randomInitialPolygon = createSquare("square1", "blue", [0, 0], [1, 1]);
+  // generate random matrices to be multiplied using Matrix3 from three
+  const transformations = generateTransformations();
+  // shuffle the transformations to be applied
+  const shuffledTransformations = shuffleArray(transformations);
+  const matrices = generateMatrices(shuffledTransformations);
+  // generate the objective polygon by applying the matrices to the initial polygon
+  const objectivePolygon = applyMatrixToSquare(matrices, randomInitialPolygon);
+
+  // generate the assignment
+  return createMatrixAssignment({
+    title: "Ordenação de multiplicação de matrizes 2D",
+    instructions: `Ordene as matrizes de forma que a multiplicação resulte no objetivo esperado`,
+    type: AssignmentType.ORDER_MATRIX_MULTIPLICATION,
+    subjectCategory: "matrix-multiplication",
+    setup() {
+      const { setPolygons, setObjectivePolygons } = useScene2DStore.getState();
+      setPolygons([randomInitialPolygon]);
+      setObjectivePolygons([objectivePolygon]);
+
+      const { createObject, setMatricesOptions } =
+        useOrderMatrixStore.getState();
+      createObject("square1");
+      const matricesOptions: MatrixOption[] = shuffledTransformations.map(
+        ({ type, value }, index) => ({
+          id: type,
+          matrix: matrices[index],
+          rotationAngle:
+            type === "rotation" && typeof value === "number"
+              ? value
+              : undefined,
+          rotationAxis: type === "rotation" ? "z" : undefined,
+        })
+      );
+      setMatricesOptions(shuffleArray(matricesOptions));
+    },
+    validate() {
+      const square1 = useScene2DStore.getState().getPolygon("square1");
+      if (!square1) return false;
+
+      const objectiveSquare = objectivePolygon;
+      return (
+        square1.points.every(
+          (point, index) =>
+            point.position[0] === objectiveSquare.points[index].position[0] &&
+            point.position[1] === objectiveSquare.points[index].position[1]
+        ) && square1.color === objectiveSquare.color
+      );
     },
   });
 }

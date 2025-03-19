@@ -38,13 +38,16 @@ export default function CustomPolygon({ polygon }: Props) {
               strokeStyle={polygon.strokeStyle}
             />
             {/* Render vertices as draggable points */}
-            {polygon.points.map(point => (
-              <CustomPoint
-                key={point.id}
-                point={point}
-                polygonId={polygon.id}
-              />
-            ))}
+            {polygon.points.map(
+              point =>
+                point.movable && (
+                  <CustomPoint
+                    key={point.id}
+                    point={point}
+                    polygonId={polygon.id}
+                  />
+                )
+            )}
           </Transform>
         </Transform>
       </Transform>

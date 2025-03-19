@@ -113,14 +113,14 @@ export default function Home() {
           {user && (
             <CardContent>
               <div>
-                <p className="text-sm">{currentUserDailyMission?.title}</p>
-                <div className="flex items-center gap-4">
-                  <Progress value={currentDailyMissionProgressPercentage} />
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm">{currentUserDailyMission?.title}</p>
                   <p>
                     {user?.currentDailyMissionProgress || 0}/
                     {currentUserDailyMission?.target}
                   </p>
                 </div>
+                <Progress value={currentDailyMissionProgressPercentage} />
               </div>
             </CardContent>
           )}

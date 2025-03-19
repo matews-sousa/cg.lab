@@ -25,6 +25,7 @@ export type TVector = {
 export type TPolygon = {
   id: string;
   points: TPoint[];
+  originalPoints?: TPoint[];
   color?: string;
   strokeStyle?: "solid" | "dashed";
   movable?: boolean;
@@ -53,5 +54,6 @@ export type Scene2DConfig = {
   points?: TPoint[];
   vectors?: TVector[];
   polygons?: TPolygon[];
+  objectivePolygons?: TPolygon[];
   annotations?: Annotation[];
 };
