@@ -22,6 +22,7 @@ export interface Matrix {
   pointRefId?: string;
   polygonRefId?: string;
   objectRefId?: string;
+  imageRefId?: string;
 }
 
 interface FillBlankMatrixInputStore {

@@ -1,5 +1,6 @@
 import {
   Scene2DConfig,
+  TImage,
   TPoint,
   TPolygon,
   TVector,
@@ -21,6 +22,10 @@ type Scene2DStore = {
   setPolygonTranslation: (id: string, translation: [number, number]) => void;
   setPolygonPoints: (id: string, points: TPolygon["points"]) => void;
   setObjectivePolygons: (polygons: Scene2DConfig["objectivePolygons"]) => void;
+  setImages: (images: Scene2DConfig["images"]) => void;
+  setObjectiveImages: (images: Scene2DConfig["images"]) => void;
+  setImageScale: (id: string, scale: [number, number]) => void;
+  getImageById: (id: string) => TImage | undefined;
   setAnnotations: (annotations: Scene2DConfig["annotations"]) => void;
   movePoint: (id: string, position: [number, number]) => void;
   movePolygonPoint: (
@@ -208,6 +213,25 @@ export const useScene2DStore = create<Scene2DStore>((set, get) => ({
   getPoint: id => get().config.points?.find(point => point.id === id),
   getVector: id => get().config.vectors?.find(vector => vector.id === id),
   getPolygon: id => get().config.polygons?.find(polygon => polygon.id === id),
+  setImages(images) {
+    set(state => ({ config: { ...state.config, images } }));
+  },
+  setObjectiveImages(images) {
+    set(state => ({ config: { ...state.config, objectiveImages: images } }));
+  },
+  setImageScale(id, scale) {
+    set(state => ({
+      config: {
+        ...state.config,
+        images: state.config.images?.map(image =>
+          image.id === id ? { ...image, scale } : image
+        ),
+      },
+    }));
+  },
+  getImageById(id) {
+    return get().config.images?.find(image => image.id === id);
+  },
   setViewBox: viewBox =>
     set(state => ({ config: { ...state.config, viewBox } })),
   reset: () => set({ config: initialState }),

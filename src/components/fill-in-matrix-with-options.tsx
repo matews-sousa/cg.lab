@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import { useEffect } from "react";
 import { useScene3DStore } from "@/store/scene3DStore";
 import { Matrix4 } from "three";
+import { useScene2DStore } from "@/store/scene2DStore";
 
 export default function FillInMatrixWithOptions() {
   const {
@@ -18,6 +19,7 @@ export default function FillInMatrixWithOptions() {
     selectedOptions,
     setSelectedOptions,
   } = useFillInMatrixWithOptionsStore();
+  const { getImageById, setImageScale } = useScene2DStore();
   const {
     getCube,
     setCubeCustomXRotationMatrix,
@@ -27,48 +29,58 @@ export default function FillInMatrixWithOptions() {
 
   // Tracks changes to the matrix and processes updates
   useEffect(() => {
-    if (!matrix?.objectRefId) return;
-
-    const editableCells = matrix.matrixValue
+    const editableCells = matrix?.matrixValue
       .flat()
       .filter(cell => cell.editable);
 
-    // If the matrix is a rotation matrix and there are no editable cells, update the cube's custom rotation matrix
-    if (!editableCells.length) {
-      const matrixElements = matrix.matrixValue
-        .flat()
-        .map(cell => cell.value as number);
-      if (matrixElements.every(value => typeof value === "number")) {
-        const customMatrix = new Matrix4().set(
-          matrixElements[0],
-          matrixElements[1],
-          matrixElements[2],
-          matrixElements[3],
-          matrixElements[4],
-          matrixElements[5],
-          matrixElements[6],
-          matrixElements[7],
-          matrixElements[8],
-          matrixElements[9],
-          matrixElements[10],
-          matrixElements[11],
-          matrixElements[12],
-          matrixElements[13],
-          matrixElements[14],
-          matrixElements[15]
-        );
-        switch (matrix.type) {
-          case MatrixType.ROTATION_X:
-            setCubeCustomXRotationMatrix(matrix.objectRefId, customMatrix);
-            break;
-          case MatrixType.ROTATION_Y:
-            setCubeCustomYRotationMatrix(matrix.objectRefId, customMatrix);
-            break;
-          case MatrixType.ROTATION_Z:
-            setCubeCustomZRotationMatrix(matrix.objectRefId, customMatrix);
-            break;
-          default:
-            break;
+    // If there is a matrix and there are no editable cells, update the object attached to the matrix
+    if (matrix && !editableCells?.length) {
+      // If there is a objectRefId, set the custom rotation matrix for the cube
+      if (matrix.type && matrix.objectRefId) {
+        const matrixElements = matrix?.matrixValue
+          .flat()
+          .map(cell => cell.value as number);
+        if (matrixElements?.every(value => typeof value === "number")) {
+          const customMatrix = new Matrix4().set(
+            matrixElements[0],
+            matrixElements[1],
+            matrixElements[2],
+            matrixElements[3],
+            matrixElements[4],
+            matrixElements[5],
+            matrixElements[6],
+            matrixElements[7],
+            matrixElements[8],
+            matrixElements[9],
+            matrixElements[10],
+            matrixElements[11],
+            matrixElements[12],
+            matrixElements[13],
+            matrixElements[14],
+            matrixElements[15]
+          );
+          switch (matrix && matrix.type && matrix.objectRefId) {
+            case MatrixType.ROTATION_X:
+              setCubeCustomXRotationMatrix(matrix!.objectRefId!, customMatrix);
+              break;
+            case MatrixType.ROTATION_Y:
+              setCubeCustomYRotationMatrix(matrix!.objectRefId!, customMatrix);
+              break;
+            case MatrixType.ROTATION_Z:
+              setCubeCustomZRotationMatrix(matrix!.objectRefId!, customMatrix);
+              break;
+            default:
+              break;
+          }
+        }
+      }
+      // If there is a imageRefId, set the scale for the image
+      if (matrix.type === MatrixType.SCALING && matrix.imageRefId) {
+        const image = getImageById(matrix.imageRefId);
+        if (image) {
+          const scaleX = matrix.matrixValue[0][0].value as number;
+          const scaleY = matrix.matrixValue[1][1].value as number;
+          setImageScale(image.id, [scaleX, scaleY]);
         }
       }
     }
@@ -79,6 +91,8 @@ export default function FillInMatrixWithOptions() {
     setCubeCustomYRotationMatrix,
     setCubeCustomZRotationMatrix,
     selectedOptions,
+    getImageById,
+    setImageScale,
   ]);
 
   // Gets the next editable cell
@@ -111,6 +125,9 @@ export default function FillInMatrixWithOptions() {
       setCubeCustomXRotationMatrix(matrix.objectRefId, null);
       setCubeCustomYRotationMatrix(matrix.objectRefId, null);
       setCubeCustomZRotationMatrix(matrix.objectRefId, null);
+    }
+    if (matrix?.imageRefId) {
+      setImageScale(matrix.imageRefId, [1, 1]);
     }
   };
 

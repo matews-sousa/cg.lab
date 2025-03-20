@@ -8,6 +8,7 @@ import { Scene2DConfig } from "@/types/Scene2DConfig";
 import CustomPolygon from "./custom-polygon";
 import { useEffect } from "react";
 import { useScene2DStore } from "@/store/scene2DStore";
+import CustomImage from "./custom-image";
 
 export default function GenericScene2D({ config }: { config: Scene2DConfig }) {
   const windowSize = useWindowSize();
@@ -33,6 +34,10 @@ export default function GenericScene2D({ config }: { config: Scene2DConfig }) {
   return (
     <Mafs pan={config.pan} viewBox={config.viewBox} height={windowSize.height}>
       <Coordinates.Cartesian subdivisions={config.grid.subdivisions} />
+
+      {config.images?.map(image => (
+        <CustomImage key={image.id} image={image} />
+      ))}
 
       {config.polygons?.map(polygon => (
         <CustomPolygon key={polygon.id} polygon={polygon} />

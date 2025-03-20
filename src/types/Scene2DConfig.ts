@@ -34,6 +34,15 @@ export type TPolygon = {
   translation?: [number, number];
 };
 
+export type TImage = {
+  id: string;
+  src: string;
+  width: number;
+  height: number;
+  position: [number, number];
+  scale: [number, number];
+};
+
 export type Annotation = {
   type: "LaTeX";
   position: "relative" | "absolute";
@@ -54,6 +63,8 @@ export type Scene2DConfig = {
   points?: TPoint[];
   vectors?: TVector[];
   polygons?: TPolygon[];
+  images?: TImage[];
   objectivePolygons?: TPolygon[];
+  objectiveImages?: TImage[];
   annotations?: Annotation[];
 };
