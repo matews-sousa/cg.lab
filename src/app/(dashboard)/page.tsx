@@ -50,7 +50,7 @@ export default function Home() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-16 items-start">
-      <div className="flex flex-col gap-4 mb-4 lg:mb-0">
+      <div className="flex flex-col gap-4 mb-4 lg:mb-0 lg:sticky top-4 lg:col-span-1">
         {/* Show Skeleton while loading */}
         {loading && (
           <Card>
@@ -113,7 +113,7 @@ export default function Home() {
           {user && (
             <CardContent>
               <div>
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between gap-4 mb-2">
                   <p className="text-sm">{currentUserDailyMission?.title}</p>
                   <p>
                     {user?.currentDailyMissionProgress || 0}/
@@ -146,13 +146,14 @@ export default function Home() {
                 <CardDescription>{subject.description}</CardDescription>
               </CardHeader>
               {user && (
-                <CardContent>
+                <CardContent className="flex items-center justify-between gap-4">
                   <Progress value={completionPercentage} />
+                  <p>{completionPercentage}%</p>
                 </CardContent>
               )}
               <CardFooter>
-                <Link href={`/subject/${subject.slug}`}>
-                  <Button>Iniciar</Button>
+                <Link className="w-full" href={`/subject/${subject.slug}`}>
+                  <Button className="w-full">Iniciar</Button>
                 </Link>
               </CardFooter>
             </Card>

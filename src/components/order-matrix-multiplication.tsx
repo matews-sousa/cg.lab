@@ -124,6 +124,8 @@ export default function OrderMatrixMultiplication() {
     }
   };
 
+  if (matricesOptions.length === 0) return null;
+
   return (
     <div className="flex items-center justify-center space-x-4 mt-4 relative">
       <DndContext
