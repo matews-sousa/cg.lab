@@ -40,11 +40,11 @@ const subjects: Subject[] = [
     type: "2D",
   },
   {
-    title: "Básico de Vetores",
+    title: "Definição de Vetores",
     description: "Aprenda os conceitos básicos de vetores num plano 2D.",
-    slug: "vector-basics",
+    slug: "vector-definition",
     assignments: vectorAssignments.filter(
-      assi => assi.subjectCategory === "vector-basics"
+      assi => assi.subjectCategory === "vector-definition"
     ),
     type: "2D",
   },
@@ -133,8 +133,8 @@ export const subjectOptions = [
     ],
   },
   {
-    id: "vector-basics",
-    label: "Básico de vetores",
+    id: "vector-definition",
+    label: "Definição de vetores",
     generators: [
       generateVectorFillInAssignment,
       generateVectorTransformationAssignment,

@@ -75,7 +75,7 @@ export function generateVectorTransformationAssignment(): RandomGeneratedAssignm
     title: "Transforme o vetor",
     type: AssignmentType.INTERACTIVE,
     instructions: `Transforme o vetor a em (${targetVector[0]}, ${targetVector[1]}).`,
-    subjectCategory: "vector-basics",
+    subjectCategory: "vector-definition",
     setup: () => {
       setupScene([
         {
@@ -167,7 +167,7 @@ export function generateVectorFillInAssignment(): RandomGeneratedAssignment {
     title: "Preencha o vetor",
     type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
     instructions: "Preencha o vetor com os valores corretos.",
-    subjectCategory: "vector-basics",
+    subjectCategory: "vector-definition",
     setup: () => {
       setupScene([
         {
