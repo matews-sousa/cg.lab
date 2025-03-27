@@ -1,6 +1,6 @@
 export type SubjectCategories =
   | "points"
-  | "vector-basics"
+  | "vector-definition"
   | "vector-sum"
   | "vector-scalar"
   | "vector-length"
@@ -24,44 +24,44 @@ export const defaultDailyMissions: DailyMission[] = [
     subjectCategory: "points",
   },
   {
-    id: "complete-5-exercises-on-vector-basics",
-    title: "Complete 5 exercícios sobre o Básico de Vetores",
+    id: "complete-5-exercises-on-vector-definition",
+    title: "Complete 5 exercícios sobre a Definição de vetores",
     target: 5,
-    subjectCategory: "vector-basics",
+    subjectCategory: "vector-definition",
   },
   {
     id: "complete-5-exercises-on-vector-sum",
-    title: "Complete 5 exercícios sobre Soma de Vetores",
+    title: "Complete 5 exercícios sobre Soma de vetores",
     target: 5,
     subjectCategory: "vector-sum",
   },
   {
     id: "complete-5-exercises-on-vector-scalar",
-    title: "Complete 5 exercícios sobre Vetores Escalares",
+    title: "Complete 5 exercícios sobre Multiplicação por escalar",
     target: 5,
     subjectCategory: "vector-scalar",
   },
   {
     id: "complete-5-exercises-on-vector-length",
-    title: "Complete 5 exercícios sobre o Comprimento de Vetores",
+    title: "Complete 5 exercícios sobre o Comprimento de vetores",
     target: 5,
     subjectCategory: "vector-length",
   },
   {
     id: "complete-5-exercises-on-translation-matrix",
-    title: "Complete 5 exercícios sobre Matriz de Translação",
+    title: "Complete 5 exercícios sobre Matriz de translação",
     target: 5,
     subjectCategory: "translation-matrix",
   },
   {
     id: "complete-5-exercises-on-rotation-matrix",
-    title: "Complete 5 exercícios sobre Matriz de Rotação",
+    title: "Complete 5 exercícios sobre Matriz de rotação",
     target: 5,
     subjectCategory: "rotation-matrix",
   },
   {
     id: "complete-5-exercises-on-scaling-matrix",
-    title: "Complete 5 exercícios sobre Matriz de Escala",
+    title: "Complete 5 exercícios sobre Matriz de escala",
     target: 5,
     subjectCategory: "scaling-matrix",
   },

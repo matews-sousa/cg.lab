@@ -54,7 +54,7 @@ export default function SubjectPage({
 
   const mapSubjectCategoryToPortuguese: Record<SubjectCategories, string> = {
     points: "Pontos",
-    "vector-basics": "Básico de vetores",
+    "vector-definition": "Definição de vetores",
     "vector-sum": "Soma de vetores",
     "vector-scalar": "Multiplicação por escalar",
     "vector-length": "Módulo de vetores",

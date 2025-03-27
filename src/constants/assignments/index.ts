@@ -40,18 +40,75 @@ const subjects: Subject[] = [
     type: "2D",
   },
   {
-    title: "Vetores 2D",
+    title: "Definição de Vetores",
     description: "Aprenda os conceitos básicos de vetores num plano 2D.",
-    slug: "vectors2d",
-    assignments: vectorAssignments,
+    slug: "vector-definition",
+    assignments: vectorAssignments.filter(
+      assi => assi.subjectCategory === "vector-definition"
+    ),
     type: "2D",
   },
   {
-    title: "Matrizes 2D",
-    description:
-      "Aprenda os conceitos básicos de matrizes aplicadas em objetos 2D.",
-    slug: "matrices2d",
-    assignments: matricesAssignments,
+    title: "Soma de Vetores",
+    description: "Aprenda a somar vetores num plano 2D.",
+    slug: "vector-sum",
+    assignments: vectorAssignments.filter(
+      assi => assi.subjectCategory === "vector-sum"
+    ),
+    type: "2D",
+  },
+  {
+    title: "Multiplicação por Escalar",
+    description: "Aprenda a multiplicar vetores por escalares.",
+    slug: "vector-scalar",
+    assignments: vectorAssignments.filter(
+      assi => assi.subjectCategory === "vector-scalar"
+    ),
+    type: "2D",
+  },
+  {
+    title: "Módulo de Vetores",
+    description: "Aprenda a calcular o módulo de vetores.",
+    slug: "vector-length",
+    assignments: vectorAssignments.filter(
+      assi => assi.subjectCategory === "vector-length"
+    ),
+    type: "2D",
+  },
+  {
+    title: "Matriz de Translação",
+    description: "Aprenda a criar matrizes de translação 2D.",
+    slug: "translation-matrix",
+    assignments: matricesAssignments.filter(
+      assi => assi.subjectCategory === "translation-matrix"
+    ),
+    type: "2D",
+  },
+  {
+    title: "Matriz de Escala",
+    description: "Aprenda a criar matrizes de escala 2D.",
+    slug: "scaling-matrix",
+    assignments: matricesAssignments.filter(
+      assi => assi.subjectCategory === "scaling-matrix"
+    ),
+    type: "2D",
+  },
+  {
+    title: "Matriz de Rotação",
+    description: "Aprenda a criar matrizes de rotação 2D.",
+    slug: "rotation-matrix",
+    assignments: matricesAssignments.filter(
+      assi => assi.subjectCategory === "rotation-matrix"
+    ),
+    type: "2D",
+  },
+  {
+    title: "Multiplicação de Matrizes",
+    description: "Aprenda a multiplicar matrizes 2D.",
+    slug: "matrix-multiplication",
+    assignments: matricesAssignments.filter(
+      assi => assi.subjectCategory === "matrix-multiplication"
+    ),
     type: "2D",
   },
   {
@@ -76,8 +133,8 @@ export const subjectOptions = [
     ],
   },
   {
-    id: "vector-basics",
-    label: "Básico de vetores",
+    id: "vector-definition",
+    label: "Definição de vetores",
     generators: [
       generateVectorFillInAssignment,
       generateVectorTransformationAssignment,

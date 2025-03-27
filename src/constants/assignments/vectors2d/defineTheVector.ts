@@ -24,7 +24,7 @@ function createDefineTheVectorAssignment({
     instructions,
     order,
     type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
-    subjectCategory: "vector-basics",
+    subjectCategory: "vector-definition",
     setup: () => {
       const { setPoints, setVectors } = useScene2DStore.getState();
       setPoints([
