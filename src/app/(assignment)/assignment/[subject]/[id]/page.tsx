@@ -21,7 +21,6 @@ import React, {
 } from "react";
 import FillInMatrixInput from "@/components/fill-in-matrix-input";
 import { useFillBlankMatrixInputStore } from "@/store/fillInBlankMatrixInputStore";
-import Scene3D from "@/components/scene-3d";
 import { useScene3DStore } from "@/store/scene3DStore";
 import FillInMatrixWithOptions from "@/components/fill-in-matrix-with-options";
 import { useFillInMatrixWithOptionsStore } from "@/store/fillInMatrixWithOptions";
@@ -38,6 +37,7 @@ import { isSameDay } from "date-fns";
 import OrderMatrixMultiplication from "@/components/order-matrix-multiplication";
 import { useOrderMatrixStore } from "@/store/orderMatrixMultiplicationStore";
 import ObjectivePanel2D from "@/components/objective-panel-2d";
+import GenericScene3D from "@/components/generic-scene-3d";
 
 export default function Page({
   params,
@@ -184,7 +184,7 @@ export default function Page({
       {subjectData?.type === "2D" ? (
         <GenericScene2D config={config} />
       ) : (
-        <Scene3D />
+        <GenericScene3D />
       )}
 
       <ObjectivePanel />
