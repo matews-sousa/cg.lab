@@ -1,6 +1,5 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
 import {
   PerspectiveCamera,
   GizmoHelper,
@@ -10,16 +9,22 @@ import {
   Billboard,
 } from "@react-three/drei";
 import Cube from "./cube";
-import { useScene3DStore } from "@/store/scene3DStore";
+import { TCube } from "@/store/scene3DStore";
 
-function Scene() {
-  const { cubes } = useScene3DStore();
+interface Props {
+  cubes: TCube[];
+  cameraPosition?: [number, number, number];
+  hideGizmo?: boolean;
+}
 
+export function Scene3D({ cubes, cameraPosition, hideGizmo }: Props) {
   return (
     <>
-      <GizmoHelper>
-        <GizmoViewport />
-      </GizmoHelper>
+      {!hideGizmo && (
+        <GizmoHelper>
+          <GizmoViewport />
+        </GizmoHelper>
+      )}
 
       {/* Floor Grid */}
       <gridHelper args={[16, 16]} position={[0, 0, 0]} />
@@ -36,7 +41,7 @@ function Scene() {
         rotation={[0, 0, Math.PI / 2]}
       />
 
-      <Billboard follow position={[8.5, 0, 0]}>
+      <Billboard follow position={[9, 0, 0]}>
         <Text
           color="white"
           fontSize={1}
@@ -46,7 +51,7 @@ function Scene() {
           X+
         </Text>
       </Billboard>
-      <Billboard follow position={[0, 8.5, 0]}>
+      <Billboard follow position={[0, 9, 0]}>
         <Text
           color="white"
           fontSize={1}
@@ -56,7 +61,7 @@ function Scene() {
           Y+
         </Text>
       </Billboard>
-      <Billboard follow position={[0, 0, 8.5]}>
+      <Billboard follow position={[0, 0, 9]}>
         <Text
           color="white"
           fontSize={1}
@@ -69,7 +74,10 @@ function Scene() {
 
       <axesHelper args={[8]} />
 
-      <PerspectiveCamera makeDefault position={[10, 10, 10]} />
+      <PerspectiveCamera
+        makeDefault
+        position={cameraPosition ?? [10, 10, 10]}
+      />
       <OrbitControls />
 
       {/* Example Mesh */}
@@ -77,20 +85,74 @@ function Scene() {
         <Cube key={cube.id} cube={cube} />
       ))}
 
+      {/* Render a Billboard text for each position in each axis from -8 to 8*/}
+      {Array.from({ length: 17 }, (_, i) => i - 8).map(i => (
+        <Billboard key={i} follow position={[i, 0.3, 0]}>
+          <Text
+            color="white"
+            fontSize={0.3}
+            outlineColor="black"
+            outlineWidth={0.02}
+          >
+            {i}
+          </Text>
+        </Billboard>
+      ))}
+
+      {/* Render a Billboard text for each position in each axis from -8 to 8*/}
+      {Array.from({ length: 9 }, (_, i) => i).map(i => (
+        <Billboard key={i} follow position={[0.3, i, 0]}>
+          <Text
+            color="white"
+            fontSize={0.3}
+            outlineColor="black"
+            outlineWidth={0.02}
+          >
+            {i}
+          </Text>
+        </Billboard>
+      ))}
+
+      {/* Render a Billboard text for each position in each axis from -8 to 8*/}
+      {Array.from({ length: 17 }, (_, i) => i - 8).map(i => (
+        <Billboard key={i} follow position={[0, 0.3, i]}>
+          <Text
+            color="white"
+            fontSize={0.3}
+            outlineColor="black"
+            outlineWidth={0.02}
+          >
+            {i}
+          </Text>
+        </Billboard>
+      ))}
+
+      {/* Render a tick line for each position in each axis */}
+      {Array.from({ length: 17 }, (_, i) => i - 8).map(i => (
+        <mesh key={i} position={[i, 0, 0]}>
+          <lineBasicMaterial color="red" />
+          <boxGeometry args={[0.05, 0.2, 0.05]} />
+        </mesh>
+      ))}
+
+      {Array.from({ length: 9 }, (_, i) => i).map(i => (
+        <mesh key={i} position={[0, i, 0]}>
+          <lineBasicMaterial color="green" />
+          <boxGeometry args={[0.2, 0.05, 0.01]} />
+        </mesh>
+      ))}
+
+      {Array.from({ length: 17 }, (_, i) => i - 8).map(i => (
+        <mesh key={i} position={[0, 0, i]}>
+          <lineBasicMaterial color="blue" />
+          <boxGeometry args={[0.05, 0.2, 0.05]} />
+        </mesh>
+      ))}
+
       {/* Lighting */}
       <ambientLight intensity={0.1} />
       <directionalLight position={[2, 5, 1]} intensity={0.5} />
       <pointLight position={[10, 10, 10]} />
     </>
-  );
-}
-
-export default function Scene3D() {
-  return (
-    <div className="w-full h-screen bg-black">
-      <Canvas>
-        <Scene />
-      </Canvas>
-    </div>
   );
 }

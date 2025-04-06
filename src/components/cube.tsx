@@ -1,6 +1,6 @@
 import { degreesToRadians } from "@/lib/utils";
 import { TCube } from "@/store/scene3DStore";
-import { Billboard, Text } from "@react-three/drei";
+import { Billboard, Edges, Text } from "@react-three/drei";
 import React, { useEffect, useRef, useState } from "react";
 import { Euler, Matrix4, Mesh, Vector3 } from "three";
 
@@ -83,7 +83,8 @@ export default function Cube({ cube }: Props) {
       <mesh ref={cubeRef} userData={{ id }}>
         <axesHelper args={[2]} />
         <boxGeometry args={[size.x, size.y, size.z]} />
-        <meshStandardMaterial color={color} />
+        <meshPhongMaterial color={color} opacity={0.9} transparent />
+        <Edges threshold={1} color="white" scale={1} />
       </mesh>
 
       {/* Label Text (Always faces the camera) */}
@@ -97,7 +98,7 @@ export default function Cube({ cube }: Props) {
       >
         <Text
           color="white"
-          fontSize={0.5}
+          fontSize={0.4}
           outlineWidth={0.02}
           outlineColor="black"
         >
