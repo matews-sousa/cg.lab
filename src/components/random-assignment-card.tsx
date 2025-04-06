@@ -41,17 +41,22 @@ export default function RandomAssignmentCard() {
       </CardHeader>
       <CardContent>
         <div>
-          <MultiSelect
-            className="mb-4"
-            options={subjectOptions.map(subject => ({
-              label: subject.label,
-              value: subject.id,
-            }))}
-            onValueChange={setSelectedSubjects}
-            value={selectedSubjects}
-            defaultValue={initialSelectedSubjects}
-            placeholder="Selecione os assuntos"
-          />
+          <div className="mb-4">
+            <p className="mb-2 text-sm">
+              Selecione os assuntos que você deseja praticar
+            </p>
+            <MultiSelect
+              options={subjectOptions.map(subject => ({
+                label: subject.label,
+                value: subject.id,
+              }))}
+              onValueChange={setSelectedSubjects}
+              value={selectedSubjects}
+              defaultValue={initialSelectedSubjects}
+              maxCount={2}
+              placeholder="Selecione os assuntos"
+            />
+          </div>
           {/* Start button with dynamic URL */}
           <Link
             href={generateRandomAssignmentUrl()}

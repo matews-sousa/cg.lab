@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { XIcon } from "lucide-react";
 import Link from "next/link";
 
 export default function AssingmentLayout({
@@ -43,10 +43,11 @@ export default function AssingmentLayout({
     <>
       <Link href={backUrl}>
         <Button
-          className="absolute top-4 left-4 rounded-full w-14 h-14 z-50"
+          className="absolute top-4 left-4 rounded-full w-12 h-12 z-50"
           variant="destructive"
+          size="icon"
         >
-          <ArrowLeft className="w-12 h-12" />
+          <XIcon />
         </Button>
       </Link>
 

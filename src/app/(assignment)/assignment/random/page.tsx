@@ -26,7 +26,7 @@ import {
 } from "@/constants/assignments";
 import { api } from "../../../../../convex/_generated/api";
 import { useMutation } from "convex/react";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { isSameDay } from "date-fns";
 import ObjectivePanel2D from "@/components/objective-panel-2d";
@@ -82,10 +82,22 @@ export default function Page() {
   useEffect(() => {
     resetAll();
 
-    const assi = generateAnyRandomAssignment(selectedSubjects);
-    if (assi) {
-      setAssignment(assi);
-      assi.setup();
+    try {
+      const assi = generateAnyRandomAssignment(selectedSubjects);
+      if (assi) {
+        setAssignment(assi);
+        assi.setup();
+      }
+    } catch (error) {
+      toast({
+        title: "Erro ao gerar exercício",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+      redirect("/");
     }
   }, [resetAll, selectedSubjects]);
 
@@ -136,11 +148,23 @@ export default function Page() {
   const handleNext = useCallback(() => {
     setAssignmentState("notAnswered");
 
-    const assi = generateAnyRandomAssignment(selectedSubjects);
-    if (assi) {
-      setAssignment(assi);
-      resetAll();
-      assi.setup();
+    try {
+      const assi = generateAnyRandomAssignment(selectedSubjects);
+      if (assi) {
+        setAssignment(assi);
+        resetAll();
+        assi.setup();
+      }
+    } catch (error) {
+      toast({
+        title: "Erro ao gerar exercício",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+      redirect("/");
     }
   }, [resetAll, selectedSubjects]);
 
@@ -155,6 +179,8 @@ export default function Page() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [assignmentState, handleConfirm, handleTryAgain, handleNext]);
+
+  if (!assignment) return null;
 
   return (
     <>
