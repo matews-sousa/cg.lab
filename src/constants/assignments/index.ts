@@ -185,6 +185,17 @@ export type SubjectOptionsKey = (typeof subjectOptions)[number]["id"];
 export const generateAnyRandomAssignment = (
   selectedSubjects: SubjectOptionsKey[]
 ) => {
+  if (selectedSubjects.length === 0) {
+    throw new Error("No subjects selected.");
+  }
+  // Check if all selected subjects are valid
+  const invalidSubjects = selectedSubjects.filter(
+    subject => !subjectOptions.some(s => s.id === subject)
+  );
+  if (invalidSubjects.length > 0) {
+    throw new Error(`Invalid subjects selected: ${invalidSubjects.join(", ")}`);
+  }
+
   // Combine generators based on selected subjects
   const generators = selectedSubjects.flatMap(subject => {
     const subjectOption = subjectOptions.find(s => s.id === subject);
