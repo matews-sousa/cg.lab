@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Scene3D } from "./scene-3d";
 
-export default function ObjectivePanel() {
+export default function ObjectivePanel3D() {
   const { objectiveCubes } = useScene3DStore();
   const [isOpen, setIsOpen] = useState(true);
 
