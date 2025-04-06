@@ -18,6 +18,7 @@ import React, {
   use,
   useState,
   useCallback,
+  useMemo,
 } from "react";
 import FillInMatrixInput from "@/components/fill-in-matrix-input";
 import { useFillBlankMatrixInputStore } from "@/store/fillInBlankMatrixInputStore";
@@ -179,6 +180,13 @@ export default function Page({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [assignmentState, handleConfirm, handleTryAgain, handleNext]);
 
+  const isLastAssignmentInSubject = useMemo(() => {
+    if (!subjectData) return false;
+    const currentAssignmentIndex =
+      subjectData?.assignments.findIndex(a => a.id === assignment?.id) ?? -1;
+    return currentAssignmentIndex === subjectData.assignments.length - 1;
+  }, [assignment, subjectData]);
+
   return (
     <>
       {subjectData?.type === "2D" ? (
@@ -204,9 +212,15 @@ export default function Page({
                 <p className="text-base md:text-xl">Parabéns! Você acertou.</p>
               </div>
               <div className="flex items-center justify-center gap-4 mt-4">
-                <Button onClick={handleNext}>
-                  Próximo <ArrowRight />
-                </Button>
+                {isLastAssignmentInSubject ? (
+                  <Button onClick={handleNext}>
+                    Voltar para o início <ArrowRight />
+                  </Button>
+                ) : (
+                  <Button onClick={handleNext}>
+                    Próximo <ArrowRight />
+                  </Button>
+                )}
               </div>
             </>
           )}
