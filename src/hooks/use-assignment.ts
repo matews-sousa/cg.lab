@@ -17,7 +17,7 @@ export function useAssignment(subject?: string) {
   const updateUserStreakMutation = useMutation(api.users.updateUserStreak);
 
   const handleConfirm = useCallback(
-    async (ignoreCompletionSave: boolean = false) => {
+    async ({ ignoreCompletionSave = false } = {}) => {
       if (!assignment) return;
 
       const isCorrect = assignment.validate();

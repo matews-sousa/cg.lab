@@ -9,7 +9,7 @@ interface VectorLengthFormulaAssignmentProps {
   vectorRefId: string;
   vectorA: VectorTailAndTip;
   values: { x: number | string; y: number | string; z: number | string };
-  dimensions: "2D" | "3D";
+  dimentions: "2D" | "3D";
 }
 
 function createVectorLengthFormulaAssignment({
@@ -17,7 +17,7 @@ function createVectorLengthFormulaAssignment({
   vectorRefId,
   vectorA,
   values,
-  dimensions,
+  dimentions,
 }: VectorLengthFormulaAssignmentProps): Assignment {
   return {
     id: `vector-length-${order}`,
@@ -41,7 +41,7 @@ function createVectorLengthFormulaAssignment({
 
       useFillInVecLengthFormulaStore
         .getState()
-        .setVecLengthFormulas([{ vectorRefId, values, dimensions }]);
+        .setVecLengthFormulas([{ vectorRefId, values, dimentions }]);
     },
     validate() {
       const { getVector } = useScene2DStore.getState();
@@ -70,21 +70,56 @@ const vectorLengthAssignmentsProps: VectorLengthFormulaAssignmentProps[] = [
     vectorRefId: "a",
     vectorA: { tail: [0, 0], tip: [2, 0] },
     values: { x: "", y: 0, z: 0 },
-    dimensions: "2D",
+    dimentions: "2D",
   },
   {
     order: 2,
     vectorRefId: "a",
-    vectorA: { tail: [0, 0], tip: [3, 4] },
-    values: { x: 3, y: 4, z: 0 },
-    dimensions: "2D",
+    vectorA: { tail: [0, 0], tip: [0, 2] },
+    values: { x: 0, y: "", z: 0 },
+    dimentions: "2D",
   },
   {
     order: 3,
     vectorRefId: "a",
     vectorA: { tail: [0, 0], tip: [3, 4] },
+    values: { x: "", y: 4, z: 0 },
+    dimentions: "2D",
+  },
+  {
+    order: 4,
+    vectorRefId: "a",
+    vectorA: { tail: [0, 0], tip: [3, 4] },
     values: { x: 3, y: "", z: 0 },
-    dimensions: "2D",
+    dimentions: "2D",
+  },
+  {
+    order: 5,
+    vectorRefId: "a",
+    vectorA: { tail: [0, 0], tip: [3, 4] },
+    values: { x: "", y: "", z: "" },
+    dimentions: "2D",
+  },
+  {
+    order: 6,
+    vectorRefId: "a",
+    vectorA: { tail: [0, 0], tip: [-3, 4] },
+    values: { x: "", y: "", z: "" },
+    dimentions: "2D",
+  },
+  {
+    order: 7,
+    vectorRefId: "a",
+    vectorA: { tail: [0, 0], tip: [3, -4] },
+    values: { x: "", y: "", z: "" },
+    dimentions: "2D",
+  },
+  {
+    order: 8,
+    vectorRefId: "a",
+    vectorA: { tail: [0, 0], tip: [-3, -4] },
+    values: { x: "", y: "", z: "" },
+    dimentions: "2D",
   },
 ];
 

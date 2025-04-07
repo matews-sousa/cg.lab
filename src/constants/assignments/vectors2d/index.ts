@@ -8,6 +8,7 @@ import { vectorLengthAssignmentList } from "./vectorLength";
 import { vectorScalarAssignmentList } from "./vectorScalar";
 import { vectorScalarFillInCoordsAssignmentList } from "./vectorScalarFillInCoords";
 import { vectorSumAssignmentList } from "./vectorSum";
+import { vectorLengthInteractiveAssignmentList } from "./vectorLengthInteractive";
 
 export const vectorAssignments: Assignment[] = [
   ...changeTheVectorAssignmentList,
@@ -18,5 +19,6 @@ export const vectorAssignments: Assignment[] = [
   ...pointDisplacementAssignmentList,
   ...vectorScalarAssignmentList,
   ...vectorScalarFillInCoordsAssignmentList,
+  ...vectorLengthInteractiveAssignmentList,
   ...vectorLengthAssignmentList,
 ];

@@ -115,10 +115,17 @@ export default function RandomAssignmentPage() {
     }
   }, [resetAll, selectedSubjects, setAssignment, setAssignmentState]);
 
+  const onConfirmAnswer = () => {
+    // When it's a random assignment, we don't want to save the completion in the database
+    handleConfirm({
+      ignoreCompletionSave: true,
+    });
+  };
+
   // Keyboard shortcuts
   useAssignmentKeyboardShortcuts(
     assignmentState,
-    handleConfirm,
+    onConfirmAnswer,
     handleTryAgain,
     handleNext
   );
@@ -154,7 +161,7 @@ export default function RandomAssignmentPage() {
           {assignmentState === "notAnswered" && (
             <AssignmentNotAnswered
               assignment={assignment}
-              handleConfirm={() => handleConfirm(false)}
+              handleConfirm={onConfirmAnswer}
             />
           )}
         </div>
