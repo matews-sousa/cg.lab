@@ -9,12 +9,13 @@ interface Props {
 }
 
 export default function FillInVecLengthFormula({ vecLengthFormula }: Props) {
-  const { vectorRefId, values, dimensions } = vecLengthFormula;
+  const { vectorRefId, values, dimentions, fixedValues } = vecLengthFormula;
   const { setValues } = useFillInVecLengthFormulaStore();
 
   const handleChange =
     (key: keyof typeof values) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (fixedValues) return;
       // make it accept - and .
       const value = event.target.value.replace(/[^0-9.-]/g, "");
 
@@ -36,8 +37,8 @@ export default function FillInVecLengthFormula({ vecLengthFormula }: Props) {
     ? Math.sqrt(Number(values.x) ** 2 + Number(values.y) ** 2).toPrecision(3)
     : "???";
 
-  // Define the keys to render based on dimensions
-  const dimensionKeys = dimensions === "3D" ? ["x", "y", "z"] : ["x", "y"];
+  // Define the keys to render based on dimentions
+  const dimensionKeys = dimentions === "3D" ? ["x", "y", "z"] : ["x", "y"];
 
   return (
     <div className="flex items-center justify-center gap-2 my-4">
@@ -70,7 +71,10 @@ export default function FillInVecLengthFormula({ vecLengthFormula }: Props) {
                   value={values[key as keyof typeof values]}
                   onChange={handleChange(key as keyof typeof values)}
                   type="text"
-                  className="text-2xl w-full h-full border-b-2 bg-transparent border-b-black text-center focus:outline-none"
+                  disabled={fixedValues}
+                  className={`text-2xl w-full h-full text-center border-b-2 bg-transparent focus:outline-none ${
+                    fixedValues ? "" : "border-b-black"
+                  }`}
                 />
                 <span className="absolute -top-2 -right-3">2</span>
               </div>

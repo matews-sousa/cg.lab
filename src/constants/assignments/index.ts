@@ -10,6 +10,8 @@ import {
 } from "./generateRandomPointsAssignment";
 import {
   generateVectorFillInAssignment,
+  generateVectorLengthFillInFormulaAssignment,
+  generateVectorLengthInteractiveAssignment,
   generateVectorSumAssignment,
   generateVectorSumFillInAssignment,
   generateVectorTransformationAssignment,
@@ -153,7 +155,14 @@ export const subjectOptions = [
     label: "Multiplicação por escalar",
     generators: [],
   },
-  { id: "vector-length", label: "Módulo de vetores", generators: [] },
+  {
+    id: "vector-length",
+    label: "Módulo de vetores",
+    generators: [
+      generateVectorLengthFillInFormulaAssignment,
+      generateVectorLengthInteractiveAssignment,
+    ],
+  },
   {
     id: "translation-matrix",
     label: "Matriz de translação",

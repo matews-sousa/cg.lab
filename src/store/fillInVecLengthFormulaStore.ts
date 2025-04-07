@@ -7,7 +7,8 @@ export interface VecLenFormula {
     y: number | string;
     z: number | string;
   };
-  dimensions: "2D" | "3D";
+  dimentions: "2D" | "3D";
+  fixedValues?: boolean;
 }
 
 interface FillInVecLengthFormulaStore {
@@ -19,7 +20,7 @@ interface FillInVecLengthFormulaStore {
     vectorRefId: string,
     values: { x: number | string; y: number | string; z: number | string }
   ) => void;
-  setDimensions: (vectorRefId: string, dimensions: "2D" | "3D") => void;
+  setDimentions: (vectorRefId: string, dimentions: "2D" | "3D") => void;
   reset: () => void;
 }
 
@@ -49,11 +50,11 @@ export const useFillInVecLengthFormulaStore =
           formula.vectorRefId === vectorRefId ? { ...formula, values } : formula
         ),
       })),
-    setDimensions: (vectorRefId, dimensions) =>
+    setDimentions: (vectorRefId, dimentions) =>
       set(state => ({
         vecLengthFormulas: state.vecLengthFormulas.map(formula =>
           formula.vectorRefId === vectorRefId
-            ? { ...formula, dimensions }
+            ? { ...formula, dimentions }
             : formula
         ),
       })),
