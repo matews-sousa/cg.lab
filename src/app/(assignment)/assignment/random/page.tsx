@@ -1,83 +1,67 @@
 "use client";
 
-import FillCoordinateInput from "@/components/fill-coordinate-input";
-import FillFormulaWithOptions from "@/components/fill-in-the-blank-with-options";
-import GenericScene2D from "@/components/generic-scene-2d";
-import { Button } from "@/components/ui/button";
-import { useFillInTheBlankWithOptionsStore } from "@/store/fillInTheBlankWithOptionsStore";
-import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
-import { useScene2DStore } from "@/store/scene2DStore";
-import { Assignment, AssignmentType } from "@/types/Assignment";
-import { ArrowRight } from "lucide-react";
+// External dependencies
+import { redirect, useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useMemo } from "react";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import FillInMatrixInput from "@/components/fill-in-matrix-input";
-import { useFillBlankMatrixInputStore } from "@/store/fillInBlankMatrixInputStore";
-import { useScene3DStore } from "@/store/scene3DStore";
-import FillInMatrixWithOptions from "@/components/fill-in-matrix-with-options";
-import { useFillInMatrixWithOptionsStore } from "@/store/fillInMatrixWithOptions";
-import ObjectivePanel from "@/components/objective-panel";
-import Lottie from "lottie-react";
-import successAnimationData from "@/assets/success-anim.json";
-import failAnimationData from "@/assets/fail-anim.json";
+// Components
+import GenericScene2D from "@/components/generic-scene-2d";
+import GenericScene3D from "@/components/generic-scene-3d";
+import ObjectivePanel2D from "@/components/objective-panel-2d";
+import ObjectivePanel3D from "@/components/objective-panel-3d";
+import AssignmentResult from "@/components/assignment-result";
+import AssignmentNotAnswered from "@/components/assignment-not-answered";
+
+// Hooks
+import { useAssignment } from "@/hooks/use-assignment";
+import { useAssignmentKeyboardShortcuts } from "@/hooks/use-assignment-keyboard-shortcut";
+import { useResetStores } from "@/hooks/use-reset-stores";
+
+// Store
+import { useScene2DStore } from "@/store/scene2DStore";
+
+// Constants and types
 import {
   generateAnyRandomAssignment,
   SubjectOptionsKey,
+  subjects,
 } from "@/constants/assignments";
-import { api } from "../../../../../convex/_generated/api";
-import { useMutation } from "convex/react";
-import { redirect, useSearchParams } from "next/navigation";
+
+// Utilities
 import { toast } from "@/hooks/use-toast";
-import { isSameDay } from "date-fns";
-import ObjectivePanel2D from "@/components/objective-panel-2d";
-import OrderMatrixMultiplication from "@/components/order-matrix-multiplication";
-import { useOrderMatrixStore } from "@/store/orderMatrixMultiplicationStore";
-import GenericScene3D from "@/components/generic-scene-3d";
 
-export default function Page() {
-  const [assignment, setAssignment] = useState<
-    (Assignment & { dimensions: "2D" | "3D" }) | null
-  >(null);
-  const { inputs } = useFillInTheBlankStore();
-  const { reset: resetFillInTheBlankWithOptions } =
-    useFillInTheBlankWithOptionsStore();
-  const { matrices, reset: resetFillBlankMatrixInput } =
-    useFillBlankMatrixInputStore();
-  const { reset: resetFillInMatrixWithOptions } =
-    useFillInMatrixWithOptionsStore();
-  const [assignmentState, setAssignmentState] = useState<
-    "notAnswered" | "correct" | "incorrect"
-  >("notAnswered");
-  const { config, reset: resetScene2D } = useScene2DStore();
-  const { reset: resetScene3D } = useScene3DStore();
-  const { reset: resetOrderMatrix } = useOrderMatrixStore();
+export default function RandomAssignmentPage() {
+  // State and store hooks
+  const { config } = useScene2DStore();
+  const {
+    assignment,
+    setAssignment,
+    assignmentState,
+    setAssignmentState,
+    handleConfirm,
+  } = useAssignment();
 
+  // Derived state
+  const subjectData = useMemo(
+    () =>
+      assignment &&
+      subjects.find(s =>
+        s.assignments.some(
+          a => a.subjectCategory === assignment.subjectCategory
+        )
+      ),
+    [assignment]
+  );
+
+  // URL parameters
   const searchParams = useSearchParams();
   const selectedSubjects = useMemo(
     () => searchParams.getAll("subjects"),
     [searchParams]
   ) as SubjectOptionsKey[];
 
-  const completeAssignmentMutation = useMutation(
-    api.assignmentCompletions.completeAssignment
-  );
-  const updateUserStreakMutation = useMutation(api.users.updateUserStreak);
-
-  const resetAll = useCallback(() => {
-    resetScene2D();
-    resetScene3D();
-    resetFillInTheBlankWithOptions();
-    resetFillBlankMatrixInput();
-    resetFillInMatrixWithOptions();
-    resetOrderMatrix();
-  }, [
-    resetScene2D,
-    resetScene3D,
-    resetFillInTheBlankWithOptions,
-    resetFillBlankMatrixInput,
-    resetFillInMatrixWithOptions,
-    resetOrderMatrix,
-  ]);
+  // Effects
+  const resetAll = useResetStores();
 
   useEffect(() => {
     resetAll();
@@ -99,51 +83,14 @@ export default function Page() {
       });
       redirect("/");
     }
-  }, [resetAll, selectedSubjects]);
+  }, [resetAll, selectedSubjects, setAssignment]);
 
-  const handleConfirm = useCallback(async () => {
-    if (!assignment) return;
-    const isCorrect = assignment.validate();
-
-    // Work around to get the user session from the cookie in the browser
-    // This is for reducing the number of Convex function calls
-    const res = await fetch("/api/getSession");
-    const data = await res.json();
-
-    // If the user is authenticated and the answer is correct, complete the assignment
-    if (isCorrect && data.userSession) {
-      // Complete the assignment, it return if the user completed a daily mission and the user last completed date
-      const data = await completeAssignmentMutation({
-        assignmentId: "",
-        subject: "",
-        subjectCategory: assignment.subjectCategory,
-        ignoreCompletionSave: true,
-      });
-
-      // Only update the streak if the user hasn't completed a task today
-      // This is to avoid calling the updateUserStreak function unnecessarily
-      const shouldUpdateStreak =
-        !isSameDay(data?.userLastCompletedDate ?? new Date(), new Date()) ||
-        !data?.userLastCompletedDate;
-      if (shouldUpdateStreak) {
-        await updateUserStreakMutation();
-      }
-
-      if (data?.completedMission) {
-        toast({
-          title: "Missão diária concluída!",
-          description: "Parabéns, você completou uma missão diária.",
-        });
-      }
-    }
-    setAssignmentState(isCorrect ? "correct" : "incorrect");
-  }, [assignment, completeAssignmentMutation, updateUserStreakMutation]);
-
+  // Event handlers
   const handleTryAgain = useCallback(() => {
     resetAll();
     setAssignmentState("notAnswered");
     assignment?.setup();
-  }, [resetAll, assignment]);
+  }, [resetAll, assignment, setAssignmentState]);
 
   const handleNext = useCallback(() => {
     setAssignmentState("notAnswered");
@@ -166,106 +113,49 @@ export default function Page() {
       });
       redirect("/");
     }
-  }, [resetAll, selectedSubjects]);
+  }, [resetAll, selectedSubjects, setAssignment, setAssignmentState]);
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Enter") {
-        if (assignmentState === "notAnswered") handleConfirm();
-        if (assignmentState === "incorrect") handleTryAgain();
-        if (assignmentState === "correct") handleNext();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [assignmentState, handleConfirm, handleTryAgain, handleNext]);
+  // Keyboard shortcuts
+  useAssignmentKeyboardShortcuts(
+    assignmentState,
+    handleConfirm,
+    handleTryAgain,
+    handleNext
+  );
 
-  if (!assignment) return null;
+  // Early return if no assignment
+  if (!assignment || !subjectData) return null;
 
   return (
     <>
-      {assignment?.dimensions === "2D" ? (
-        <GenericScene2D config={config} />
+      {/* Scene rendering based on subject type */}
+      {subjectData.type === "2D" ? (
+        <>
+          <GenericScene2D config={config} />
+          <ObjectivePanel2D />
+        </>
       ) : (
-        <GenericScene3D />
+        <>
+          <GenericScene3D />
+          <ObjectivePanel3D />
+        </>
       )}
 
-      <ObjectivePanel />
-      <ObjectivePanel2D />
-
+      {/* Assignment interface */}
       <div className="absolute bottom-4 bg-gray-200 p-4 rounded-md left-2 w-3/4 md:w-[40%] border-b-4 border-b-gray-400">
         <div className="text-center">
-          {assignmentState === "correct" && (
-            <>
-              <div className="flex items-center justify-center gap-2">
-                <Lottie
-                  animationData={successAnimationData}
-                  loop={false}
-                  className="w-12 h-12"
-                />
-                <p className="text-base md:text-xl">Parabéns! Você acertou.</p>
-              </div>
-              <div className="flex items-center justify-center gap-4 mt-4">
-                <Button onClick={handleNext}>
-                  Próximo <ArrowRight className="w-6 h-6" />
-                </Button>
-              </div>
-            </>
-          )}
-          {assignmentState === "incorrect" && (
-            <>
-              <div className="flex items-center justify-center gap-2">
-                <Lottie
-                  animationData={failAnimationData}
-                  loop={false}
-                  className="w-12 h-12"
-                />
-                <p className="text-base md:text-xl">
-                  Resposta incorreta. Tente novamente.
-                </p>
-              </div>
-              <div className="flex items-center justify-center gap-4 mt-4">
-                <Button onClick={handleTryAgain}>Tentar novamente</Button>
-              </div>
-            </>
-          )}
+          <AssignmentResult
+            state={assignmentState}
+            onTryAgain={handleTryAgain}
+            onNext={handleNext}
+            isLastAssignment={false}
+          />
 
           {assignmentState === "notAnswered" && (
-            <>
-              <p className="text-base md:text-xl">{assignment?.instructions}</p>
-
-              {assignment?.type ===
-                AssignmentType.FILL_IN_THE_BLANK_COORDINATES &&
-                inputs.map((input, index) => (
-                  <FillCoordinateInput
-                    key={index}
-                    coordinateDimention={input.dimention}
-                    pointRef={input.pointRef}
-                    label={input.label}
-                  />
-                ))}
-
-              {assignment?.type ===
-                AssignmentType.FILL_IN_THE_BLANK_WITH_OPTIONS && (
-                <FillFormulaWithOptions />
-              )}
-
-              {assignment?.type === AssignmentType.FILL_IN_THE_BLANK_MATRIX &&
-                matrices.map(matrix => (
-                  <FillInMatrixInput key={matrix.id} matrix={matrix} />
-                ))}
-
-              {assignment?.type ===
-                AssignmentType.FILL_IN_THE_BLANK_MATRIX_WITH_OPTIONS && (
-                <FillInMatrixWithOptions />
-              )}
-
-              <OrderMatrixMultiplication />
-
-              <div className="flex items-center justify-center gap-4 mt-4">
-                <Button onClick={handleConfirm}>Confirmar</Button>
-              </div>
-            </>
+            <AssignmentNotAnswered
+              assignment={assignment}
+              handleConfirm={() => handleConfirm(false)}
+            />
           )}
         </div>
       </div>

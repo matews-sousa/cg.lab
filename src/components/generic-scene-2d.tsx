@@ -1,6 +1,6 @@
 "use client";
 
-import useWindowSize from "@/hooks/useWindowSize";
+import useWindowSize from "@/hooks/use-window-size";
 import { Coordinates, Mafs } from "mafs";
 import CustomPoint from "./custom-point";
 import VectorWithControls from "./vector-with-controls";
