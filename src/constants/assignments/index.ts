@@ -12,6 +12,7 @@ import {
   generateVectorFillInAssignment,
   generateVectorLengthFillInFormulaAssignment,
   generateVectorLengthInteractiveAssignment,
+  generateVectorScalarInteractiveAssignment,
   generateVectorSumAssignment,
   generateVectorSumFillInAssignment,
   generateVectorTransformationAssignment,
@@ -153,7 +154,7 @@ export const subjectOptions = [
   {
     id: "scalar-multiplication",
     label: "Multiplicação por escalar",
-    generators: [],
+    generators: [generateVectorScalarInteractiveAssignment],
   },
   {
     id: "vector-length",

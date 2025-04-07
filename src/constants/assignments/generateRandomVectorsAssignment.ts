@@ -3,6 +3,7 @@ import { useScene2DStore } from "@/store/scene2DStore";
 import { AssignmentType, RandomGeneratedAssignment } from "@/types/Assignment";
 import {
   generateAssignmentId,
+  getRandomFloatConstrained,
   getRandomVector,
   getRandomVectorWithTailAndTip,
 } from "@/utils";
@@ -432,6 +433,49 @@ export function generateVectorLengthInteractiveAssignment(): RandomGeneratedAssi
   });
 }
 
+export function generateVectorScalarInteractiveAssignment(): RandomGeneratedAssignment {
+  const randomVector = getRandomVectorWithTailAndTip([-3, 3]);
+  const randomScalar = getRandomFloatConstrained(-3, 3);
+
+  const vector = vec.sub(randomVector.tip, randomVector.tail);
+
+  return createVectorAssignment({
+    title: "Aplique o escalar ao vetor",
+    type: AssignmentType.INTERACTIVE,
+    instructions: `Aplique o escalar ${randomScalar} ao vetor v = (${vector[0]}, ${vector[1]}).`,
+    subjectCategory: "vector-scalar",
+    setup: () => {
+      setupScene([
+        {
+          id: "v",
+          tail: randomVector.tail,
+          tip: randomVector.tip,
+          tailMovable: true,
+          tipMovable: true,
+          color: "blue",
+          label: "v",
+        },
+      ]);
+    },
+    validate: () => {
+      const { getVector } = useScene2DStore.getState();
+      const sceneVector = getVector("v");
+      if (!sceneVector) return false;
+
+      const scaledVector = vec.scale(vector, randomScalar);
+      const userAnswer = vec.sub(sceneVector.tip, sceneVector.tail);
+
+      console.log("userAnswer", userAnswer);
+      console.log("scaledVector", scaledVector);
+
+      const isCorrect =
+        scaledVector[0] === userAnswer[0] && scaledVector[1] === userAnswer[1];
+
+      return isCorrect;
+    },
+  });
+}
+
 export function generateRandomVectorAssignment(): RandomGeneratedAssignment {
   const assignmentGenerators = [
     generateVectorTransformationAssignment,
@@ -440,6 +484,7 @@ export function generateRandomVectorAssignment(): RandomGeneratedAssignment {
     generateVectorSumFillInAssignment,
     generateVectorLengthFillInFormulaAssignment,
     generateVectorLengthInteractiveAssignment,
+    generateVectorScalarInteractiveAssignment,
   ];
 
   const randomIndex = Math.floor(Math.random() * assignmentGenerators.length);

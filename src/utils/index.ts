@@ -1,7 +1,19 @@
 import { Vector3 } from "three";
 
 export function getRandomIntInRange(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  // Swap min and max if they're in the wrong order
+  const [realMin, realMax] = min <= max ? [min, max] : [max, min];
+  const value = Math.floor(Math.random() * (realMax - realMin + 1)) + realMin;
+  return value;
+}
+
+export function getRandomFloatConstrained(min: number, max: number): number {
+  // Swap min and max if they're in the wrong order
+  const [realMin, realMax] = min <= max ? [min, max] : [max, min];
+  const value = Math.random() * (realMax - realMin) + realMin;
+  // Round to the nearest 0.5 and not allow 0.0
+  const roundedValue = Math.round(value * 2) / 2;
+  return roundedValue === 0 ? 0.5 : roundedValue;
 }
 
 export function getRandomVector(
