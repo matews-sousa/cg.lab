@@ -39,6 +39,13 @@ function validateVector(
   );
 }
 
+function vectorsAreEqual(
+  vectorA: [number, number],
+  vectorB: [number, number]
+): boolean {
+  return vectorA[0] === vectorB[0] && vectorA[1] === vectorB[1];
+}
+
 // Common Assignment Factory
 function createVectorAssignment({
   title,
@@ -476,6 +483,69 @@ export function generateVectorScalarInteractiveAssignment(): RandomGeneratedAssi
   });
 }
 
+export function generateVectorScalarCoordinatesInputAssignment(): RandomGeneratedAssignment {
+  const randomVector = getRandomVectorWithTailAndTip([-3, 3]);
+  const randomScalar = getRandomFloatConstrained(-3, 3);
+  const vector = vec.sub(randomVector.tip, randomVector.tail);
+
+  return createVectorAssignment({
+    title: "Preencha o vetor",
+    type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
+    instructions: `Descreva o vetor resultante da aplicação do escalar ${randomScalar} ao vetor v.`,
+    subjectCategory: "vector-scalar",
+    setup: () => {
+      setupScene([
+        {
+          id: "v",
+          tail: randomVector.tail,
+          tip: randomVector.tip,
+          tailMovable: false,
+          tipMovable: false,
+          color: "blue",
+          label: "v",
+        },
+      ]);
+
+      useFillInTheBlankStore.getState().setInputs([
+        {
+          label: "v'",
+          dimention: "2D",
+          pointRef: "v",
+          coordinatesValue: { x: "", y: "" },
+        },
+      ]);
+    },
+    validate: () => {
+      const { getInputByPointRef } = useFillInTheBlankStore.getState();
+      const input = getInputByPointRef("v");
+      if (!input) return false;
+
+      const answerVector = [
+        input.coordinatesValue.x,
+        input.coordinatesValue.y,
+      ].map(Number) as [number, number];
+      const scaledVector = vec.scale(vector, randomScalar);
+
+      const isCorrect = vectorsAreEqual(scaledVector, answerVector);
+
+      if (isCorrect) {
+        const { addVector } = useScene2DStore.getState();
+        addVector({
+          id: "scaled",
+          tail: [0, 0],
+          tip: scaledVector,
+          tailMovable: false,
+          tipMovable: false,
+          color: "green",
+          label: `v' = (${scaledVector[0]}, ${scaledVector[1]})`,
+        });
+      }
+
+      return isCorrect;
+    },
+  });
+}
+
 export function generateRandomVectorAssignment(): RandomGeneratedAssignment {
   const assignmentGenerators = [
     generateVectorTransformationAssignment,
@@ -485,6 +555,7 @@ export function generateRandomVectorAssignment(): RandomGeneratedAssignment {
     generateVectorLengthFillInFormulaAssignment,
     generateVectorLengthInteractiveAssignment,
     generateVectorScalarInteractiveAssignment,
+    generateVectorScalarCoordinatesInputAssignment,
   ];
 
   const randomIndex = Math.floor(Math.random() * assignmentGenerators.length);
