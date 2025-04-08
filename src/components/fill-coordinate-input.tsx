@@ -16,26 +16,33 @@ export default function FillCoordinateInput({
   const coordsInput = getInputByPointRef(pointRef);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const rawValue = e.target.value;
     const name = e.target.name;
 
     if (!pointRef || !coordsInput) return;
 
-    // Allow valid partial inputs such as ".", "-", "-0.", and full numbers
-    const regex = /^-?\d*\.?\d*$/;
-    if (regex.test(value)) {
+    // Replace comma with dot for number parsing
+    const normalizedValue = rawValue.replace(",", ".");
+
+    // Regex to allow valid partial values like "-", "-.", "1,", "1.5", etc.
+    const partialNumberRegex = /^-?\d*(\.|,)?\d*$/;
+
+    if (partialNumberRegex.test(rawValue)) {
       setInputValue(pointRef, {
         ...coordsInput.coordinatesValue,
-        [name]: value,
+        [name]: normalizedValue,
       });
     }
   };
 
   const parseCoordinate = (coord: number | string | undefined): string => {
     if (typeof coord === "number") {
-      return coord.toString();
+      return coord.toString().replace(".", ",");
     }
-    return coord || "";
+    if (typeof coord === "string") {
+      return coord.replace(".", ",");
+    }
+    return "";
   };
 
   return (
