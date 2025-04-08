@@ -18,7 +18,7 @@ function createVectorScalarFillInCoordsAssignment({
   return {
     id: `vector-scalar-fill-in-coords-${order}`,
     title: "Multiplicação de vetor por escalar",
-    instructions: `Defina o vetor resultante após aplicar uma escalar de ${scalar} ao vetor v.`,
+    instructions: `Defina o vetor resultante após aplicar o escalar de ${scalar} ao vetor v.`,
     order,
     type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
     subjectCategory: "vector-scalar",

@@ -17,7 +17,7 @@ function createVectorScalarAssignment({
   return {
     id: `vector-scalar-${order}`,
     title: "Multiplicação de vetor por escalar",
-    instructions: `Aplique uma escalar de ${scalar} ao vetor v = (${initialVector.tip[0]}, ${initialVector.tip[1]}).`,
+    instructions: `Aplique um escalar de ${scalar} ao vetor v = (${initialVector.tip[0]}, ${initialVector.tip[1]}).`,
     order,
     type: AssignmentType.INTERACTIVE,
     subjectCategory: "vector-scalar",
