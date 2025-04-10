@@ -7,70 +7,85 @@ import { MousePointerSquareDashedIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { useEffect } from "react";
 import { useScene3DStore } from "@/store/scene3DStore";
-import { Matrix4 } from "three";
+import { Matrix3, Matrix4 } from "three";
+import { useScene2DStore } from "@/store/scene2DStore";
 
 export default function FillInMatrixWithOptions() {
-  const {
-    matrix,
-    updateMatrixValue,
-    setIsEditable,
-    options,
-    selectedOptions,
-    setSelectedOptions,
-  } = useFillInMatrixWithOptionsStore();
+  const { matrix, options, selectedOptions, selectOption, unselectOption } =
+    useFillInMatrixWithOptionsStore();
   const {
     getCube,
     setCubeCustomXRotationMatrix,
     setCubeCustomYRotationMatrix,
     setCubeCustomZRotationMatrix,
   } = useScene3DStore();
+  const { setPolygonRotationMatrix } = useScene2DStore();
 
   // Tracks changes to the matrix and processes updates
   useEffect(() => {
-    if (!matrix?.objectRefId) return;
+    if (!matrix?.objectRefId && !matrix?.polygonRefId) return;
 
     const editableCells = matrix.matrixValue
       .flat()
       .filter(cell => cell.editable);
+    const matrixElements = matrix.matrixValue
+      .flat()
+      .map(cell => cell.value as number);
+    if (
+      editableCells.length ||
+      !matrixElements.every(value => typeof value === "number")
+    )
+      return;
 
-    // If the matrix is a rotation matrix and there are no editable cells, update the cube's custom rotation matrix
-    if (!editableCells.length) {
-      const matrixElements = matrix.matrixValue
-        .flat()
-        .map(cell => cell.value as number);
-      if (matrixElements.every(value => typeof value === "number")) {
-        const customMatrix = new Matrix4().set(
-          matrixElements[0],
-          matrixElements[1],
-          matrixElements[2],
-          matrixElements[3],
-          matrixElements[4],
-          matrixElements[5],
-          matrixElements[6],
-          matrixElements[7],
-          matrixElements[8],
-          matrixElements[9],
-          matrixElements[10],
-          matrixElements[11],
-          matrixElements[12],
-          matrixElements[13],
-          matrixElements[14],
-          matrixElements[15]
-        );
-        switch (matrix.type) {
-          case MatrixType.ROTATION_X:
-            setCubeCustomXRotationMatrix(matrix.objectRefId, customMatrix);
-            break;
-          case MatrixType.ROTATION_Y:
-            setCubeCustomYRotationMatrix(matrix.objectRefId, customMatrix);
-            break;
-          case MatrixType.ROTATION_Z:
-            setCubeCustomZRotationMatrix(matrix.objectRefId, customMatrix);
-            break;
-          default:
-            break;
-        }
+    // If the matrix has a 3D object reference, set the rotation matrix
+    if (matrix.objectRefId) {
+      const customMatrix = new Matrix4().set(
+        matrixElements[0],
+        matrixElements[1],
+        matrixElements[2],
+        matrixElements[3],
+        matrixElements[4],
+        matrixElements[5],
+        matrixElements[6],
+        matrixElements[7],
+        matrixElements[8],
+        matrixElements[9],
+        matrixElements[10],
+        matrixElements[11],
+        matrixElements[12],
+        matrixElements[13],
+        matrixElements[14],
+        matrixElements[15]
+      );
+      switch (matrix.type) {
+        case MatrixType.ROTATION_X:
+          setCubeCustomXRotationMatrix(matrix.objectRefId, customMatrix);
+          break;
+        case MatrixType.ROTATION_Y:
+          setCubeCustomYRotationMatrix(matrix.objectRefId, customMatrix);
+          break;
+        case MatrixType.ROTATION_Z:
+          setCubeCustomZRotationMatrix(matrix.objectRefId, customMatrix);
+          break;
+        default:
+          break;
       }
+    }
+
+    // If the matrix has a polygon reference, set the rotation matrix
+    if (matrix.polygonRefId) {
+      const customMatrix = new Matrix3().set(
+        matrixElements[0],
+        matrixElements[3],
+        matrixElements[2],
+        matrixElements[1],
+        matrixElements[4],
+        matrixElements[5],
+        matrixElements[6],
+        matrixElements[7],
+        matrixElements[8]
+      );
+      setPolygonRotationMatrix(matrix.polygonRefId, customMatrix);
     }
   }, [
     matrix,
@@ -79,6 +94,7 @@ export default function FillInMatrixWithOptions() {
     setCubeCustomYRotationMatrix,
     setCubeCustomZRotationMatrix,
     selectedOptions,
+    setPolygonRotationMatrix,
   ]);
 
   // Gets the next editable cell
@@ -98,19 +114,19 @@ export default function FillInMatrixWithOptions() {
     if (!nextEditableCell) return;
 
     const { row, col } = nextEditableCell;
-    updateMatrixValue(row, col, option.value);
-    setIsEditable(row, col, false);
-    setSelectedOptions([...selectedOptions, { row, col, option }]);
+    selectOption(row, col, option.id);
   };
 
   const handleRemoveOption = (optionId: string, row: number, col: number) => {
-    setSelectedOptions(selectedOptions.filter(o => o.option.id !== optionId));
-    setIsEditable(row, col, true);
+    unselectOption(row, col);
 
     if (matrix?.objectRefId) {
       setCubeCustomXRotationMatrix(matrix.objectRefId, null);
       setCubeCustomYRotationMatrix(matrix.objectRefId, null);
       setCubeCustomZRotationMatrix(matrix.objectRefId, null);
+    }
+    if (matrix?.polygonRefId) {
+      setPolygonRotationMatrix(matrix.polygonRefId, undefined);
     }
   };
 
@@ -130,8 +146,8 @@ export default function FillInMatrixWithOptions() {
       MatrixType.TRANSLATION,
       MatrixType.SCALING,
     ].includes(matrix.type)
-      ? "w-12"
-      : "w-16";
+      ? "w-16"
+      : "w-20";
 
     return (
       <div

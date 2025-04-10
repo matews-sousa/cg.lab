@@ -4,6 +4,7 @@ import {
   TPolygon,
   TVector,
 } from "@/types/Scene2DConfig";
+import { Matrix3 } from "three";
 import { create } from "zustand";
 
 type Scene2DStore = {
@@ -20,6 +21,7 @@ type Scene2DStore = {
   setPolygonRotation: (id: string, rotation: number) => void;
   setPolygonTranslation: (id: string, translation: [number, number]) => void;
   setPolygonPoints: (id: string, points: TPolygon["points"]) => void;
+  setPolygonRotationMatrix: (id: string, rotationMatrix?: Matrix3) => void;
   setObjectivePolygons: (polygons: Scene2DConfig["objectivePolygons"]) => void;
   setAnnotations: (annotations: Scene2DConfig["annotations"]) => void;
   movePoint: (id: string, position: [number, number]) => void;
@@ -135,6 +137,15 @@ export const useScene2DStore = create<Scene2DStore>((set, get) => ({
         ...state.config,
         polygons: state.config.polygons?.map(polygon =>
           polygon.id === id ? { ...polygon, points } : polygon
+        ),
+      },
+    })),
+  setPolygonRotationMatrix: (id, rotationMatrix) =>
+    set(state => ({
+      config: {
+        ...state.config,
+        polygons: state.config.polygons?.map(polygon =>
+          polygon.id === id ? { ...polygon, rotationMatrix } : polygon
         ),
       },
     })),

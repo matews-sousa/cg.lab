@@ -1,3 +1,5 @@
+import { Matrix3 } from "three";
+
 export type TPoint = {
   id: string;
   position: [number, number];
@@ -32,6 +34,7 @@ export type TPolygon = {
   scale?: [number, number];
   rotation?: number;
   translation?: [number, number];
+  rotationMatrix?: Matrix3;
 };
 
 export type Annotation = {
