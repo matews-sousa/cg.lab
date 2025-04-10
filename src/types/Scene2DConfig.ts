@@ -35,6 +35,7 @@ export type TPolygon = {
   rotation?: number;
   translation?: [number, number];
   rotationMatrix?: Matrix3;
+  displayAxes?: boolean;
 };
 
 export type Annotation = {

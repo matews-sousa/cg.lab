@@ -87,13 +87,14 @@ function createRotationMatrixFillInWithOptionsAssignment({
     order,
     setup() {
       const { addPolygon, setObjectivePolygons } = useScene2DStore.getState();
-      addPolygon(square);
+      addPolygon({ ...square, displayAxes: true });
       setObjectivePolygons([
         {
           ...square,
           id: "target-square",
           color: "green",
           rotationMatrix: create2DRotationMatrix(targetAngleInDegrees),
+          displayAxes: true,
         },
       ]);
 
@@ -157,6 +158,30 @@ const rotationMatrixFillInWithOptionsProps: RotationMatrixFillInWithOptionsProps
         size: [2, 2],
       },
       targetAngleInDegrees: 180,
+    },
+    {
+      order: 4,
+      squareProps: {
+        center: [0.5, 0.5],
+        size: [1, 1],
+      },
+      targetAngleInDegrees: 45,
+    },
+    {
+      order: 5,
+      squareProps: {
+        center: [1, 1],
+        size: [1, 1],
+      },
+      targetAngleInDegrees: 45,
+    },
+    {
+      order: 6,
+      squareProps: {
+        center: [1, 1],
+        size: [1, 1],
+      },
+      targetAngleInDegrees: 90,
     },
   ];
 

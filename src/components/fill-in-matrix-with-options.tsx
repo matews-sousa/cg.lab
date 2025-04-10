@@ -117,7 +117,7 @@ export default function FillInMatrixWithOptions() {
     selectOption(row, col, option.id);
   };
 
-  const handleRemoveOption = (optionId: string, row: number, col: number) => {
+  const handleRemoveOption = (row: number, col: number) => {
     unselectOption(row, col);
 
     if (matrix?.objectRefId) {
@@ -159,9 +159,7 @@ export default function FillInMatrixWithOptions() {
         ) : selectedOption ? (
           <Button
             size="sm"
-            onClick={() =>
-              handleRemoveOption(selectedOption.option.id, rowIndex, colIndex)
-            }
+            onClick={() => handleRemoveOption(rowIndex, colIndex)}
           >
             {selectedOption.option.displayValue}
           </Button>
