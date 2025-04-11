@@ -7,7 +7,8 @@ import {
 } from "@/store/fillInBlankMatrixInputStore";
 import { useScene2DStore } from "@/store/scene2DStore";
 import { useScene3DStore } from "@/store/scene3DStore";
-import { Vector3 } from "three";
+import { Matrix3, Vector3 } from "three";
+import { degreesToRadians } from "@/lib/utils";
 
 interface Props {
   matrix: Matrix;
@@ -23,6 +24,7 @@ export default function FillInMatrixInput({ matrix }: Props) {
     setPolygonRotation,
     setPolygonTranslation,
     setPointScale,
+    setPolygonRotationMatrix,
   } = useScene2DStore();
   const { getCube, updateCube } = useScene3DStore();
 
@@ -91,6 +93,11 @@ export default function FillInMatrixInput({ matrix }: Props) {
       }
 
       if (matrix.type === MatrixType.ROTATION_Z) {
+        const hasEditableEmptyCells = matrix.matrixValue.some(row =>
+          row.some(cell => cell.editable && cell.value === "")
+        );
+        if (hasEditableEmptyCells) return; // Do nothing if any cell is empty
+
         const value00 = Number(matrix.matrixValue[0][0].value);
         const value01 = Number(matrix.matrixValue[0][1].value);
         const value10 = Number(matrix.matrixValue[1][0].value);
@@ -99,13 +106,24 @@ export default function FillInMatrixInput({ matrix }: Props) {
           number,
           number,
           number,
-          number
+          number,
         ];
-        const valuesAreValid = rotation.every(
-          value => !isNaN(value) && value === rotation[0]
-        ); // Check if all values are the same and not NaN
+        const valuesAreValid = rotation.every(value => !isNaN(value)); // Check if all values are the same and not NaN
         if (!valuesAreValid) return;
-        setPolygonRotation(matrix.polygonRefId, rotation[0]);
+        const customMatrix = new Matrix3()
+          .set(
+            Math.cos(degreesToRadians(value00)),
+            -Math.sin(degreesToRadians(value01)),
+            0,
+            Math.sin(degreesToRadians(value10)),
+            Math.cos(degreesToRadians(value11)),
+            0,
+            0,
+            0,
+            1
+          )
+          .transpose(); // Transpose the matrix to match the expected format, cause Three.js uses column-major order
+        setPolygonRotationMatrix(matrix.polygonRefId, customMatrix);
       }
 
       if (matrix.type === MatrixType.TRANSLATION) {
@@ -199,6 +217,7 @@ export default function FillInMatrixInput({ matrix }: Props) {
     setPolygonTranslation,
     getCube,
     updateCube,
+    setPolygonRotationMatrix,
   ]);
 
   const trigMapping: Partial<Record<MatrixType, Record<string, string>>> = {
