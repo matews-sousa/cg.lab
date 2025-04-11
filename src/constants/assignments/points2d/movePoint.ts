@@ -53,41 +53,65 @@ function createMovePointAssignment({
 
 const movePointAssignments = [
   {
-    title: "Mova o ponto",
-    instructions: "Mova o ponto A para a posição (3, 2).",
-    initialPointPosition: [0, 0] as [number, number],
-    goalPointPosition: [3, 2] as [number, number],
+    title: "Movimento Básico",
+    instructions: "Mova o ponto A da origem para a posição (2, 3).",
+    initialPointPosition: [0, 0],
+    goalPointPosition: [2, 3],
   },
   {
-    title: "Mova o ponto 2",
-    instructions: "Mova o ponto A para a posição (-3, -2).",
-    initialPointPosition: [0, 0] as [number, number],
-    goalPointPosition: [-3, -2] as [number, number],
+    title: "Movimento Horizontal",
+    instructions: "Mova o ponto A horizontalmente para (5, 0).",
+    initialPointPosition: [0, 0],
+    goalPointPosition: [5, 0],
   },
   {
-    title: "Mova o ponto 3",
-    instructions: "Mova o ponto A para a posição (0, 5).",
-    initialPointPosition: [0, 0] as [number, number],
-    goalPointPosition: [0, 5] as [number, number],
+    title: "Movimento Vertical",
+    instructions: "Mova o ponto A verticalmente para (0, 4).",
+    initialPointPosition: [0, 0],
+    goalPointPosition: [0, 4],
+  },
+
+  // Level 2: Negative coordinates
+  {
+    title: "Segundo Quadrante",
+    instructions: "Mova o ponto A para o segundo quadrante (-3, 2).",
+    initialPointPosition: [0, 0],
+    goalPointPosition: [-3, 2],
   },
   {
-    title: "Mova o ponto 4",
-    instructions: "Mova o ponto A para a posição (-4, 0).",
-    initialPointPosition: [0, 0] as [number, number],
-    goalPointPosition: [-4, 0] as [number, number],
+    title: "Terceiro Quadrante",
+    instructions: "Mova o ponto A para o terceiro quadrante (-1, -4).",
+    initialPointPosition: [0, 0],
+    goalPointPosition: [-1, -4],
   },
   {
-    title: "Mova o ponto 5",
-    instructions: "Mova o ponto A para a origem.",
-    initialPointPosition: [4, -3] as [number, number],
-    goalPointPosition: [0, 0] as [number, number],
+    title: "Retorno à Origem",
+    instructions: "Mova o ponto A de volta à origem (0, 0).",
+    initialPointPosition: [-2, 3],
+    goalPointPosition: [0, 0],
+  },
+
+  // Level 3: Decimal coordinates
+  {
+    title: "Coordenadas Decimais",
+    instructions: "Mova o ponto A para a posição (1.5, 2.5).",
+    initialPointPosition: [0, 0],
+    goalPointPosition: [1.5, 2.5],
+  },
+  {
+    title: "Precisão Decimal",
+    instructions: "Mova o ponto A para a posição exata (-0.5, 1.5).",
+    initialPointPosition: [0, 0],
+    goalPointPosition: [-0.5, 1.5],
   },
 ];
 
 export const movePointAssignmentsList = movePointAssignments.map(
   (assignment, index) =>
     createMovePointAssignment({
-      order: index + 1, // Order is derived from the array index
       ...assignment,
+      order: index + 1, // Order is derived from the array index
+      initialPointPosition: assignment.initialPointPosition as [number, number],
+      goalPointPosition: assignment.goalPointPosition as [number, number],
     })
 );

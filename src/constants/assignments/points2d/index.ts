@@ -7,18 +7,14 @@ import { distanceBetweenPointsAssignment } from "./distanceBetweenPoints";
 import { movePointAssignmentsList } from "./movePoint";
 import { perpendicularAssignment } from "./perpendicular";
 import { pointPositionWithOptionsAssignmentsList } from "./pointPosition";
-import { positionTwoTrianglesToSquare } from "./positionTwoTrianglesToSquare";
-import { scaleSquarePointsAssignment } from "./scaleSquarePoints";
 import { whichPositionAssignmentList } from "./whichPosition";
 
 export const pointsAssignments: Assignment[] = [
-  ...movePointAssignmentsList,
+  ...pointPositionWithOptionsAssignmentsList,
   alignPointsInXAxisAssignment,
   alignPointsInYAxisAssignment,
-  ...pointPositionWithOptionsAssignmentsList,
+  ...movePointAssignmentsList,
   ...whichPositionAssignmentList,
   distanceBetweenPointsAssignment,
   perpendicularAssignment,
-  scaleSquarePointsAssignment,
-  positionTwoTrianglesToSquare,
 ];

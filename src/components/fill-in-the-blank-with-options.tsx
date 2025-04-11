@@ -19,7 +19,7 @@ export default function FillInTheBlankWithOptions() {
                 className="border-b-2 w-24 border-zinc-900 py-1 self-end"
               >
                 {selectedOptions[id] ? (
-                  <Button variant="secondary" onClick={() => handleRemove(id)}>
+                  <Button onClick={() => handleRemove(id)}>
                     {selectedOptions[id].value}
                   </Button>
                 ) : (
