@@ -2,7 +2,7 @@ import { applyScalematrixToPointAssignmentListList } from "./applyScaleMatrixToP
 import { applyScaleMatrixToPolygonAssignmentList } from "./applyScaleMatrixToPolygon";
 import { applyTranslationmatrixToPointAssignmentListList } from "./applyTranslationMatrixToPoint";
 import { orderingMatricesAssignments } from "./orderingMatrices";
-import { rotationMatrixAssignment } from "./rotationMatrix";
+import { rotationMatrixFillInBlankAssignments } from "./rotationMatrixFillInBlank";
 import { rotationMatrixFillInWithOptionsAssignments } from "./rotationMatrixFillInWithOptions";
 import { scalePointAssignmentList } from "./scalePoint";
 import { scalePolygonAssignmentList } from "./scalePolygon";
@@ -16,6 +16,6 @@ export const matricesAssignments = [
   ...applyScaleMatrixToPolygonAssignmentList,
   ...applyScalematrixToPointAssignmentListList,
   ...rotationMatrixFillInWithOptionsAssignments,
-  rotationMatrixAssignment,
+  ...rotationMatrixFillInBlankAssignments,
   ...orderingMatricesAssignments,
 ];
