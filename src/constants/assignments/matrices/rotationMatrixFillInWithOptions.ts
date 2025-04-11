@@ -5,7 +5,10 @@ import { degreesToRadians } from "@/lib/utils";
 import { useFillInMatrixWithOptionsStore } from "@/store/fillInMatrixWithOptions";
 import { MatrixType } from "@/store/fillInBlankMatrixInputStore";
 import { initial2DRotationMatrixZValue } from "@/constants/inicial2DMatricesValues";
-import { create2DRotationMatrix } from "@/utils/matrix";
+import {
+  applyTransformationsToPolygon,
+  create2DRotationMatrix,
+} from "@/utils/matrix";
 
 type PresetSelection = {
   row: number;
@@ -120,14 +123,39 @@ function createRotationMatrixFillInWithOptionsAssignment({
       const { getPolygon } = useScene2DStore.getState();
       if (!matrix || !matrix.polygonRefId) return false;
       const polygon = getPolygon(matrix.polygonRefId);
-      if (!polygon) return false;
+      const targetPolygon = useScene2DStore
+        .getState()
+        .getObjectivePolygon("target-square");
+      if (
+        !polygon ||
+        !polygon.rotationMatrix ||
+        !targetPolygon ||
+        !targetPolygon.rotationMatrix
+      )
+        return false;
 
       // Compare the polygon's rotation matrix with the expected rotation matrix
-      const expectedMatrix = create2DRotationMatrix(targetAngleInDegrees);
-      const actualMatrix = polygon.rotationMatrix;
-      const isCorrect = actualMatrix?.equals(expectedMatrix) || false;
+      const transformedCurrentPolygon = applyTransformationsToPolygon(polygon, [
+        polygon.rotationMatrix,
+      ]);
+      const transformedTargetPolygon = applyTransformationsToPolygon(
+        targetPolygon,
+        [targetPolygon.rotationMatrix]
+      );
+      // Check if the transformed square points match the target square points
+      for (let i = 0; i < transformedCurrentPolygon.points.length; i++) {
+        const currentPoint = transformedCurrentPolygon.points[i].position;
+        const targetPoint = transformedTargetPolygon.points[i].position;
+        // Allow a small tolerance for floating point comparisons
+        if (
+          Math.abs(currentPoint[0] - targetPoint[0]) > 0.01 ||
+          Math.abs(currentPoint[1] - targetPoint[1]) > 0.01
+        ) {
+          return false;
+        }
+      }
 
-      return isCorrect;
+      return true;
     },
   };
 }
