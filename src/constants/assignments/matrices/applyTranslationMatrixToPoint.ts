@@ -8,19 +8,25 @@ import { vec } from "mafs";
 
 interface ApplyTranslationMatrixToPointProps {
   order: number;
+  title?: string;
+  instructions?: string;
   initialPosition: [number, number];
   translation: [number, number];
 }
 
 function createTranslationMatrix2DAssignment({
   order,
+  title = "Aplique a Matriz de Translação",
+  instructions = "Mova o ponto para a posição resultante após aplicar a matriz de translação.",
   initialPosition,
   translation,
 }: ApplyTranslationMatrixToPointProps): Assignment {
+  const targetPosition = vec.add(initialPosition, translation);
+
   return {
     id: `apply-translation-matrix-2d-${order}`,
-    title: "Aplique a Matriz de Translação",
-    instructions: `Mova o ponto A(${initialPosition[0]}, ${initialPosition[1]}) para a posição resultante após a aplicação da matriz de translação.`,
+    title,
+    instructions,
     order,
     type: AssignmentType.INTERACTIVE,
     subjectCategory: "translation-matrix",
@@ -61,46 +67,94 @@ function createTranslationMatrix2DAssignment({
       });
     },
     validate: () => {
-      const { getMatrixById } = useFillBlankMatrixInputStore.getState();
-      const matrix = getMatrixById("translation-matrix");
       const point = useScene2DStore.getState().getPoint("A");
-      if (!matrix || !point) return false;
+      if (!point) return false;
 
-      const initialPositionTranslated = vec.add(initialPosition, translation);
-
-      const isCorrect =
-        point.position[0] === initialPositionTranslated[0] &&
-        point.position[1] === initialPositionTranslated[1];
-      return isCorrect;
+      return (
+        point.position[0] === targetPosition[0] &&
+        point.position[1] === targetPosition[1]
+      );
     },
   };
 }
 
-const applyTranslationMatrixToPointAssignmentProps: ApplyTranslationMatrixToPointProps[] =
-  [
-    {
-      order: 1,
-      initialPosition: [0, 0],
-      translation: [2, 3],
-    },
-    {
-      order: 2,
-      initialPosition: [-2, 4],
-      translation: [4, -1],
-    },
-    {
-      order: 3,
-      initialPosition: [1, 1],
-      translation: [5, 4],
-    },
-    {
-      order: 4,
-      initialPosition: [3, -2],
-      translation: [-1, 0.5],
-    },
-  ];
+const applyTranslationMatrixToPointAssignmentProps: Omit<
+  ApplyTranslationMatrixToPointProps,
+  "order"
+>[] = [
+  // Nível 1: Translações básicas com números inteiros
+  {
+    title: "Translação Horizontal",
+    instructions: "Mova o ponto para a direita usando a matriz de translação",
+    initialPosition: [0, 0],
+    translation: [3, 0],
+  },
+  {
+    title: "Translação Vertical",
+    instructions: "Mova o ponto para cima usando a transformação mostrada",
+    initialPosition: [0, 0],
+    translation: [0, 2],
+  },
 
-export const applyTranslationmatrixToPointAssignmentListList: Assignment[] =
-  applyTranslationMatrixToPointAssignmentProps.map(props =>
-    createTranslationMatrix2DAssignment(props)
+  // Nível 2: Translações diagonais com inteiros
+  {
+    title: "Translação Diagonal",
+    instructions: "Mova o ponto na diagonal superior direita",
+    initialPosition: [0, 0],
+    translation: [2, 3],
+  },
+  {
+    title: "Translação a partir de Outra Posição",
+    instructions: "Aplique a transformação partindo deste ponto inicial",
+    initialPosition: [1, 2],
+    translation: [3, 1],
+  },
+
+  // Nível 3: Introdução de decimais (sem mencionar valores)
+  {
+    title: "Translação Horizontal Precisa",
+    instructions: "Execute o movimento horizontal com precisão",
+    initialPosition: [0, 0],
+    translation: [1.5, 0],
+  },
+  {
+    title: "Translação Vertical Precisa",
+    instructions: "Realize o deslocamento vertical cuidadosamente",
+    initialPosition: [0, 0],
+    translation: [0, 2.5],
+  },
+
+  // Nível 4: Combinação de movimentos com decimais
+  {
+    title: "Translação Diagonal Precisa",
+    instructions: "Combine movimentos horizontais e verticais com precisão",
+    initialPosition: [0, 0],
+    translation: [1.5, 2],
+  },
+  {
+    title: "Translação Completa",
+    instructions: "Aplique a transformação mostrada na matriz",
+    initialPosition: [0, 0],
+    translation: [1.5, 2.5],
+  },
+
+  // Nível 5: Desafios avançados
+  {
+    title: "Translação a partir de Posição Arbitrária",
+    instructions: "Começando desta posição, execute a transformação correta",
+    initialPosition: [2, 1],
+    translation: [1.5, 0.5],
+  },
+  {
+    title: "Desafio de Translação",
+    instructions:
+      "Analise a posição inicial e a matriz para mover o ponto corretamente",
+    initialPosition: [1.5, 2.5],
+    translation: [2.5, 1.5],
+  },
+];
+
+export const applyTranslationmatrixToPointAssignmentList: Assignment[] =
+  applyTranslationMatrixToPointAssignmentProps.map((props, index) =>
+    createTranslationMatrix2DAssignment({ ...props, order: index + 1 })
   );
