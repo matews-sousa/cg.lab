@@ -92,7 +92,11 @@ const CustomPolygon = memo(({ polygon }: Props) => {
   // Early return for simple polygons
   if (transformedPolygon.points.length < 4) {
     return (
-      <>
+      <Transform
+        translate={transformedPolygon.translation}
+        rotate={degreesToRadians(transformedPolygon.rotation ?? 0)}
+        scale={transformedPolygon.scale}
+      >
         <Polygon
           points={transformedPolygon.points.map(p => p.position)}
           color={transformedPolygon.color}
@@ -101,7 +105,7 @@ const CustomPolygon = memo(({ polygon }: Props) => {
         {transformedPolygon.points.map(point => (
           <CustomPoint key={point.id} point={point} polygonId={polygon.id} />
         ))}
-      </>
+      </Transform>
     );
   }
 
@@ -119,7 +123,11 @@ const CustomPolygon = memo(({ polygon }: Props) => {
       {transformedPolygon.points.map(
         point =>
           point.movable && (
-            <CustomPoint key={point.id} point={point} polygonId={polygon.id} />
+            <CustomPoint
+              key={point.id}
+              point={point}
+              polygonId={transformedPolygon.id}
+            />
           )
       )}
       {polygon.displayAxes && (

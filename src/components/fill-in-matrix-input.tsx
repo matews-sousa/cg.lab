@@ -34,29 +34,16 @@ export default function FillInMatrixInput({ matrix }: Props) {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = e.target.value;
+    // Replace comma with dot for number parsing
+    const normalizedValue = value.replace(",", ".");
+
+    // Regex to allow valid partial values like "-", "-.", "1,", "1.5", etc.
+    const partialNumberRegex = /^-?\d*(\.|,)?\d*$/;
+
     // Add decimal point if the user types a number followed by a dot
-    if (!isNaN(Number(value)) && value[value.length - 1] === ".") {
-      changeMatrixValue(matrix.id, row, col, value);
+    if (partialNumberRegex.test(value)) {
+      changeMatrixValue(matrix.id, row, col, normalizedValue);
       return;
-    }
-
-    if (
-      value === "" ||
-      value === "-" ||
-      value === "." ||
-      value === "-." ||
-      value === "-0." ||
-      value === "-0" ||
-      value === "0."
-    ) {
-      changeMatrixValue(matrix.id, row, col, value);
-      return;
-    }
-
-    // Parse the number only if it's valid
-    const num = Number(value);
-    if (!isNaN(num)) {
-      changeMatrixValue(matrix.id, row, col, num);
     }
   };
 

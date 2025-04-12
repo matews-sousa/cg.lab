@@ -90,7 +90,7 @@ export const generateSquarePoints = (
   ];
 };
 
-type TriangleType = "equilateral" | "isosceles" | "scalene";
+export type TriangleType = "equilateral" | "isosceles" | "scalene";
 
 function roundToHalf(value: number): number {
   // Round to the nearest 0.5
