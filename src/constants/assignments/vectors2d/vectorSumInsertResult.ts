@@ -3,7 +3,7 @@ import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
 import { vec } from "mafs";
 
-interface InsertVectorSumAssignmentProps {
+interface VectorSumInsertResultProps {
   order: number;
   title: string;
   instructions: string;
@@ -13,7 +13,7 @@ interface InsertVectorSumAssignmentProps {
   vectorBTip: [number, number];
 }
 
-function createInsertVectorSumAssignment({
+function createVectorSumInsertResultAssignment({
   order,
   title,
   instructions,
@@ -21,7 +21,7 @@ function createInsertVectorSumAssignment({
   vectorATip,
   vectorBTail,
   vectorBTip,
-}: InsertVectorSumAssignmentProps): Assignment {
+}: VectorSumInsertResultProps): Assignment {
   return {
     id: `insert-vector-sum-${order}`,
     title,
@@ -37,12 +37,14 @@ function createInsertVectorSumAssignment({
           tail: vectorATail,
           tip: vectorATip,
           label: "a",
+          color: "blue",
         },
         {
           id: "b",
           tail: vectorBTail,
           tip: vectorBTip,
           label: "b",
+          color: "blue",
         },
       ]);
 
@@ -86,44 +88,85 @@ function createInsertVectorSumAssignment({
   };
 }
 
-const insertVectorSumAssignmentsProps: InsertVectorSumAssignmentProps[] = [
+const vectorSumInsertResultProps: VectorSumInsertResultProps[] = [
+  // Level 1: Simple vector additions (same direction)
   {
     order: 1,
-    title: "Some os vetores",
-    instructions: "Insira a soma dos vetores a e b.",
-    vectorATail: [1, 1],
-    vectorATip: [2, 2],
-    vectorBTail: [3, 3],
-    vectorBTip: [4, 4],
+    title: "Soma de Vetores Colineares",
+    instructions: "Calcule o vetor resultante da soma de a e b",
+    vectorATail: [0, 0],
+    vectorATip: [2, 0],
+    vectorBTail: [2, 0],
+    vectorBTip: [4, 0],
   },
   {
     order: 2,
-    title: "Some os vetores",
-    instructions: "Insira a soma dos vetores a e b.",
+    title: "Soma de Vetores Verticais",
+    instructions: "Determine o vetor soma de a e b",
     vectorATail: [0, 0],
-    vectorATip: [2, 3],
-    vectorBTail: [2, 3],
-    vectorBTip: [3, 3],
+    vectorATip: [0, 3],
+    vectorBTail: [0, 3],
+    vectorBTip: [0, 5],
   },
+
+  // Level 2: Perpendicular vectors
   {
     order: 3,
-    title: "Some os vetores",
-    instructions: "Insira a soma dos vetores a e b.",
+    title: "Soma de Vetores Perpendiculares",
+    instructions: "Some o vetor horizontal a com o vertical b",
     vectorATail: [0, 0],
-    vectorATip: [2, 2],
-    vectorBTail: [2, 2],
-    vectorBTip: [0, 4],
+    vectorATip: [3, 0],
+    vectorBTail: [3, 0],
+    vectorBTip: [3, 2],
   },
   {
     order: 4,
-    title: "Some os vetores",
-    instructions: "Insira a soma dos vetores a e b.",
+    title: "Soma Diagonal",
+    instructions: "Calcule a resultante destes vetores diagonais",
     vectorATail: [0, 0],
     vectorATip: [2, 2],
     vectorBTail: [2, 2],
-    vectorBTip: [2, 5],
+    vectorBTip: [4, 4],
+  },
+
+  // Level 3: Mixed direction vectors
+  {
+    order: 5,
+    title: "Soma com Componentes Opostas",
+    instructions: "Encontre o vetor resultante desta combinação",
+    vectorATail: [0, 0],
+    vectorATip: [3, 1],
+    vectorBTail: [3, 1],
+    vectorBTip: [1, 3],
+  },
+  {
+    order: 6,
+    title: "Soma Complexa",
+    instructions: "Calcule a soma vetorial completa",
+    vectorATail: [1, 1],
+    vectorATip: [3, 2],
+    vectorBTail: [3, 2],
+    vectorBTip: [2, 4],
+  },
+  {
+    order: 7,
+    title: "Soma com Componentes Negativas",
+    instructions: "Calcule o resultado com vetores em direções opostas",
+    vectorATail: [0, 0],
+    vectorATip: [2, 1],
+    vectorBTail: [2, 1],
+    vectorBTip: [0, 3],
+  },
+  {
+    order: 8,
+    title: "Soma com Valores Decimais",
+    instructions: "Determine a soma precisa destes vetores",
+    vectorATail: [0, 0],
+    vectorATip: [1.5, 0],
+    vectorBTail: [1.5, 0],
+    vectorBTip: [1.5, 2.5],
   },
 ];
 
-export const insertVectorSumAssignmentList =
-  insertVectorSumAssignmentsProps.map(createInsertVectorSumAssignment);
+export const vectorSumInsertResultAssignmentList =
+  vectorSumInsertResultProps.map(createVectorSumInsertResultAssignment);

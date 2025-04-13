@@ -1,7 +1,7 @@
 import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
 import { vec } from "mafs";
-import { VectorTailAndTip } from "./adjustTheVectorToSum";
+import { VectorTailAndTip } from "./vectorSumAdjustResult";
 
 interface VectorScaleAssignmentProps {
   order: number;

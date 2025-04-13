@@ -1,5 +1,5 @@
 import { Assignment, AssignmentType } from "@/types/Assignment";
-import { VectorTailAndTip } from "./adjustTheVectorToSum";
+import { VectorTailAndTip } from "./vectorSumAdjustResult";
 import { useScene2DStore } from "@/store/scene2DStore";
 import { useFillInTheBlankStore } from "@/store/fillInTheBlankStore";
 import { vec } from "mafs";
