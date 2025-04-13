@@ -26,30 +26,14 @@ function createDefineTheVectorAssignment({
     type: AssignmentType.FILL_IN_THE_BLANK_COORDINATES,
     subjectCategory: "vector-definition",
     setup: () => {
-      const { setPoints, setVectors } = useScene2DStore.getState();
-      setPoints([
-        {
-          id: "A",
-          position: pointA,
-          label: "A",
-          movable: false,
-          color: "red",
-        },
-        {
-          id: "B",
-          position: pointB,
-          label: "B",
-          movable: false,
-          color: "red",
-        },
-      ]);
-
+      const { setVectors } = useScene2DStore.getState();
       setVectors([
         {
           id: "v",
           tail: pointA,
           tip: pointB,
           label: "v",
+          color: "blue",
         },
       ]);
 
@@ -65,13 +49,11 @@ function createDefineTheVectorAssignment({
     validate() {
       const { getInputByPointRef } = useFillInTheBlankStore.getState();
       const v = getInputByPointRef("v");
-      console.log(v);
       if (!v) return false;
 
       const vector = vec.sub(pointB, pointA);
       const inputX = Number(v?.coordinatesValue.x);
       const inputY = Number(v?.coordinatesValue.y);
-      console.log(vector);
 
       const isCorrect = inputX === vector[0] && inputY === vector[1];
       return isCorrect;
@@ -80,37 +62,84 @@ function createDefineTheVectorAssignment({
 }
 
 const defineTheVectorAssignmentsProps: DefineTheVectorAssignmentProps[] = [
+  // Nível 1: Vetores básicos no primeiro quadrante
   {
     order: 1,
-    title: "Encontre o vetor v de A para B",
-    instructions:
-      "Calcule o vetor que conecta o ponto A ao ponto B no plano cartesiano.",
+    title: "Vetor Horizontal Simples",
+    instructions: "Determine as componentes do vetor mostrado",
     pointA: [0, 0],
-    pointB: [1, 1],
+    pointB: [2, 0],
   },
   {
     order: 2,
-    title: "Determine as coordenadas do vetor v",
-    instructions:
-      "Determine as coordenadas do vetor v com base nos pontos A e B fornecidos.",
-    pointA: [2, 1],
-    pointB: [4, 3],
+    title: "Vetor Vertical Simples",
+    instructions: "Encontre as coordenadas do vetor apresentado",
+    pointA: [0, 0],
+    pointB: [0, 3],
   },
+
+  // Nível 2: Vetores diagonais no primeiro quadrante
   {
     order: 3,
-    title: "Calcule o vetor a partir de A e B",
-    instructions:
-      "Use as coordenadas de A e B para encontrar o vetor correspondente.",
-    pointA: [3, 4],
-    pointB: [1, 1],
+    title: "Vetor Diagonal Positivo",
+    instructions: "Calcule as componentes do vetor na diagonal",
+    pointA: [0, 0],
+    pointB: [2, 2],
   },
   {
     order: 4,
-    title: "Descubra o vetor com origem em A",
-    instructions:
-      "Descubra as coordenadas do vetor v que parte do ponto A e termina no ponto B.",
+    title: "Vetor com Componentes Diferentes",
+    instructions: "Determine o vetor com magnitudes distintas em cada eixo",
+    pointA: [1, 1],
+    pointB: [3, 4],
+  },
+
+  // Nível 3: Vetores com componentes negativas
+  {
+    order: 5,
+    title: "Vetor Horizontal Negativo",
+    instructions: "Analise o vetor e encontre suas componentes",
+    pointA: [2, 0],
+    pointB: [0, 0],
+  },
+  {
+    order: 6,
+    title: "Vetor Vertical Negativo",
+    instructions: "Determine as coordenadas do vetor apontando para baixo",
+    pointA: [0, 3],
+    pointB: [0, 1],
+  },
+
+  // Nível 4: Vetores em múltiplos quadrantes
+  {
+    order: 7,
+    title: "Vetor entre Quadrantes",
+    instructions: "Calcule o vetor que atravessa diferentes quadrantes",
+    pointA: [1, 2],
+    pointB: [-1, 3],
+  },
+  {
+    order: 8,
+    title: "Vetor Completo",
+    instructions: "Encontre todas as componentes do vetor mostrado",
     pointA: [2, 3],
-    pointB: [-3, 5],
+    pointB: [-2, -1],
+  },
+
+  // Nível 5: Vetores decimais
+  {
+    order: 9,
+    title: "Vetor com Componentes Decimais",
+    instructions: "Determine as coordenadas do vetor com precisão",
+    pointA: [0.5, 1],
+    pointB: [1.5, 2.5],
+  },
+  {
+    order: 10,
+    title: "Desafio de Vetores",
+    instructions: "Analise cuidadosamente o vetor e suas componentes",
+    pointA: [1.5, 2.5],
+    pointB: [-0.5, 3.5],
   },
 ];
 

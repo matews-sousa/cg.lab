@@ -11,14 +11,21 @@ import { vectorSumAssignmentList } from "./vectorSum";
 import { vectorLengthInteractiveAssignmentList } from "./vectorLengthInteractive";
 
 export const vectorAssignments: Assignment[] = [
+  // Vector Basics assignments
   ...changeTheVectorAssignmentList,
   ...defineTheVectorAssignmentList,
+  ...pointDisplacementAssignmentList,
+
+  // Vector Sum assignments
   ...vectorSumAssignmentList,
   ...insertVectorSumAssignmentList,
   ...adjustVectorSumAssignmentsList,
-  ...pointDisplacementAssignmentList,
+
+  // Scalar Multiplication assignments
   ...vectorScalarAssignmentList,
   ...vectorScalarFillInCoordsAssignmentList,
+
+  // Vector Length assignments
   ...vectorLengthInteractiveAssignmentList,
   ...vectorLengthAssignmentList,
 ];
