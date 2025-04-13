@@ -5,7 +5,7 @@ import { defineTheVectorAssignmentList } from "./defineTheVector";
 import { vectorSumInsertResultAssignmentList } from "./vectorSumInsertResult";
 import { pointDisplacementAssignmentList } from "./pointDisplacement";
 import { vectorLengthAssignmentList } from "./vectorLength";
-import { vectorScalarAssignmentList } from "./vectorScalar";
+import { vectorScalarInteractiveAssignmentList } from "./vectorScalarInteractive";
 import { vectorScalarFillInCoordsAssignmentList } from "./vectorScalarFillInCoords";
 import { vectorSumAdjustVectorsAssignmentList } from "./vectorSumAdjustVectors";
 import { vectorLengthInteractiveAssignmentList } from "./vectorLengthInteractive";
@@ -22,7 +22,7 @@ export const vectorAssignments: Assignment[] = [
   ...vectorSumInsertResultAssignmentList,
 
   // Scalar Multiplication assignments
-  ...vectorScalarAssignmentList,
+  ...vectorScalarInteractiveAssignmentList,
   ...vectorScalarFillInCoordsAssignmentList,
 
   // Vector Length assignments
