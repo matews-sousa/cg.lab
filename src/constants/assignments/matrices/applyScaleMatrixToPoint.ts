@@ -98,7 +98,7 @@ const applyScaleMatrixToPointAssignmentProps: ApplyScaleMatrixToPointProps[] = [
   },
 ];
 
-export const applyScalematrixToPointAssignmentListList: Assignment[] =
+export const applyScaleMatrixToPointAssignmentList: Assignment[] =
   applyScaleMatrixToPointAssignmentProps.map(props =>
     createApplyScaleMatrix2DAssignment(props)
   );

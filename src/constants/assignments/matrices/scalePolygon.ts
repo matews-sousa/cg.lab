@@ -4,10 +4,16 @@ import {
 } from "@/store/fillInBlankMatrixInputStore";
 import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
-import { generateSquarePoints } from "@/utils";
+import {
+  applyTransformationsToPolygon,
+  create2DScaleMatrix,
+} from "@/utils/matrix";
+import { createSquare } from "@/utils/polygon";
 
 interface ScalePolygonAssignmentProps {
   order: number;
+  title?: string;
+  instructions?: string;
   squareCenter: [number, number];
   squareSize: [number, number];
   goalScale: [number, number];
@@ -15,35 +21,34 @@ interface ScalePolygonAssignmentProps {
 
 function createScalePolygonAssignment({
   order,
+  title,
+  instructions,
   squareCenter,
   squareSize,
   goalScale,
 }: ScalePolygonAssignmentProps): Assignment {
-  const squarePoints = generateSquarePoints(squareCenter, squareSize);
-  const squareWidth = squareSize[0];
-  const squareHeight = squareSize[1];
+  const square = createSquare("square", "blue", squareCenter, squareSize);
 
-  const goalSquareWidth = goalScale[0] * squareWidth;
-  const goalSquareHeight = goalScale[1] * squareHeight;
+  const scaleMatrix = create2DScaleMatrix(goalScale[0], goalScale[1]);
+  const targetSquare = applyTransformationsToPolygon(square, [scaleMatrix]);
 
   return {
     id: `scale-polygon-${order}`,
-    title: "Matriz de Escala",
-    instructions: `Altere a matriz de escala para que o quadrado fique com tamanho (${goalSquareWidth}, ${goalSquareHeight}).`,
+    title: title || "Matriz de Escala",
+    instructions:
+      instructions ||
+      "Altere a matriz de escala para que escale o quadrado para o objetivo",
     order,
     type: AssignmentType.FILL_IN_THE_BLANK_MATRIX,
     subjectCategory: "scaling-matrix",
     setup: () => {
-      const { setPolygons } = useScene2DStore.getState();
-      setPolygons([
+      const { addPolygon, setObjectivePolygons } = useScene2DStore.getState();
+      addPolygon(square);
+      setObjectivePolygons([
         {
-          id: "square",
-          color: "blue",
-          points: squarePoints.map((point, index) => ({
-            id: `point${index}`,
-            position: point,
-            movable: false,
-          })),
+          ...targetSquare,
+          id: "target-square",
+          color: "green",
         },
       ]);
 
@@ -77,8 +82,6 @@ function createScalePolygonAssignment({
       const polygon = getPolygon("square");
       if (!polygon || !polygon.scale) return false;
 
-      console.log(polygon.scale, goalScale);
-
       const isCorrect =
         polygon.scale[0] === goalScale[0] && polygon.scale[1] === goalScale[1];
       return isCorrect;
@@ -89,18 +92,55 @@ function createScalePolygonAssignment({
 const scalePolygonAssignmentsProps: ScalePolygonAssignmentProps[] = [
   {
     order: 1,
+    title: "Escalar o quadrado para o dobro do tamanho",
+    instructions:
+      "Altere a matriz de escala para que o quadrado fique com o dobro do tamanho.",
     squareCenter: [0, 0],
     squareSize: [1, 1],
     goalScale: [2, 2],
   },
   {
     order: 2,
-    squareCenter: [0.5, 0.5],
+    title: "Escala não uniforme no eixo X",
+    instructions:
+      "Altere a matriz de escala para que o quadrado fique mais largo.",
+    squareCenter: [0, 0],
     squareSize: [1, 1],
     goalScale: [2, 1],
   },
   {
     order: 3,
+    title: "Escala não uniforme no eixo Y",
+    instructions:
+      "Altere a matriz de escala para que o quadrado fique mais alto.",
+    squareCenter: [0, 0],
+    squareSize: [1, 1],
+    goalScale: [1, 2],
+  },
+  {
+    order: 4,
+    title: "Escala fora da origem",
+    squareCenter: [0.5, 0.5],
+    squareSize: [1, 1],
+    goalScale: [2, 2],
+  },
+  {
+    order: 5,
+    title: "Escala não uniforme fora da origem no eixo X",
+    squareCenter: [1, 1],
+    squareSize: [1, 1],
+    goalScale: [2, 1],
+  },
+  {
+    order: 6,
+    title: "Escala não uniforme fora da origem no eixo Y",
+    squareCenter: [1, 1],
+    squareSize: [1, 1],
+    goalScale: [1, 2],
+  },
+  {
+    order: 7,
+    title: "Escala fora da origem",
     squareCenter: [1.5, 1.5],
     squareSize: [1, 1],
     goalScale: [2, 2],
