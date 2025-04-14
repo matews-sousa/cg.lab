@@ -27,7 +27,7 @@ interface RotationMatrixFillInWithOptionsProps {
 }
 
 // Generate unique options with suffixes to allow multiple of same type
-const generateOptions = (angle: number) => {
+export const generateOptions = (angle: number) => {
   const radians = degreesToRadians(angle);
   const cosValue = Math.cos(radians);
   const sinValue = Math.sin(radians);
@@ -42,7 +42,7 @@ const generateOptions = (angle: number) => {
 };
 
 // Map preset selections to actual option IDs, tracking used options
-const mapPresetSelections = (
+export const mapPresetSelections = (
   options: ReturnType<typeof generateOptions>,
   presetSelections: PresetSelection[]
 ) => {

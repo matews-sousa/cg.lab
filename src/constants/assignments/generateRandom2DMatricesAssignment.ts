@@ -4,9 +4,10 @@ import {
 } from "@/store/fillInBlankMatrixInputStore";
 import { useScene2DStore } from "@/store/scene2DStore";
 import { AssignmentType, RandomGeneratedAssignment } from "@/types/Assignment";
-import { TPoint } from "@/types/Scene2DConfig";
+import { TPoint, TPolygon } from "@/types/Scene2DConfig";
 import { getRandomCoords, getRandomIntInRange } from "@/utils";
 import {
+  initial2DRotationMatrixZValue,
   initial2DScalingMatrixValue,
   initial2DTranslationMatrixValue,
 } from "../inicial2DMatricesValues";
@@ -19,6 +20,15 @@ import {
 } from "@/store/orderMatrixMultiplicationStore";
 import { degreesToRadians } from "@/lib/utils";
 import { shuffleArray } from "@/utils";
+import { useFillInMatrixWithOptionsStore } from "@/store/fillInMatrixWithOptions";
+import {
+  applyTransformationsToPolygon,
+  create2DRotationMatrix,
+} from "@/utils/matrix";
+import {
+  generateOptions,
+  mapPresetSelections,
+} from "./matrices/rotationMatrixFillInWithOptions";
 
 const COORDINATE_LIMITS = [-4, 4] as [number, number];
 
@@ -319,6 +329,104 @@ export function generate2DScaleMatrixAssignment(): RandomGeneratedAssignment {
       });
 
       return isCorrect;
+    },
+  });
+}
+
+export function generate2DRotationMatrixAssignment(): RandomGeneratedAssignment {
+  const randomSquarePoints = generateRandomSquarePoints();
+  const possibleAnglesInDegrees = [0, 90, 180, 270, 360, -90, -180, -270, -360];
+  // Choose a random angle from the possible angles
+  const randomAngleIndex = getRandomIntInRange(
+    0,
+    possibleAnglesInDegrees.length - 1
+  );
+  const randomRotation = possibleAnglesInDegrees[randomAngleIndex];
+
+  const square: TPolygon = {
+    id: "square",
+    color: "blue",
+    points: randomSquarePoints.map((point, index) => ({
+      id: `point${index}`,
+      position: point,
+      movable: false,
+    })),
+    displayAxes: true,
+  };
+  const rotationMatrix = create2DRotationMatrix(randomRotation);
+
+  return createMatrixAssignment({
+    title: "Matrix de rotação 2D",
+    instructions: "Complete a matriz de rotação para que atinja o objetivo",
+    subjectCategory: "rotation-matrix",
+    type: AssignmentType.FILL_IN_THE_BLANK_MATRIX_WITH_OPTIONS,
+    setup() {
+      const { addPolygon, setObjectivePolygons } = useScene2DStore.getState();
+      addPolygon(square);
+      setObjectivePolygons([
+        {
+          ...square,
+          id: "target-square",
+          color: "green",
+          rotationMatrix,
+        },
+      ]);
+
+      const { setMatrix, setOptions, selectOption } =
+        useFillInMatrixWithOptionsStore.getState();
+      setMatrix({
+        id: "rotation-matrix",
+        type: MatrixType.ROTATION_Z,
+        dimention: "2D",
+        polygonRefId: square.id,
+        matrixValue: initial2DRotationMatrixZValue,
+      });
+
+      const options = generateOptions(randomRotation);
+      const mappedSelections = mapPresetSelections(options, []);
+      setOptions(shuffleArray(options));
+      mappedSelections.forEach(({ row, col, optionId }) => {
+        selectOption(row, col, optionId);
+      });
+    },
+    validate() {
+      const { matrix } = useFillInMatrixWithOptionsStore.getState();
+      const { getPolygon } = useScene2DStore.getState();
+      if (!matrix || !matrix.polygonRefId) return false;
+      const polygon = getPolygon(matrix.polygonRefId);
+      const targetPolygon = useScene2DStore
+        .getState()
+        .getObjectivePolygon("target-square");
+      if (
+        !polygon ||
+        !polygon.rotationMatrix ||
+        !targetPolygon ||
+        !targetPolygon.rotationMatrix
+      )
+        return false;
+
+      // Compare the polygon's rotation matrix with the expected rotation matrix
+      const transformedCurrentPolygon = applyTransformationsToPolygon(polygon, [
+        polygon.rotationMatrix,
+      ]);
+      const transformedTargetPolygon = applyTransformationsToPolygon(
+        targetPolygon,
+        [targetPolygon.rotationMatrix]
+      );
+      // Check if the transformed square points match the target square points
+      for (let i = 0; i < transformedCurrentPolygon.points.length; i++) {
+        const currentPoint = transformedCurrentPolygon.points[i].position;
+        const targetPoint = transformedTargetPolygon.points[i].position;
+        // Allow a small tolerance for floating point comparisons
+        if (
+          Math.abs(currentPoint[0] - targetPoint[0]) > 0.01 ||
+          Math.abs(currentPoint[1] - targetPoint[1]) > 0.01
+        ) {
+          return false;
+        }
+      }
+
+      return true;
     },
   });
 }

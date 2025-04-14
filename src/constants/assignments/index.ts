@@ -22,6 +22,7 @@ import {
   generate2DFillInTranslationMatrixAssignment,
   generate2DFillInTranslationMatrixForSquareAssignment,
   generate2DMatrixMultiplicationSortingAssignment,
+  generate2DRotationMatrixAssignment,
   generate2DScaleMatrixAssignment,
   generate2DTranslationMatrixAssignment,
 } from "./generateRandom2DMatricesAssignment";
@@ -185,7 +186,7 @@ export const subjectOptions = [
   {
     id: "rotation-matrix",
     label: "Matriz de rotação",
-    generators: [],
+    generators: [generate2DRotationMatrixAssignment],
   },
   {
     id: "matrix-multiplication",
