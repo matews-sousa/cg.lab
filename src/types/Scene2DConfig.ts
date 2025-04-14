@@ -29,6 +29,7 @@ export type TPolygon = {
   points: TPoint[];
   originalPoints?: TPoint[];
   color?: string;
+  opacity?: number;
   strokeStyle?: "solid" | "dashed";
   movable?: boolean;
   scale?: [number, number];

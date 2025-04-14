@@ -149,16 +149,17 @@ export function generate2DFillInTranslationMatrixForSquareAssignment(): RandomGe
     subjectCategory: "translation-matrix",
     setup: () => {
       useScene2DStore.getState().reset();
-      useScene2DStore.getState().setPolygons([
-        {
-          id: "polygon",
-          points: initialPoints.map((point, index) => ({
-            id: `point${index}`,
-            position: point,
-            movable: false,
-          })),
-          color: "blue",
-        },
+      const { addPolygon, setObjectivePolygons } = useScene2DStore.getState();
+      addPolygon({
+        id: "polygon",
+        points: initialPoints.map((point, index) => ({
+          id: `point${index}`,
+          position: point,
+          movable: false,
+        })),
+        color: "blue",
+      });
+      setObjectivePolygons([
         {
           id: "translatedPolygon",
           points: initialPoints.map((point, index) => ({
@@ -207,12 +208,13 @@ export function generate2DFillInTranslationMatrixForSquareAssignment(): RandomGe
         });
         useScene2DStore.getState().addPolygon({
           id: "polygon",
+          opacity: 0.2,
           points: initialPoints.map((point, index) => ({
             id: `point${index}`,
             position: point,
             movable: false,
           })),
-          color: "blue",
+          color: "green",
         });
       }
 

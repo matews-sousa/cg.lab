@@ -36,7 +36,7 @@ export default function VectorWithControls({ vector }: { vector: TVector }) {
           constrain={([x, y]: [number, number]) =>
             [Math.round(x / 0.5) * 0.5, Math.round(y / 0.5) * 0.5] as [
               number,
-              number
+              number,
             ]
           }
           onMove={newPosition => {
@@ -54,7 +54,7 @@ export default function VectorWithControls({ vector }: { vector: TVector }) {
           constrain={([x, y]: [number, number]) =>
             [Math.round(x / 0.5) * 0.5, Math.round(y / 0.5) * 0.5] as [
               number,
-              number
+              number,
             ]
           }
         />
@@ -69,7 +69,7 @@ export default function VectorWithControls({ vector }: { vector: TVector }) {
           constrain={([x, y]: [number, number]) =>
             [Math.round(x / 0.5) * 0.5, Math.round(y / 0.5) * 0.5] as [
               number,
-              number
+              number,
             ]
           }
           onMove={newPosition => {

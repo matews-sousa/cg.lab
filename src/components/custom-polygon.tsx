@@ -98,6 +98,8 @@ const CustomPolygon = memo(({ polygon }: Props) => {
         scale={transformedPolygon.scale}
       >
         <Polygon
+          fillOpacity={polygon.opacity}
+          strokeOpacity={polygon.opacity}
           points={transformedPolygon.points.map(p => p.position)}
           color={transformedPolygon.color}
           strokeStyle={transformedPolygon.strokeStyle}
@@ -116,6 +118,8 @@ const CustomPolygon = memo(({ polygon }: Props) => {
       scale={transformedPolygon.scale}
     >
       <Polygon
+        fillOpacity={polygon.opacity}
+        strokeOpacity={polygon.opacity}
         points={transformedPolygon.points.map(p => p.position)}
         color={transformedPolygon.color}
         strokeStyle={transformedPolygon.strokeStyle}
