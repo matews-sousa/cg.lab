@@ -27,7 +27,11 @@ const EXPECTED_HEADERS = [
 
 // -- Helper functions --
 function isAllowedOrigin(origin: string | null): boolean {
-  return !!origin?.match(/https?:\/\/(localhost|cg-lab)/);
+  if (!origin) return false;
+  return (
+    origin.startsWith("http://localhost:") ||
+    /^https:\/\/(.*\.)?cg-lab\.vercel\.app$/.test(origin)
+  );
 }
 
 function areEnvVarsMissing(): boolean {
