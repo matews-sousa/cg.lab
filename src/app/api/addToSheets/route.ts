@@ -30,8 +30,9 @@ function isAllowedOrigin(origin: string | null): boolean {
   if (!origin) return false;
 
   const allowedPatterns = [
-    /^http:\/\/localhost:\d+$/, // localhost: any port
-    /^https:\/\/cg-lab(-[\w\d]+)?\.vercel\.app$/, // production and previews
+    /^http:\/\/localhost:\d+$/, // localhost with any port
+    /^https:\/\/cg-lab\.vercel\.app$/, // production deployment
+    /^https:\/\/cglab-[\w-]+\.vercel\.app$/, // preview deployments
   ];
 
   return allowedPatterns.some(pattern => pattern.test(origin));
