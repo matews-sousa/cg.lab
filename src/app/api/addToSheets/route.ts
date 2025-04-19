@@ -28,10 +28,13 @@ const EXPECTED_HEADERS = [
 // -- Helper functions --
 function isAllowedOrigin(origin: string | null): boolean {
   if (!origin) return false;
-  return (
-    origin.startsWith("http://localhost:") ||
-    /^https:\/\/(.*\.)?cg-lab\.vercel\.app$/.test(origin)
-  );
+
+  const allowedPatterns = [
+    /^http:\/\/localhost:\d+$/, // localhost: any port
+    /^https:\/\/cg-lab(-[\w\d]+)?\.vercel\.app$/, // production and previews
+  ];
+
+  return allowedPatterns.some(pattern => pattern.test(origin));
 }
 
 function areEnvVarsMissing(): boolean {
