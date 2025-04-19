@@ -39,6 +39,9 @@ export default function RandomAssignmentPage() {
     assignmentState,
     setAssignmentState,
     handleConfirm,
+    setStartTime,
+    incrementAttemptCount,
+    resetAttemptCount,
   } = useAssignment();
 
   // Derived state
@@ -69,6 +72,7 @@ export default function RandomAssignmentPage() {
     try {
       const assi = generateAnyRandomAssignment(selectedSubjects);
       if (assi) {
+        setStartTime(Date.now());
         setAssignment(assi);
         assi.setup();
       }
@@ -83,14 +87,22 @@ export default function RandomAssignmentPage() {
       });
       redirect("/");
     }
-  }, [resetAll, selectedSubjects, setAssignment]);
+  }, [resetAll, selectedSubjects, setAssignment, setStartTime]);
 
   // Event handlers
   const handleTryAgain = useCallback(() => {
     resetAll();
+    setStartTime(Date.now());
     setAssignmentState("notAnswered");
+    incrementAttemptCount();
     assignment?.setup();
-  }, [resetAll, assignment, setAssignmentState]);
+  }, [
+    resetAll,
+    assignment,
+    setAssignmentState,
+    setStartTime,
+    incrementAttemptCount,
+  ]);
 
   const handleNext = useCallback(() => {
     setAssignmentState("notAnswered");
@@ -99,6 +111,8 @@ export default function RandomAssignmentPage() {
       const assi = generateAnyRandomAssignment(selectedSubjects);
       if (assi) {
         setAssignment(assi);
+        setStartTime(Date.now());
+        resetAttemptCount();
         resetAll();
         assi.setup();
       }
@@ -113,7 +127,14 @@ export default function RandomAssignmentPage() {
       });
       redirect("/");
     }
-  }, [resetAll, selectedSubjects, setAssignment, setAssignmentState]);
+  }, [
+    resetAll,
+    selectedSubjects,
+    setAssignment,
+    setAssignmentState,
+    setStartTime,
+    resetAttemptCount,
+  ]);
 
   const onConfirmAnswer = () => {
     // When it's a random assignment, we don't want to save the completion in the database

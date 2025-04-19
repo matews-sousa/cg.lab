@@ -30,6 +30,7 @@
     "cmdk": "^1.1.1",
     "convex": "^1.18.2",
     "date-fns": "^4.1.0",
+    "googleapis": "^148.0.0",
     "immer": "^10.1.1",
     "lottie-react": "^2.4.0",
     "lucide-react": "^0.469.0",
