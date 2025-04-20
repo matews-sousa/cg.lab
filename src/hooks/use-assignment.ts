@@ -5,16 +5,62 @@ import { toast } from "@/hooks/use-toast";
 import { Assignment } from "@/types/Assignment";
 import { api } from "../../convex/_generated/api";
 
+async function saveAttemptToSheets(data: {
+  sessionId: string;
+  subject: string;
+  assignmentId: string;
+  isCorrect: boolean;
+  timeSpent: number;
+  attemptCount: number;
+}): Promise<void> {
+  const SAVE_TO_GOOGLE_SHEET = process.env.NEXT_PUBLIC_SAVE_TO_GOOGLE_SHEET;
+  if (!SAVE_TO_GOOGLE_SHEET || SAVE_TO_GOOGLE_SHEET !== "true") return;
+
+  const res = await fetch("/api/addToSheets", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    console.error("Error saving to Sheets:", res.statusText);
+  } else {
+    console.log("Data saved to Google Sheets!");
+  }
+}
+
+const getOrCreateSessionId = () => {
+  if (typeof window === "undefined") {
+    return "server-session-id"; // Fallback for server-side rendering
+  }
+  let sessionId = localStorage.getItem("sessionId");
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    localStorage.setItem("sessionId", sessionId);
+  }
+  return sessionId;
+};
+
 export function useAssignment(subject?: string) {
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const [assignmentState, setAssignmentState] = useState<
     "notAnswered" | "correct" | "incorrect"
   >("notAnswered");
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [attemptCount, setAttemptCount] = useState(1);
 
   const completeAssignmentMutation = useMutation(
     api.assignmentCompletions.completeAssignment
   );
   const updateUserStreakMutation = useMutation(api.users.updateUserStreak);
+
+  const incrementAttemptCount = useCallback(() => {
+    setAttemptCount(prev => prev + 1);
+  }, []);
+  const resetAttemptCount = useCallback(() => {
+    setAttemptCount(1);
+  }, []);
 
   const handleConfirm = useCallback(
     async ({ ignoreCompletionSave = false } = {}) => {
@@ -22,6 +68,25 @@ export function useAssignment(subject?: string) {
 
       const isCorrect = assignment.validate();
       setAssignmentState(isCorrect ? "correct" : "incorrect");
+
+      const endTime = Date.now();
+      const timeSpent = endTime - (startTime ?? endTime);
+
+      // Save attempt to Google Sheets for analytics
+      // This is done in a try-catch block to avoid breaking the flow of the app
+      // even if the Sheets API fails
+      try {
+        await saveAttemptToSheets({
+          sessionId: getOrCreateSessionId(),
+          subject: assignment.subjectCategory,
+          assignmentId: subject ? assignment.id : "random",
+          isCorrect,
+          timeSpent,
+          attemptCount,
+        });
+      } catch (error) {
+        console.error("Error saving attempt to Sheets:", error);
+      }
 
       if (!isCorrect) return;
 
@@ -65,7 +130,14 @@ export function useAssignment(subject?: string) {
         console.error("Error completing assignment:", error);
       }
     },
-    [assignment, subject, completeAssignmentMutation, updateUserStreakMutation]
+    [
+      assignment,
+      subject,
+      completeAssignmentMutation,
+      updateUserStreakMutation,
+      startTime,
+      attemptCount,
+    ]
   );
 
   return {
@@ -74,5 +146,9 @@ export function useAssignment(subject?: string) {
     assignmentState,
     setAssignmentState,
     handleConfirm,
+    startTime,
+    setStartTime,
+    incrementAttemptCount,
+    resetAttemptCount,
   };
 }

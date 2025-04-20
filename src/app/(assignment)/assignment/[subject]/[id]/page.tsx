@@ -43,6 +43,9 @@ export default function SpecificAssignmentPage({
     assignmentState,
     setAssignmentState,
     handleConfirm,
+    setStartTime,
+    incrementAttemptCount,
+    resetAttemptCount,
   } = useAssignment(subject);
   const resetAll = useResetStores();
 
@@ -66,10 +69,11 @@ export default function SpecificAssignmentPage({
 
     const assi = subjectData.assignments.find(a => a.id === id);
     if (assi) {
+      setStartTime(Date.now());
       setAssignment(assi);
       assi.setup();
     }
-  }, [id, subjectData, resetAll, setAssignment]);
+  }, [id, subjectData, resetAll, setAssignment, setStartTime]);
 
   useLayoutEffect(() => {
     document.body.style.overflow = "hidden";
@@ -82,8 +86,16 @@ export default function SpecificAssignmentPage({
   const handleTryAgain = useCallback(() => {
     resetAll();
     setAssignmentState("notAnswered");
+    setStartTime(Date.now());
+    incrementAttemptCount();
     assignment?.setup();
-  }, [resetAll, assignment, setAssignmentState]);
+  }, [
+    resetAll,
+    assignment,
+    setAssignmentState,
+    setStartTime,
+    incrementAttemptCount,
+  ]);
 
   const handleNext = useCallback(() => {
     if (!assignment || !subjectData) return;
@@ -94,11 +106,12 @@ export default function SpecificAssignmentPage({
     const nextAssignment = subjectData.assignments[currentIndex + 1];
 
     if (nextAssignment) {
+      resetAttemptCount();
       redirect(`/assignment/${subject}/${nextAssignment.id}`);
     } else {
       redirect(`/subject/${subject}`);
     }
-  }, [assignment, subject, subjectData]);
+  }, [assignment, subject, subjectData, resetAttemptCount]);
 
   // Keyboard shortcuts
   useAssignmentKeyboardShortcuts(
