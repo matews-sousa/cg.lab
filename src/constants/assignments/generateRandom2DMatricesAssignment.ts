@@ -13,7 +13,6 @@ import {
 } from "../inicial2DMatricesValues";
 import { SubjectCategories } from "../defaultDailyMissions";
 import { Matrix3 } from "three";
-import { applyMatrixToSquare, createSquare } from "./matrices/orderingMatrices";
 import {
   MatrixOption,
   useOrderMatrixStore,
@@ -29,6 +28,7 @@ import {
   generateOptions,
   mapPresetSelections,
 } from "./matrices/rotationMatrixFillInWithOptions";
+import { createSquare } from "@/utils/polygon";
 
 const COORDINATE_LIMITS = [-4, 4] as [number, number];
 
@@ -95,6 +95,7 @@ export function generate2DFillInTranslationMatrixAssignment(): RandomGeneratedAs
         {
           id: "pointA",
           position: pointA,
+          color: "blue",
           movable: false,
           label: "A",
         },
@@ -237,6 +238,7 @@ export function generate2DTranslationMatrixAssignment(): RandomGeneratedAssignme
         {
           id: "pointA",
           position: pointA,
+          color: "blue",
           movable: true,
           label: "A",
           constraints: {
@@ -355,7 +357,7 @@ export function generate2DRotationMatrixAssignment(): RandomGeneratedAssignment 
     })),
     displayAxes: true,
   };
-  const rotationMatrix = create2DRotationMatrix(randomRotation);
+  const rotationMatrix = create2DRotationMatrix(randomRotation).transpose();
 
   return createMatrixAssignment({
     title: "Matrix de rotação 2D",
@@ -507,7 +509,10 @@ export function generate2DMatrixMultiplicationSortingAssignment(): RandomGenerat
   const shuffledTransformations = shuffleArray(transformations);
   const matrices = generateMatrices(shuffledTransformations);
   // generate the objective polygon by applying the matrices to the initial polygon
-  const objectivePolygon = applyMatrixToSquare(matrices, randomInitialPolygon);
+  const objectivePolygon = applyTransformationsToPolygon(
+    randomInitialPolygon,
+    matrices
+  );
 
   // generate the assignment
   return createMatrixAssignment({

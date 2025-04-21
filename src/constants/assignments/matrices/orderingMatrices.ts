@@ -1,4 +1,3 @@
-import { degreesToRadians } from "@/lib/utils";
 import {
   MatrixOption,
   useOrderMatrixStore,
@@ -6,26 +5,81 @@ import {
 import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
 import { TPolygon } from "@/types/Scene2DConfig";
-import { generateSquarePoints } from "@/utils";
+import { shuffleArray } from "@/utils";
+import {
+  applyTransformationsToPolygon,
+  create2DRotationMatrix,
+  create2DScaleMatrix,
+  create2DTranslationMatrix,
+} from "@/utils/matrix";
+import { createSquare } from "@/utils/polygon";
 import { Matrix3 } from "three";
 
 interface OrderMatrixMultiplicationProps {
   order: number;
-  matricesOptions: MatrixOption[];
+  title?: string;
+  instructions?: string;
   initialPolygons: TPolygon[];
-  objectivePolygons: TPolygon[];
+  objectiveTransformations: Matrix3[];
+  availableTransformations: {
+    type: "translation" | "scale" | "rotation";
+    values: [number, number] | number;
+    id?: string;
+  }[];
+}
+
+function createMatrixFromConfig(
+  type: "translation" | "scale" | "rotation",
+  values: [number, number] | number
+) {
+  switch (type) {
+    case "translation":
+      return create2DTranslationMatrix(...(values as [number, number]));
+    case "scale":
+      return create2DScaleMatrix(...(values as [number, number]));
+    case "rotation":
+      return create2DRotationMatrix(values as number);
+    default:
+      throw new Error("Invalid transformation type: " + type);
+  }
 }
 
 function createOrderMatrixMultiplication({
   order,
-  matricesOptions,
+  title,
+  instructions,
   initialPolygons,
-  objectivePolygons,
+  objectiveTransformations,
+  availableTransformations,
 }: OrderMatrixMultiplicationProps): Assignment {
+  const objectivePolygons = initialPolygons.map(polygon => {
+    const transformedPolygon = applyTransformationsToPolygon(
+      polygon,
+      objectiveTransformations
+    );
+    return {
+      ...transformedPolygon,
+      id: `objective-${polygon.id}`,
+    };
+  });
+
+  const matricesOptions = availableTransformations.map((transform, index) => {
+    const id = transform.id || `${transform.type}-matrix-${index}`;
+    const matrix = createMatrixFromConfig(transform.type, transform.values);
+    return createTransformOption(
+      id,
+      matrix,
+      transform.type === "rotation" ? "z" : undefined,
+      transform.type === "rotation" ? (transform.values as number) : undefined
+    );
+  });
+  const shuffledMatricesOptions = shuffleArray(matricesOptions);
+
   return {
     id: `sorting-matrices-${order}`,
-    title: "Ordenação de Matrizes",
+    title: title || "Ordenação de Matrizes",
     instructions:
+      instructions ||
       "Ordene as matrizes de transformação para obter o resultado esperado.",
     order,
     type: AssignmentType.ORDER_MATRIX_MULTIPLICATION,
@@ -37,200 +91,190 @@ function createOrderMatrixMultiplication({
 
       const { createObject, setMatricesOptions } =
         useOrderMatrixStore.getState();
-      createObject("square1");
-      setMatricesOptions(matricesOptions);
+      createObject(initialPolygons[0].id);
+      setMatricesOptions(shuffledMatricesOptions);
     },
     validate() {
-      const square1 = useScene2DStore.getState().getPolygon("square1");
-      if (!square1) return false;
+      const sceneSquare = useScene2DStore
+        .getState()
+        .getPolygon(initialPolygons[0].id);
+      if (!sceneSquare) return false;
 
       const objectiveSquare = objectivePolygons[0];
       return (
-        square1.points.every(
+        sceneSquare.points.every(
           (point, index) =>
             point.position[0] === objectiveSquare.points[index].position[0] &&
             point.position[1] === objectiveSquare.points[index].position[1]
-        ) && square1.color === objectiveSquare.color
+        ) && sceneSquare.color === objectiveSquare.color
       );
     },
   };
 }
 
-export function createSquare(
+function createTransformOption(
   id: string,
-  color: string,
-  position: [number, number],
-  size: [number, number]
-): TPolygon {
+  matrix: Matrix3,
+  rotationAxis?: "x" | "y" | "z",
+  rotationAngle?: number
+): MatrixOption {
   return {
     id,
-    color,
-    points: generateSquarePoints(position, size).map((point, index) => ({
-      id: String.fromCharCode(65 + index),
-      position: point,
-      movable: false,
-    })),
+    matrix: matrix.transpose(),
+    rotationAxis,
+    rotationAngle,
   };
 }
 
-export function applyMatrixToSquare(
-  matrices: Matrix3[],
-  square: TPolygon
-): TPolygon {
-  const newPoints = square.points?.map(point => {
-    const modelMatrix = new Matrix3().identity();
-    matrices.forEach(matrix => modelMatrix.multiply(matrix));
-
-    const [x, y] = point.position;
-    const w = 1;
-    const newX =
-      modelMatrix.elements[0] * x +
-      modelMatrix.elements[1] * y +
-      modelMatrix.elements[2] * w;
-    const newY =
-      modelMatrix.elements[3] * x +
-      modelMatrix.elements[4] * y +
-      modelMatrix.elements[5] * w;
-    return {
-      id: point.id,
-      position: [newX, newY] as [number, number],
-      movable: false,
-    };
-  });
-
-  if (!newPoints) return square;
-
-  return {
-    ...square,
-    points: newPoints,
-  };
-}
-
-const orderingMatricesAssignmentsProps: OrderMatrixMultiplicationProps[] = [
+const orderingMatricesAssignmentsProps: Omit<
+  OrderMatrixMultiplicationProps,
+  "order"
+>[] = [
   {
-    order: 1,
+    title: "Escala na origem",
+    instructions:
+      "Selecione as matrizes para aplicar uma escala de 2x no quadrado mantendo-o na origem",
+    initialPolygons: [createSquare("square1", "blue", [0, 0], [1, 1])],
+    objectiveTransformations: [create2DScaleMatrix(2, 2)],
+    availableTransformations: [
+      { type: "translation", values: [-1, -1] },
+      { type: "scale", values: [2, 2] },
+      { type: "translation", values: [1, 1] },
+    ],
+  },
+  {
+    title: "Escala em quadrado decentralizado da origem",
+    instructions:
+      "Selecione as matrizes para transformar o quadrado para o objetivo",
     initialPolygons: [createSquare("square1", "blue", [1.5, 1.5], [1, 1])],
-    objectivePolygons: [createSquare("square1", "blue", [1, 1], [2, 2])],
-    matricesOptions: [
-      {
-        id: "translate-to-origin",
-        matrix: new Matrix3().translate(-1.5, -1.5).transpose(),
-      },
-      {
-        id: "scale",
-        matrix: new Matrix3().scale(2, 2),
-      },
-      {
-        id: "translate-back",
-        matrix: new Matrix3().translate(1, 1).transpose(),
-      },
+    objectiveTransformations: [create2DScaleMatrix(2, 2)],
+    availableTransformations: [
+      { type: "translation", values: [-1.5, -1.5] },
+      { type: "translation", values: [-1, -1] },
+      { type: "scale", values: [2, 2] },
+      { type: "translation", values: [1, 1] },
     ],
   },
   {
-    order: 2,
-    initialPolygons: [createSquare("square1", "blue", [1, 1], [2, 2])],
-    objectivePolygons: [createSquare("square1", "blue", [1, 1], [1, 1])],
-    matricesOptions: [
-      {
-        id: "translate-to-origin",
-        matrix: new Matrix3().translate(-1, -1).transpose(),
-      },
-      {
-        id: "scale",
-        matrix: new Matrix3().scale(0.5, 0.5),
-      },
-      {
-        id: "translate-back",
-        matrix: new Matrix3().translate(1, 1).transpose(),
-      },
+    title: "Translação e escala",
+    instructions:
+      "Selecione as matrizes para transformar o quadrado para o objetivo",
+    initialPolygons: [createSquare("square1", "blue", [0.5, 0.5], [1, 1])],
+    objectiveTransformations: [
+      create2DTranslationMatrix(-0.5, -0.5),
+      create2DScaleMatrix(2, 2),
+    ],
+    availableTransformations: [
+      { type: "translation", values: [-0.5, -0.5] },
+      { type: "scale", values: [2, 2] },
+      { type: "translation", values: [1, 1] },
     ],
   },
   {
-    order: 3,
+    title: "Translação e rotação",
+    instructions:
+      "Selecione as matrizes para transformar o quadrado para o objetivo",
     initialPolygons: [createSquare("square1", "blue", [1, 1], [1, 1])],
-    objectivePolygons: [
-      applyMatrixToSquare(
-        [
-          new Matrix3().translate(-1, -1).transpose(),
-          new Matrix3().scale(2, 2),
-          new Matrix3().rotate(degreesToRadians(45)),
-        ],
-        createSquare("square1", "blue", [1, 1], [1, 1])
-      ),
+    objectiveTransformations: [
+      create2DTranslationMatrix(-1, -1),
+      create2DRotationMatrix(45),
     ],
-    matricesOptions: [
-      {
-        id: "scale",
-        matrix: new Matrix3().scale(2, 2),
-      },
-      {
-        id: "rotation-z",
-        matrix: new Matrix3().rotate(degreesToRadians(45)),
-        rotationAxis: "z",
-        rotationAngle: 45,
-      },
-      {
-        id: "translate-to-origin",
-        matrix: new Matrix3().translate(-1, -1).transpose(),
-      },
+    availableTransformations: [
+      { type: "translation", values: [-1, -1] },
+      { type: "scale", values: [2, 2] },
+      { type: "rotation", values: 45 },
+      { type: "translation", values: [1, 1] },
     ],
   },
   {
-    order: 4,
-    initialPolygons: [createSquare("square1", "blue", [0, 0], [2, 2])],
-    objectivePolygons: [
-      applyMatrixToSquare(
-        [
-          new Matrix3().scale(0.5, 0.5),
-          new Matrix3().translate(0.5, 0.5).transpose(),
-        ],
-        createSquare("square1", "blue", [0, 0], [2, 2])
-      ),
+    title: "Combinando três transformações",
+    instructions:
+      "Selecione as matrizes para transformar o quadrado para o objetivo",
+    initialPolygons: [createSquare("square1", "blue", [1, 1], [1, 1])],
+    objectiveTransformations: [
+      create2DTranslationMatrix(-1, -1),
+      create2DScaleMatrix(2, 2),
+      create2DRotationMatrix(45),
     ],
-    matricesOptions: [
-      {
-        id: "translate-to-origin",
-        matrix: new Matrix3().translate(-1, -1).transpose(),
-      },
-      {
-        id: "translate",
-        matrix: new Matrix3().translate(0.5, 0.5).transpose(),
-      },
-      {
-        id: "scale",
-        matrix: new Matrix3().scale(0.5, 0.5),
-      },
+    availableTransformations: [
+      { type: "translation", values: [-1, -1] },
+      { type: "scale", values: [2, 2] },
+      { type: "rotation", values: 45 },
+      { type: "translation", values: [1, 1] },
     ],
   },
   {
-    order: 5,
-    initialPolygons: [createSquare("square1", "blue", [-0.5, -0.5], [1, 1])],
-    objectivePolygons: [
-      applyMatrixToSquare(
-        [
-          new Matrix3().scale(2, 2),
-          new Matrix3().translate(0.5, 0.5).transpose(),
-        ],
-        createSquare("square1", "blue", [-0.5, -0.5], [1, 1])
-      ),
+    title: "Voltando para a posição original",
+    instructions:
+      "Selecione as matrizes para transformar o quadrado para o objetivo",
+    initialPolygons: [createSquare("square1", "blue", [1, 1], [1, 1])],
+    objectiveTransformations: [
+      create2DTranslationMatrix(-1, -1),
+      create2DRotationMatrix(45),
+      create2DTranslationMatrix(1, 1),
     ],
-    matricesOptions: [
-      {
-        id: "translate",
-        matrix: new Matrix3().translate(0.5, 0.5).transpose(),
-      },
-      {
-        id: "scale",
-        matrix: new Matrix3().scale(2, 2),
-      },
-      {
-        id: "translate-to-origin",
-        matrix: new Matrix3().translate(-0.5, -0.5).transpose(),
-      },
+    availableTransformations: [
+      { type: "translation", values: [-1, -1] },
+      { type: "scale", values: [2, 2] },
+      { type: "rotation", values: 45 },
+      { type: "translation", values: [1, 1] },
+    ],
+  },
+  {
+    title: "Translação e escala decimal",
+    instructions:
+      "Selecione as matrizes para transformar o quadrado para o objetivo",
+    initialPolygons: [createSquare("square1", "blue", [-1, 1], [2, 2])],
+    objectiveTransformations: [
+      create2DTranslationMatrix(1, -1),
+      create2DScaleMatrix(0.5, 0.5),
+    ],
+    availableTransformations: [
+      { type: "translation", values: [1, -1] },
+      { type: "scale", values: [0.5, 0.5] },
+      { type: "translation", values: [-1, -1] },
+      { type: "translation", values: [-1, 1] },
+    ],
+  },
+  {
+    title: "Matrizes repetidas",
+    instructions:
+      "Selecione as matrizes para transformar o quadrado para o objetivo",
+    initialPolygons: [createSquare("square1", "blue", [0.5, 0.5], [1, 1])],
+    objectiveTransformations: [
+      create2DTranslationMatrix(-0.5, -0.5),
+      create2DScaleMatrix(2, 2),
+      create2DScaleMatrix(2, 2),
+    ],
+    availableTransformations: [
+      { type: "translation", values: [-0.5, -0.5] },
+      { type: "scale", values: [2, 2] },
+      { type: "translation", values: [0.5, 0.5] },
+    ],
+  },
+  {
+    title: "Transformações repetidas",
+    instructions:
+      "Selecione as matrizes para transformar o quadrado para o objetivo",
+    initialPolygons: [createSquare("square1", "blue", [0.5, 0.5], [1, 1])],
+    objectiveTransformations: [
+      create2DTranslationMatrix(-0.5, -0.5),
+      create2DScaleMatrix(4, 4),
+      create2DScaleMatrix(0.5, 0.5),
+    ],
+    availableTransformations: [
+      { type: "translation", values: [-0.5, -0.5] },
+      { type: "scale", values: [4, 4] },
+      { type: "scale", values: [0.5, 0.5] },
+      { type: "translation", values: [0.5, 0.5] },
     ],
   },
 ];
 
 export const orderingMatricesAssignments = orderingMatricesAssignmentsProps.map(
-  createOrderMatrixMultiplication
+  (props, index) =>
+    createOrderMatrixMultiplication({
+      order: index + 1,
+      ...props,
+    })
 );

@@ -97,19 +97,17 @@ export default function FillInMatrixInput({ matrix }: Props) {
         ];
         const valuesAreValid = rotation.every(value => !isNaN(value)); // Check if all values are the same and not NaN
         if (!valuesAreValid) return;
-        const customMatrix = new Matrix3()
-          .set(
-            Math.cos(degreesToRadians(value00)),
-            -Math.sin(degreesToRadians(value01)),
-            0,
-            Math.sin(degreesToRadians(value10)),
-            Math.cos(degreesToRadians(value11)),
-            0,
-            0,
-            0,
-            1
-          )
-          .transpose(); // Transpose the matrix to match the expected format, cause Three.js uses column-major order
+        const customMatrix = new Matrix3().set(
+          Math.cos(degreesToRadians(value00)),
+          -Math.sin(degreesToRadians(value01)),
+          0,
+          Math.sin(degreesToRadians(value10)),
+          Math.cos(degreesToRadians(value11)),
+          0,
+          0,
+          0,
+          1
+        );
         setPolygonRotationMatrix(matrix.polygonRefId, customMatrix);
       }
 

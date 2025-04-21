@@ -18,9 +18,10 @@ export function applyTransformationsToPoint(
   point: [number, number],
   matrices: Matrix3[]
 ): [number, number] {
-  const modelMatrix = matrices
-    .reduce((acc, matrix) => acc.multiply(matrix), new Matrix3().identity())
-    .transpose();
+  const modelMatrix = matrices.reduce(
+    (acc, matrix) => acc.multiply(matrix),
+    new Matrix3().identity()
+  );
 
   const vector = new Vector2(point[0], point[1]);
   vector.applyMatrix3(modelMatrix);
@@ -33,7 +34,10 @@ export function applyTransformationsToPolygon(
   matrices: Matrix3[]
 ): TPolygon {
   const modelMatrix = matrices
-    .reduce((acc, matrix) => acc.multiply(matrix), new Matrix3().identity())
+    .reduce(
+      (acc, matrix) => acc.multiply(matrix.transpose()),
+      new Matrix3().identity()
+    )
     .transpose();
 
   const newPoints = polygon.points.map(point => {

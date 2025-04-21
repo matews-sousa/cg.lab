@@ -76,9 +76,9 @@ export default function FillInMatrixWithOptions() {
     if (matrix.polygonRefId) {
       const customMatrix = new Matrix3().set(
         matrixElements[0],
-        matrixElements[3],
-        matrixElements[2],
         matrixElements[1],
+        matrixElements[2],
+        matrixElements[3],
         matrixElements[4],
         matrixElements[5],
         matrixElements[6],

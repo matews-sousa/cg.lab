@@ -1,5 +1,5 @@
 import { Polygon, Transform, Vector } from "mafs";
-import { memo, useMemo } from "react";
+import { useMemo } from "react";
 import CustomPoint from "./custom-point";
 import { TPolygon } from "@/types/Scene2DConfig";
 import { degreesToRadians } from "@/lib/utils";
@@ -14,7 +14,7 @@ interface Props {
 
 const AXIS_LENGTH = 1; // Length of coordinate axes vectors
 
-const CustomPolygon = memo(({ polygon }: Props) => {
+const CustomPolygon = ({ polygon }: Props) => {
   // Calculate polygon center in local space
   const polygonCenter = useMemo(() => {
     if (polygon.points.length === 0) return [0, 0] as [number, number];
@@ -150,7 +150,6 @@ const CustomPolygon = memo(({ polygon }: Props) => {
       )}
     </Transform>
   );
-});
+};
 
-CustomPolygon.displayName = "CustomPolygon";
 export default CustomPolygon;

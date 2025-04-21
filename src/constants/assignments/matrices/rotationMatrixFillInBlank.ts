@@ -45,7 +45,8 @@ function createRotationmatrixFillInBlankAssignment({
           ...square,
           id: "target-square",
           color: "green",
-          rotationMatrix: create2DRotationMatrix(targetAngleInDegrees),
+          rotationMatrix:
+            create2DRotationMatrix(targetAngleInDegrees).transpose(),
           displayAxes: true,
         },
       ]);

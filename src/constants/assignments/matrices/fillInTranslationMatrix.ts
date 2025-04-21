@@ -34,9 +34,10 @@ function createFillInTranslationMatrixAssignment({
     squareProps.size
   );
 
-  const translationMatrix = new Matrix3()
-    .translate(targetTranslation[0], targetTranslation[1])
-    .transpose();
+  const translationMatrix = new Matrix3().translate(
+    targetTranslation[0],
+    targetTranslation[1]
+  );
   const targetSquare = applyTransformationsToPolygon(square, [
     translationMatrix,
   ]);

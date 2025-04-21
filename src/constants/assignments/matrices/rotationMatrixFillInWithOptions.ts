@@ -1,6 +1,5 @@
 import { useScene2DStore } from "@/store/scene2DStore";
 import { Assignment, AssignmentType } from "@/types/Assignment";
-import { createSquare } from "./orderingMatrices";
 import { degreesToRadians } from "@/lib/utils";
 import { useFillInMatrixWithOptionsStore } from "@/store/fillInMatrixWithOptions";
 import { MatrixType } from "@/store/fillInBlankMatrixInputStore";
@@ -9,6 +8,7 @@ import {
   applyTransformationsToPolygon,
   create2DRotationMatrix,
 } from "@/utils/matrix";
+import { createSquare } from "@/utils/polygon";
 
 type PresetSelection = {
   row: number;
@@ -96,7 +96,8 @@ function createRotationMatrixFillInWithOptionsAssignment({
           ...square,
           id: "target-square",
           color: "green",
-          rotationMatrix: create2DRotationMatrix(targetAngleInDegrees),
+          rotationMatrix:
+            create2DRotationMatrix(targetAngleInDegrees).transpose(),
           displayAxes: true,
         },
       ]);
@@ -178,6 +179,10 @@ const rotationMatrixFillInWithOptionsProps: RotationMatrixFillInWithOptionsProps
         size: [2, 2],
       },
       targetAngleInDegrees: 90,
+      presetSelections: [
+        { row: 0, col: 0, optionType: "cos" },
+        { row: 1, col: 1, optionType: "cos" },
+      ],
     },
     {
       order: 3,
