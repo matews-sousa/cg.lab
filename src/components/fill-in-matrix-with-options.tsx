@@ -39,24 +39,26 @@ export default function FillInMatrixWithOptions() {
 
     // If the matrix has a 3D object reference, set the rotation matrix
     if (matrix.objectRefId) {
-      const customMatrix = new Matrix4().set(
-        matrixElements[0],
-        matrixElements[1],
-        matrixElements[2],
-        matrixElements[3],
-        matrixElements[4],
-        matrixElements[5],
-        matrixElements[6],
-        matrixElements[7],
-        matrixElements[8],
-        matrixElements[9],
-        matrixElements[10],
-        matrixElements[11],
-        matrixElements[12],
-        matrixElements[13],
-        matrixElements[14],
-        matrixElements[15]
-      );
+      const customMatrix = new Matrix4()
+        .set(
+          matrixElements[0],
+          matrixElements[1],
+          matrixElements[2],
+          matrixElements[3],
+          matrixElements[4],
+          matrixElements[5],
+          matrixElements[6],
+          matrixElements[7],
+          matrixElements[8],
+          matrixElements[9],
+          matrixElements[10],
+          matrixElements[11],
+          matrixElements[12],
+          matrixElements[13],
+          matrixElements[14],
+          matrixElements[15]
+        )
+        .transpose(); // Transpose the matrix to match the expected format for Three.js (column-major order)
       switch (matrix.type) {
         case MatrixType.ROTATION_X:
           setCubeCustomXRotationMatrix(matrix.objectRefId, customMatrix);

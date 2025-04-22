@@ -21,6 +21,7 @@ export default function Cube({ cube }: Props) {
     customXRotationMatrix,
     customYRotationMatrix,
     customZRotationMatrix,
+    displayCustomAxes,
   } = cube;
   const [worldPosition, setWorldPosition] = useState<Vector3>(
     position.clone().add(translation)
@@ -81,10 +82,56 @@ export default function Cube({ cube }: Props) {
     <>
       {/* Cube Mesh */}
       <mesh ref={cubeRef} userData={{ id }}>
-        <axesHelper args={[2]} />
         <boxGeometry args={[size.x, size.y, size.z]} />
-        <meshPhongMaterial color={color} opacity={0.9} transparent />
-        <Edges threshold={1} color="white" scale={1} />
+        <meshPhongMaterial color={color} opacity={1} transparent />
+        <Edges threshold={1} color="white" scale={1.001} />
+
+        {/* Render arrows with cylinders and cones for each axis */}
+        {displayCustomAxes ? (
+          <>
+            <group>
+              <mesh
+                position={[size.x / 2, 0, 0]}
+                rotation={[0, 0, Math.PI / 2]}
+              >
+                <cylinderGeometry args={[0.05, 0.05, size.x, 8]} />
+                <meshStandardMaterial color="#ff0000" opacity={0.9} />
+              </mesh>
+              <mesh position={[size.x, 0, 0]} rotation={[0, 0, -Math.PI / 2]}>
+                <coneGeometry args={[0.1, 0.2, 8]} />
+                <meshStandardMaterial color="#ff0000" opacity={0.9} />
+              </mesh>
+            </group>
+            <group>
+              <mesh
+                position={[0, size.y / 2, 0]}
+                rotation={[0, Math.PI / 2, 0]}
+              >
+                <cylinderGeometry args={[0.05, 0.05, size.y, 8]} />
+                <meshStandardMaterial color="#00ff00" opacity={0.9} />
+              </mesh>
+              <mesh position={[0, size.y, 0]} rotation={[0, -Math.PI / 2, 0]}>
+                <coneGeometry args={[0.1, 0.2, 8]} />
+                <meshStandardMaterial color="#00ff00" opacity={0.9} />
+              </mesh>
+            </group>
+            <group>
+              <mesh
+                position={[0, 0, size.z / 2]}
+                rotation={[Math.PI / 2, 0, 0]}
+              >
+                <cylinderGeometry args={[0.05, 0.05, size.z, 8]} />
+                <meshStandardMaterial color="#0000ff" opacity={0.9} />
+              </mesh>
+              <mesh position={[0, 0, size.z]} rotation={[Math.PI / 2, 0, 0]}>
+                <coneGeometry args={[0.1, 0.2, 8]} />
+                <meshStandardMaterial color="#0000ff" opacity={0.9} />
+              </mesh>
+            </group>
+          </>
+        ) : (
+          <axesHelper args={[2]} />
+        )}
       </mesh>
 
       {/* Label Text (Always faces the camera) */}
@@ -92,7 +139,7 @@ export default function Cube({ cube }: Props) {
         follow
         position={[
           worldPosition.x,
-          worldPosition.y + (size.y * scale.y) / 2 + 0.5,
+          worldPosition.y + (size.y * scale.y) / 2 + 1,
           worldPosition.z,
         ]}
       >

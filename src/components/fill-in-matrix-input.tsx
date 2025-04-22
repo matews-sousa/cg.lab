@@ -214,8 +214,8 @@ export default function FillInMatrixInput({ matrix }: Props) {
     },
     [MatrixType.ROTATION_Y]: {
       "0-0": "cos",
-      "0-2": "sin",
-      "2-0": "-sin",
+      "0-2": "-sin",
+      "2-0": "sin",
       "2-2": "cos",
     },
     [MatrixType.ROTATION_Z]: {

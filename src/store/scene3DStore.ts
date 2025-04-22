@@ -13,6 +13,7 @@ export type TCube = {
   customXRotationMatrix?: Matrix4 | null;
   customYRotationMatrix?: Matrix4 | null;
   customZRotationMatrix?: Matrix4 | null;
+  displayCustomAxes?: boolean;
 };
 
 interface Scene3DStore {

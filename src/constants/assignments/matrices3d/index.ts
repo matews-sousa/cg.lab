@@ -1,15 +1,11 @@
-import { completeRotationMatrix3dYAssignment } from "./completeRotationMatrix3dY";
-import { rotationMatrixX3dAssignment } from "./rotationMatrixX";
-import { rotationMatrixY3dAssignment } from "./rotationMatrixY";
-import { rotationMatrixZ3dAssignment } from "./rotationMatrixZ";
-import { scaleMatrix3dAssignment } from "./scaleMatrix3d";
-import { translationMatrix3dAssignment } from "./translationMatrix3d";
+import { rotationMatrixFillInput3DAssignmentList } from "./rotationMatrixFillInput3D";
+import { rotationMatrixFillWithOptions3DAssignmentList } from "./rotationMatrixFillWithOptions3D";
+import { scaleMatrixFillInput3DAssignmentList } from "./scaleMatrixFillInput3D";
+import { translationMatrixFillInput3DAssignmentList } from "./translationMatrixFillInput3D";
 
 export const matrices3dAssignments = [
-  translationMatrix3dAssignment,
-  scaleMatrix3dAssignment,
-  rotationMatrixX3dAssignment,
-  rotationMatrixY3dAssignment,
-  rotationMatrixZ3dAssignment,
-  completeRotationMatrix3dYAssignment,
+  ...translationMatrixFillInput3DAssignmentList,
+  ...scaleMatrixFillInput3DAssignmentList,
+  ...rotationMatrixFillInput3DAssignmentList,
+  ...rotationMatrixFillWithOptions3DAssignmentList,
 ];
