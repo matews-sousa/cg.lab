@@ -18,14 +18,23 @@ export function applyTransformationsToPoint(
   point: [number, number],
   matrices: Matrix3[]
 ): [number, number] {
-  const modelMatrix = matrices.reduce(
-    (acc, matrix) => acc.multiply(matrix),
-    new Matrix3().identity()
-  );
+  let modelMatrix = new Matrix3().identity();
+  matrices.forEach(matrix => {
+    modelMatrix = matrix.clone().multiply(modelMatrix);
+  });
+  // Transpose the model matrix if in production mode
+  // This is a hack to make the transformations work correctly in production
+  // TODO: Fix this in the future
+  if (process.env.NODE_ENV === "production") {
+    modelMatrix = modelMatrix.transpose();
+  }
 
   const vector = new Vector2(point[0], point[1]);
-  vector.applyMatrix3(modelMatrix);
-  const transformedPoint = [vector.x, vector.y] as [number, number];
+  const transformedVec = vector.clone().applyMatrix3(modelMatrix);
+  const transformedPoint = [transformedVec.x, transformedVec.y] as [
+    number,
+    number,
+  ];
   return transformedPoint;
 }
 
