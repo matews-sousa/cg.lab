@@ -227,7 +227,7 @@ function Droppable({
   return (
     <div
       ref={setNodeRef}
-      className="flex items-center justify-start gap-2 bg-gray-100 p-0 rounded-lg shadow w-full h-32 overflow-x-auto px-2"
+      className="flex-row-reverse flex items-center justify-start gap-2 bg-gray-100 p-0 rounded-lg shadow w-full h-32 overflow-x-auto px-2"
     >
       {children}
     </div>
