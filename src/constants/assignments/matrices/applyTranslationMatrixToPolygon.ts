@@ -58,7 +58,8 @@ function createTranslationMatrixToPolygonAssignment({
       "polygon",
       "blue",
       squareProps?.center,
-      squareProps?.size
+      squareProps?.size,
+      true
     );
     initialPolygon = square;
   }

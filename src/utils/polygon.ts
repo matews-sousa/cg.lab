@@ -27,10 +27,19 @@ function generateSquarePoints(
   const halfW = width / 2;
   const halfH = height / 2;
 
-  return [
+  const points: [number, number][] = [
     [cx - halfW, cy - halfH], // Bottom-left
     [cx + halfW, cy - halfH], // Bottom-right
     [cx + halfW, cy + halfH], // Top-right
     [cx - halfW, cy + halfH], // Top-left
   ];
+
+  return points.map(([x, y]) => [
+    roundToHalf(x),
+    roundToHalf(y),
+  ]);
+}
+
+function roundToHalf(value: number): number {
+  return Math.round(value * 2) / 2;
 }
