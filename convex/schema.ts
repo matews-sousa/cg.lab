@@ -7,6 +7,7 @@ const schema = defineSchema({
   users: defineTable({
     name: v.string(),
     email: v.string(),
+    emailVerificationTime: v.optional(v.float64()),
     isAnonymous: v.optional(v.boolean()),
     streak: v.optional(v.number()),
     bestStreak: v.optional(v.number()),
