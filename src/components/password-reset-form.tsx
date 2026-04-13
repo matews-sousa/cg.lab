@@ -72,6 +72,7 @@ export function PasswordResetForm() {
         title: "Código enviado",
         description: "Verifique seu email.",
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       toast({
         variant: "destructive",
@@ -99,6 +100,7 @@ export function PasswordResetForm() {
       setStep("forgot");
       resetForm.reset();
       forgotForm.reset();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       toast({
         variant: "destructive",

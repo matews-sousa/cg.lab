@@ -2,7 +2,6 @@
 
 import Navbar from "@/components/navbar";
 import { PasswordResetForm } from "@/components/password-reset-form";
-import { useAuthActions } from "@convex-dev/auth/react";
 
 export default function Page() {
   return (
